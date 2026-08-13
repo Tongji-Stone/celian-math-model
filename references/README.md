@@ -250,6 +250,11 @@ references/
 [1] SEVERSON K A, ATTIA P M, JIN N, et al. Data-driven prediction of battery cycle life before capacity degradation[J]. Nature Energy, 2019, 4(5): 383-391.
 [2] ATTIA P M, GROVER A, JIN N, et al. Closed-loop optimization of fast-charging protocols for batteries with machine learning[J]. Nature, 2020, 578: 397-402.
 [3] LIU Y, ZHU Y, CUI Y. Challenges and opportunities towards fast-charging battery materials[J]. Nature Energy, 2019, 4: 540-550.
+
+Added RUL references:
+
+- Zhang et al. (2019), Lithium-Ion Battery Remaining Useful Life Prediction With Box-Cox Transformation and Monte Carlo Simulation, IEEE Transactions on Industrial Electronics, 66(2), 1585--1597. DOI: 10.1109/TIE.2018.2808918.
+- Zhang et al. (2018), Long Short-Term Memory Recurrent Neural Network for Remaining Useful Life Prediction of Lithium-Ion Batteries, IEEE Transactions on Vehicular Technology, 67(7), 5695--5705. DOI: 10.1109/TVT.2018.2805189.
 ```
 
 更完整的条目见同目录 `references.bib`。
