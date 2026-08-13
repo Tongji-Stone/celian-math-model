@@ -1,0 +1,46 @@
+\section{问题三：基于早期循环的电池寿命预测}
+
+\begin{todobox}
+本节为建模框架。9 块测试电池已在 \texttt{battery\_summary.csv} 中由 \texttt{prediction\_test}=1 标记，循环数据截至第 150 圈。预测表、误差指标与 EOL 外推结果待补入。
+\end{todobox}
+
+\subsection{问题分析}
+
+实际中往往只能获得前期循环，无法等待完整老化。本题要求：用截至第 150 次循环的数据预测第 151--200 次循环 SOH，并进一步估计 \(\mathrm{SOH}=80\%\) 的循环寿命；同时比较不同早期窗口长度，讨论策略信息与早期衰减特征的作用\cite{severson2019datadriven,attia2021statistical,geslin2023joule,zhang2018lstm,zhang2019boxcoxmc}。
+
+\subsection{特征提取（拟采用）}
+
+\begin{table}[htbp]
+\centering
+\caption{问题三拟提取的特征类别}
+\label{tab:feat}
+\begin{tabular}{ll}
+\toprule
+类别 & 示例 \\
+\midrule
+策略参数 & \(C_1,Q_1,C_2\) 及策略编码 \\
+衰减趋势 & 前 \(k\) 圈 SOH 斜率、曲率、幂律/指数拟合参数 \\
+过程量 & 充电时间、IR、温度的均值与变化率 \\
+分段差 & \(\Delta\mathrm{SOH}_{1\rightarrow 50}\)、\(\Delta\mathrm{SOH}_{50\rightarrow 100}\)、\(\Delta\mathrm{SOH}_{100\rightarrow 150}\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+优先使用 \texttt{SOH\_smooth}。若后续引入放电电压曲线类特征 \(\Delta Q(V)\)，需回源完整公开数据\cite{attia2021statistical,matrdataset}。
+
+\subsection{预测模型（拟采用）}
+
+\textbf{经验衰减模型}（可解释）：
+\begin{equation}
+\mathrm{SOH}(n)=1-a\,n^{b}\quad\text{或}\quad \mathrm{SOH}(n)=a\mathrm{e}^{-bn}+c,
+\label{eq:emp}
+\end{equation}
+用 1--150 圈拟合，外推 151--200 及 \(N_{\mathrm{EOL}}\)。
+
+\textbf{统计 / 机器学习模型：} 以早期统计特征预测后续 SOH 或衰减率，候选包括正则化线性模型、随机森林 / XGBoost、高斯过程；序列模型可试 LSTM\cite{zhang2018lstm}。验证建议：在 40 块非测试电池上做“截断 150 圈 \(\rightarrow\) 预测 151--200”的交叉验证，再对 9 块测试电池给出最终预报，避免同策略信息泄漏。
+
+\subsection{评价指标与窗口比较}
+
+对 151--200 圈报告 RMSE、MAE 与 \(R^2\)；对 \(N_{\mathrm{EOL}}\) 报告外推圈数。比较输入窗口 \(k\in\{50,100,150\}\) 的精度差异。消融：有/无 \((C_1,Q_1,C_2)\)。
+
+\textbf{待填：} 9 块测试电池的 SOH 预测曲线、误差表、EOL 点估计。

@@ -1,0 +1,211 @@
+% !TEX program = xelatex
+% 策联杯 A 题参赛论文半成品（无目录；第 1 页为摘要专用页）
+% 编译：xelatex -> bibtex -> xelatex -> xelatex
+% 请勿在全文任何位置填写姓名、学校或队号。
+\documentclass[a4paper,12pt,UTF8,zihao=-4]{ctexart}
+
+\usepackage{geometry}
+\geometry{a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,tabularx,longtable,multirow,makecell}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{array}
+\usepackage{threeparttable}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{placeins}
+\usepackage{cite}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue
+}
+
+\graphicspath{{figures/}{../output/A/}}
+
+% 页码：页脚居中，阿拉伯数字从 1 连续编号（摘要页即为第 1 页）
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\thepage}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \fancyfoot[C]{\thepage}%
+}
+
+\captionsetup{font=small,labelsep=quad}
+\setlist[itemize]{leftmargin=2em,itemsep=0.2em,topsep=0.3em}
+\setlist[enumerate]{leftmargin=2em,itemsep=0.2em,topsep=0.3em}
+\setstretch{1.25}
+
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue!70!black},
+  commentstyle=\color{green!50!black},
+  stringstyle=\color{red!60!black},
+  showstringspaces=false,
+  tabsize=4,
+  xleftmargin=1.2em,
+  framexleftmargin=1.2em
+}
+\newtcolorbox{todobox}[1][]{
+  colback=yellow!8,
+  colframe=orange!70!black,
+  fonttitle=\bfseries,
+  title={待完成 / 框架占位},
+  #1
+}
+
+\newtcolorbox{resultbox}[1][]{
+  colback=blue!4,
+  colframe=blue!50!black,
+  fonttitle=\bfseries,
+  title={已完成结果（仓库现有成果）},
+  #1
+}
+
+\title{锂离子电池快充策略对寿命衰减的影响建模与优化}
+\author{} % 按赛制不得出现参赛者信息
+\date{}
+
+\begin{document}
+
+% ============================================================
+% 第一页：摘要专用页（含标题和关键词，无需英文）
+% ============================================================
+\thispagestyle{plain}
+\begin{center}
+{\heiti\zihao{3} 锂离子电池快充策略对寿命衰减的影响建模与优化}
+\end{center}
+\vspace{0.8em}
+
+\noindent{\heiti\zihao{4} 摘\quad 要}
+
+\vspace{0.4em}
+\noindent
+提高充电倍率可缩短补能时间，但过高电流会加速容量衰减。本文基于 MIT--Stanford 公开的 49 块 A123 18650 型磷酸铁锂电池循环老化数据，围绕两阶段快充策略 \(C_1\)--\(Q_1\)--\(C_2\)，研究快充参数对寿命衰减的影响，并讨论寿命预测与策略优化问题。
+
+针对问题一，本文对循环数据进行逐电池、逐字段的 IQR 异常检测与前后邻域均值填补，共替换 559 个异常单元格；提取 9 种快充策略，并以第 200 次循环的 SOH 作为观测窗口内的寿命代理指标（数据尚未覆盖 \(\mathrm{SOH}=80\%\) 的真实寿命终止）。在 40 块满 200 圈电池中，SOH 均值为 0.9914，按 25\%/75\% 分位数划分得到长寿命 10 块、中等寿命 20 块、短寿命 10 块。策略层面，寿命最长为 \(3.6\mathrm{C}(80\%)-3.6\mathrm{C}\)，寿命最短为 \(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)（NEWSTRUCTURE）。同名义参数但带/不带 NEWSTRUCTURE 标签的策略寿命差异明显，提示批次或实验结构不可忽略。
+
+针对问题二，拟在问题一基础上检验策略间寿命差异的统计显著性，分析 \(C_1,Q_1,C_2\) 与寿命代理指标的关系，并讨论不同 SOC 区间高倍率充电的衰减差异及机制局限。\textcolor{gray}{（本节定量结果待补全）}
+
+针对问题三，拟利用截至第 150 次循环的早期数据，提取健康特征并建立 SOH 衰减预测模型，预报第 151--200 次循环 SOH，并外推至 \(\mathrm{SOH}=80\%\) 的循环寿命；同时比较不同早期窗口长度及策略信息的作用。\textcolor{gray}{（本节定量结果待补全）}
+
+针对问题四，拟建立充电时间模型与寿命衰减模型，在已有实验策略及其合理邻域内进行充电时间--寿命的多目标权衡，给出推荐策略并讨论外推风险。\textcolor{gray}{（本节定量结果待补全）}
+
+\vspace{0.8em}
+\noindent{\heiti 关键词：}锂离子电池；快充策略；SOH；循环寿命；IQR；寿命预测；多目标优化
+
+\clearpage
+
+% ============================================================
+% 第二页起：正文（不要目录）
+% ============================================================
+\section{问题重述}
+
+随着新能源汽车与储能系统对补能效率的要求提高，锂离子电池快充成为缩短充电时间的主要手段。然而较高充电电流会增强极化、加剧热效应并加速副反应，从而加快容量衰减、缩短循环寿命\cite{severson2019datadriven,liu2019fastcharging,ahmed2017enabling}。电池健康状态定义为
+\begin{equation}
+\mathrm{SOH}=\frac{Q_{\mathrm{current}}}{Q_{\mathrm{initial}}},
+\label{eq:soh}
+\end{equation}
+本题以 \(\mathrm{SOH}=80\%\) 作为寿命终止（EOL）判定阈值。
+
+本题充电过程采用两阶段快充：以倍率 \(C_1\) 从 \(0\%\) SOC 充至切换点 \(Q_1\)，再以倍率 \(C_2\) 从 \(Q_1\) 充至 \(80\%\) SOC，随后以 1C 恒流--恒压（CC-CV）补至满电，至电流降至 \(C/50\) 结束。各电池放电条件一致，主要差异在充电策略。数据来自 MIT--Stanford 公开循环老化实验\cite{severson2019datadriven,matrdataset}，包含 49 块额定容量 1.1\,Ah 的 A123 18650 磷酸铁锂电池。
+
+需要完成的研究任务为：
+\begin{enumerate}[label=\textbf{问题\arabic*.}]
+  \item 整理数据，提取策略、充电时间、SOH 变化与循环寿命信息，分析寿命分布并解释典型长/短寿命策略差异。
+  \item 分析策略参数 \(C_1,Q_1,C_2\) 对循环寿命的影响及其统计显著性与可能机制。
+  \item 基于截至第 150 次循环的数据预测第 151--200 次循环 SOH，并外推 EOL 循环寿命。
+  \item 兼顾充电时间与寿命衰减，在实验策略及其合理邻域内优化快充策略。
+\end{enumerate}
+
+\section{问题分析与总体思路}
+
+问题一属于探索性数据分析：在尚未达到真实 EOL 的观测窗口内，需要定义可比较的寿命代理指标，并完成清洗、可视化与典型策略提取。问题二强调参数非正交，不宜按完全析因实验解释因果关系。问题三是早期循环预测与外推。问题四是充电时间与衰减率的多目标决策。四问递进关系为：数据整理 \(\rightarrow\) 影响分析 \(\rightarrow\) 寿命预测 \(\rightarrow\) 策略优化。
+
+\begin{todobox}
+问题二至问题四的模型推导、数值表与最终推荐策略尚未写入仓库，下文相应小节仅给出可直接填充的结构、符号与拟采用方法，待后续结果补入后删除本框并替换为正式论述。
+\end{todobox}
+
+\section{符号说明与基本假设}
+
+\subsection{主要符号}
+\begin{table}[htbp]
+\centering
+\caption{主要符号说明}
+\label{tab:notation}
+\begin{tabular}{cl}
+\toprule
+符号 & 含义 \\
+\midrule
+\(\mathrm{SOH}\) & 电池健康状态，见式\eqref{eq:soh} \\
+\(C_1,C_2\) & 第一、二阶段充电倍率（C-rate） \\
+\(Q_1\) & 阶段切换 SOC（\%） \\
+\(N\) & 循环次数 \\
+\(N_{\mathrm{EOL}}\) & \(\mathrm{SOH}=80\%\) 对应的循环寿命 \\
+\(\mathrm{SOH}_{200}\) & 第 200 次循环的 SOH（寿命代理） \\
+\(T_{\mathrm{charge}}\) & 平均充电时间（min） \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{基本假设}
+\begin{enumerate}
+  \item 各电池放电协议一致，寿命差异主要由充电策略及电池个体差异引起。
+  \item 在 200 次循环窗口内未达到 \(\mathrm{SOH}=80\%\)，故问题一以 \(\mathrm{SOH}_{200}\) 作为寿命代理指标，并在文中明确其与真实循环寿命的区别。
+  \item 带 \(\mathrm{NEWSTRUCTURE}\) 后缀的策略与同名无后缀策略视为不同实验结构/批次标签，分析时不合并。
+  \item IQR 筛出的离群点视为统计异常而非已证实的传感器故障，清洗仅用于本题指定分析。
+  \item 问题四若扩展连续参数，取值限制在已有实验数据的凸包或合理邻域内，避免无约束外推。
+\end{enumerate}
+
+\input{sections/01_problem1}
+\input{sections/02_problem2}
+\input{sections/03_problem3}
+\input{sections/04_problem4}
+
+\section{结论与展望}
+
+\begin{resultbox}
+\textbf{问题一已形成的结论：}
+\begin{itemize}
+  \item 循环数据经 IQR 清洗后可用于策略对比；原始数据文件未改写。
+  \item 在满 200 圈的 40 块电池中，第 200 次循环 SOH 均值为 0.9914，尚未达到 80\% EOL。
+  \item 按策略内 SOH 中位数，最长寿命策略为 \(3.6\mathrm{C}(80\%)-3.6\mathrm{C}\)，最短为 \(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)（NEWSTRUCTURE）。
+  \item 高 SOC 区间维持高 \(C_2\) 的策略更容易出现更快衰减；同参数不同标签策略不可直接等同。
+\end{itemize}
+\end{resultbox}
+
+\begin{todobox}
+补充问题二显著性与参数效应结论、问题三预测精度与 EOL 估计、问题四推荐策略及与长短寿命策略的对比；讨论模型局限与可推广范围。
+\end{todobox}
+
+\section*{参考文献}
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+% ============================================================
+% 附录（页数不限）
+% ============================================================
+\appendix
+\input{sections/app_materials}
+\input{sections/app_code}
+\input{sections/app_ai}
+
+\end{document}
