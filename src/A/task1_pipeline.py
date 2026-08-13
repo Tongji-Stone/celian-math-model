@@ -16,11 +16,44 @@ from matplotlib.patches import Patch
 import numpy as np
 import pandas as pd
 
-from SOH_plot import configure_chinese_font, plot_battery_soh
+from SOH_plot import configure_chinese_font, plot_all_battery_soh, plot_battery_soh
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 MEASUREMENT_COLUMNS = ["capacity", "SOH", "SOH_smooth", "chargetime", "IR", "Tavg"]
+
+
+def normalize_policy_name(policy: str) -> str:
+    """按第三次迭代规则合并策略并删除 NEWSTRUCTURE 后缀。"""
+    normalized = str(policy).strip()
+    direct_mapping = {
+        "80PER_3_6C": "3_6C-80PER_3_6C",
+        "3_6C-80PER_3_6C": "3_6C-80PER_3_6C",
+        "4_8C_80PER_4_8C_NEWSTRUCTURE": "4_8C_80PER_4_8C",
+        "4_8C_80PER_4_8C": "4_8C_80PER_4_8C",
+    }
+    if normalized in direct_mapping:
+        return direct_mapping[normalized]
+    upper = normalized.upper()
+    if upper.endswith("_NEWSTRUCTURE"):
+        normalized = normalized[: -len("_NEWSTRUCTURE")]
+    return normalized
+
+
+def normalize_policies(
+    summary: pd.DataFrame,
+    cycles: pd.DataFrame,
+) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, str]]:
+    """在处理副本中统一两个数据表的策略名称，原始数据保持不变。"""
+    normalized_summary = summary.copy()
+    normalized_cycles = cycles.copy()
+    original_names = sorted(str(value) for value in summary["policy"].unique())
+    mapping = {name: normalize_policy_name(name) for name in original_names}
+    normalized_summary["policy"] = normalized_summary["policy"].map(mapping)
+    normalized_cycles["policy"] = normalized_cycles["policy"].map(mapping)
+    if normalized_summary["policy"].isna().any() or normalized_cycles["policy"].isna().any():
+        raise ValueError("策略统一命名过程中产生空值")
+    return normalized_summary, normalized_cycles, mapping
 
 
 def validate_inputs(summary: pd.DataFrame, cycles: pd.DataFrame) -> None:
@@ -154,8 +187,10 @@ def build_policy_summary(
     policy_order: list[str],
     critical_soh_low: float,
     critical_soh_high: float,
+    summary: pd.DataFrame,
+    cleaned_cycles: pd.DataFrame,
 ) -> pd.DataFrame:
-    """汇总各充电策略，并用策略 SOH 中位数划分寿命类型。"""
+    """汇总统一策略的最终 SOH、充电时间和其他实验参数。"""
     classified = data.assign(
         lifetime_group=np.select(
             [data["SOH"] >= critical_soh_high, data["SOH"] <= critical_soh_low],
@@ -170,9 +205,45 @@ def build_policy_summary(
         SOH_max=("SOH", "max"),
         SOH_mean=("SOH", "mean"),
         SOH_median=("SOH", "median"),
+        charge_time_mean=("charge_time_mean", "mean"),
         charge_time_min=("charge_time_mean", "min"),
         charge_time_max=("charge_time_mean", "max"),
     ).reindex(policy_order)
+    result["battery_ids"] = grouped["battery_id"].apply(
+        lambda values: ",".join(str(int(value)) for value in sorted(values))
+    ).reindex(policy_order)
+
+    eligible_ids = set(int(value) for value in data["battery_id"])
+    battery_cycle_metrics = (
+        cleaned_cycles.loc[cleaned_cycles["battery_id"].isin(eligible_ids)]
+        .groupby(["battery_id", "policy"], as_index=False)
+        .agg(IR_mean=("IR", "mean"), Tavg_mean=("Tavg", "mean"))
+    )
+    cycle_metrics = battery_cycle_metrics.groupby("policy").agg(
+        IR_mean=("IR_mean", "mean"),
+        Tavg_mean=("Tavg_mean", "mean"),
+    ).reindex(policy_order)
+    result = result.join(cycle_metrics)
+
+    eligible_summary = summary.loc[summary["battery_id"].isin(eligible_ids)]
+    capacity_metrics = eligible_summary.groupby("policy").agg(
+        initial_capacity_mean=("initial_capacity", "mean"),
+        initial_capacity_min=("initial_capacity", "min"),
+        initial_capacity_max=("initial_capacity", "max"),
+    ).reindex(policy_order)
+    result = result.join(capacity_metrics)
+
+    def parameter_values(series: pd.Series) -> str:
+        values = [f"{float(value):g}" for value in sorted(series.dropna().unique())]
+        if series.isna().any():
+            values.append("缺失")
+        return "/".join(values)
+
+    for column in ["C1", "Q1", "C2"]:
+        if column in eligible_summary.columns:
+            result[f"{column}_values"] = (
+                eligible_summary.groupby("policy")[column].apply(parameter_values).reindex(policy_order)
+            )
     group_counts = (
         classified.groupby(["policy", "lifetime_group"])
         .size()
@@ -227,14 +298,14 @@ def save_soh_histogram(
         color="#D62728",
         linestyle="--",
         linewidth=2,
-        label=f"长寿命分界线（75%分位）={critical_soh_high:.4f}",
+        label=f"上四分位线（Q3）={critical_soh_high:.4f}",
     )
     ax.axvline(
         critical_soh_low,
         color="#1F77B4",
         linestyle="--",
         linewidth=2,
-        label=f"短寿命分界线（25%分位）={critical_soh_low:.4f}",
+        label=f"下四分位线（Q1）={critical_soh_low:.4f}",
     )
     margin = max((values.max() - values.min()) * 0.08, 0.003)
     ax.set_xlim(values.min() - margin, values.max() + margin)
@@ -336,11 +407,11 @@ def save_policy_boxplot(
         Patch(facecolor="#9ECAE1", edgecolor="#4C78A8", label="策略内 SOH 分布"),
         plt.Line2D(
             [0], [0], color="#D62728", linestyle="--", linewidth=2,
-            label=f"长寿命分界线={critical_soh_high:.4f}",
+            label=f"上四分位线（Q3）={critical_soh_high:.4f}",
         ),
         plt.Line2D(
             [0], [0], color="#1F77B4", linestyle="--", linewidth=2,
-            label=f"短寿命分界线={critical_soh_low:.4f}",
+            label=f"下四分位线（Q1）={critical_soh_low:.4f}",
         ),
     ]
     ax.legend(handles=legend_handles, loc="upper right")
@@ -412,16 +483,174 @@ def write_typical_policy_doc(
     doc_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def write_csv_if_changed(data: pd.DataFrame, path: Path) -> None:
+def write_policy_report(
+    report_path: Path,
+    policy_summary: pd.DataFrame,
+    critical_soh_low: float,
+    critical_soh_high: float,
+) -> None:
+    """输出第三次迭代要求的统一策略统计报告。"""
+    lines = [
+        "# 统一充电策略统计报告",
+        "",
+        "## 统计口径",
+        "",
+        "- 策略名称已按第三次迭代规则合并，并移除 `_NEWSTRUCTURE` 后缀。",
+        "- 最终 SOH 为完整记录至第 200 次循环的电池在 `cycle=200` 时的清洗后 SOH。",
+        "- 充电时间、内阻和温度先按电池对 1–200 次循环取均值，再按策略汇总。",
+        f"- 下四分位线 Q1={critical_soh_low:.6f}；上四分位线 Q3={critical_soh_high:.6f}。",
+        "",
+        "## 最终 SOH 与充电时间",
+        "",
+        "| 统一策略 | 电池记号 | 电池数 | 最终SOH平均 | 最小 | 最大 | 充电时间平均/min | 最小/min | 最大/min |",
+        "|---|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for _, row in policy_summary.iterrows():
+        lines.append(
+            f"| `{row['policy']}` | {row['battery_ids']} | {int(row['battery_count'])} | "
+            f"{row['SOH_mean']:.6f} | {row['SOH_min']:.6f} | {row['SOH_max']:.6f} | "
+            f"{row['charge_time_mean']:.6f} | {row['charge_time_min']:.6f} | {row['charge_time_max']:.6f} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## 其他参数",
+            "",
+            "| 统一策略 | C1取值 | Q1取值 | C2取值 | 初始容量平均/Ah | 最小/Ah | 最大/Ah | 平均内阻 | 平均温度/°C |",
+            "|---|---|---|---|---:|---:|---:|---:|---:|",
+        ]
+    )
+    for _, row in policy_summary.iterrows():
+        lines.append(
+            f"| `{row['policy']}` | {row.get('C1_values', '')} | {row.get('Q1_values', '')} | "
+            f"{row.get('C2_values', '')} | {row['initial_capacity_mean']:.6f} | "
+            f"{row['initial_capacity_min']:.6f} | {row['initial_capacity_max']:.6f} | "
+            f"{row['IR_mean']:.6f} | {row['Tavg_mean']:.3f} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## 解释限制",
+            "",
+            "- 9块仅有150次循环数据的测试电池未纳入最终SOH策略统计。",
+            "- 统一策略是按题目指定规则进行的分析分组；报告中的相关性不代表充电策略对寿命的因果效应。",
+            "- 本数据片段尚未覆盖 SOH<80% 的真实寿命终止点，最终SOH用于比较第200次循环时的健康保持程度。",
+        ]
+    )
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def build_acceptance_results(
+    original_summary: pd.DataFrame,
+    normalized_summary: pd.DataFrame,
+    normalized_cycles: pd.DataFrame,
+    policy_table: pd.DataFrame,
+    cycle_200: pd.DataFrame,
+    policy_summary: pd.DataFrame,
+    soh_dir: Path,
+    table_write_paths: dict[str, Path],
+) -> list[tuple[str, bool, str]]:
+    """执行第三次迭代的显式验收检查。"""
+    original_count = int(original_summary["policy"].nunique())
+    normalized_count = int(normalized_summary["policy"].nunique())
+    expected_names = {normalize_policy_name(value) for value in original_summary["policy"].unique()}
+    actual_names = set(normalized_summary["policy"].unique())
+    forbidden = {"80PER_3_6C", "4_8C_80PER_4_8C_NEWSTRUCTURE"}
+    plot_files = list(soh_dir.glob("SOH_*.png"))
+    individual_files = [path for path in plot_files if path.stem != "SOH_ALL"]
+    results = [
+        (
+            "策略数量恰好减少2种",
+            original_count - normalized_count == 2,
+            f"原始{original_count}种，统一后{normalized_count}种，减少{original_count - normalized_count}种",
+        ),
+        (
+            "统一策略集合正确",
+            actual_names == expected_names,
+            f"实际策略：{sorted(actual_names)}",
+        ),
+        (
+            "旧策略名称已消除",
+            not (actual_names & forbidden),
+            f"禁止名称残留：{sorted(actual_names & forbidden)}",
+        ),
+        (
+            "NEWSTRUCTURE后缀已全部移除",
+            not any("NEWSTRUCTURE" in name.upper() for name in actual_names),
+            "统一后的策略名不含NEWSTRUCTURE",
+        ),
+        (
+            "全部处理表命名一致",
+            set(normalized_cycles["policy"].unique()) == actual_names
+            and set(policy_table["policy"].unique()) == actual_names
+            and set(cycle_200["policy"].unique()).issubset(actual_names),
+            "清洗循环表、charge_policy和battery_SOH_charge均采用统一名称",
+        ),
+        (
+            "charge_policy覆盖49块电池",
+            len(policy_table) == 49
+            and policy_table["battery_id"].nunique() == 49,
+            f"记录数={len(policy_table)}，唯一电池数={policy_table['battery_id'].nunique()}",
+        ),
+        (
+            "核心CSV均写入标准文件名",
+            all(path.name == expected for expected, path in table_write_paths.items()),
+            ", ".join(f"{expected}->{path.name}" for expected, path in table_write_paths.items()),
+        ),
+        (
+            "策略报告覆盖全部统一策略",
+            set(policy_summary["policy"]) == actual_names and len(policy_summary) == normalized_count,
+            f"报告策略数={len(policy_summary)}",
+        ),
+        (
+            "49张单体曲线与SOH_ALL齐全",
+            len(individual_files) == 49 and (soh_dir / "SOH_ALL.png").is_file(),
+            f"单体曲线={len(individual_files)}，SOH_ALL={int((soh_dir / 'SOH_ALL.png').is_file())}",
+        ),
+    ]
+    return results
+
+
+def write_acceptance_report(
+    path: Path,
+    results: list[tuple[str, bool, str]],
+    mapping: dict[str, str],
+) -> None:
+    lines = [
+        "# 第三次迭代验收确认",
+        "",
+        "| 验收项 | 结果 | 证据 |",
+        "|---|---|---|",
+    ]
+    for name, passed, evidence in results:
+        lines.append(f"| {name} | {'通过' if passed else '失败'} | {evidence} |")
+    lines.extend(["", "## 策略名称映射", "", "| 原始名称 | 统一名称 |", "|---|---|"])
+    for source, target in mapping.items():
+        lines.append(f"| `{source}` | `{target}` |")
+    lines.extend(["", f"**总体结论：{'全部通过' if all(item[1] for item in results) else '存在失败项'}。**"])
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_csv_if_changed(data: pd.DataFrame, path: Path) -> Path:
     """内容不变时避免重写，兼容 CSV 正被表格软件打开的情形。"""
     if path.exists():
         try:
             existing = pd.read_csv(path)
             pd.testing.assert_frame_equal(existing, data, check_dtype=False)
-            return
+            return path
         except (AssertionError, OSError, ValueError):
             pass
-    data.to_csv(path, index=False, encoding="utf-8-sig")
+    pending_path = path.with_name(f"{path.stem}_v3_pending{path.suffix}")
+    try:
+        data.to_csv(path, index=False, encoding="utf-8-sig")
+        if pending_path.exists():
+            pending_path.unlink()
+        return path
+    except PermissionError:
+        data.to_csv(pending_path, index=False, encoding="utf-8-sig")
+        return pending_path
 
 
 def write_log(
@@ -437,6 +666,8 @@ def write_log(
     font_name: str,
     output_paths: list[Path],
     prompt_text: str,
+    policy_mapping: dict[str, str],
+    acceptance_results: list[tuple[str, bool, str]],
 ) -> None:
     counts = Counter(str(item["column"]) for item in audit)
     max_cycle_counts = cycles.groupby("battery_id")["cycle"].max().value_counts().sort_index()
@@ -447,14 +678,15 @@ def write_log(
     middle_count = len(cycle_200) - long_count - short_count
     longest = policy_summary.loc[policy_summary["longest_strategy"] == "是", "policy"].iloc[0]
     shortest = policy_summary.loc[policy_summary["shortest_strategy"] == "是", "policy"].iloc[0]
+    normalized_policy_count = len(set(policy_mapping.values()))
 
     lines = [
-        "# 问题一第二次迭代运行日志（log_2）",
+        "# 问题一第三次迭代运行日志（log_3）",
         "",
         f"- 运行时间：{datetime.now().astimezone().isoformat(timespec='seconds')}",
         f"- IQR 系数：{iqr_factor:.6g}",
-        f"- critical_SOH_high（75%分位数）：{critical_soh_high:.6f}",
-        f"- critical_SOH_low（25%分位数）：{critical_soh_low:.6f}",
+        f"- 上四分位线 Q3（75%分位数）：{critical_soh_high:.6f}",
+        f"- 下四分位线 Q1（25%分位数）：{critical_soh_low:.6f}",
         f"- 绘图字体：{font_name}",
         "",
         "## 输入质量检查",
@@ -465,6 +697,13 @@ def write_log(
         f"- 汇总表缺失单元格：{missing_summary}（其中 C1 的结构性缺失保留，不参与循环数据清洗）。",
         f"- 循环表缺失单元格：{missing_cycles}。",
         f"- 最大循环数分布：{dict((int(k), int(v)) for k, v in max_cycle_counts.items())}。",
+        "",
+        "## 策略统一命名",
+        "",
+        f"- 原始策略数：{len(policy_mapping)}；统一后策略数：{normalized_policy_count}；恰好减少 {len(policy_mapping) - normalized_policy_count} 种。",
+        "- `80PER_3_6C` 统一为 `3_6C-80PER_3_6C`。",
+        "- `4_8C_80PER_4_8C_NEWSTRUCTURE` 统一为 `4_8C_80PER_4_8C`。",
+        "- 其余策略仅移除 `_NEWSTRUCTURE` 后缀。",
         "",
         "## IQR 清洗",
         "",
@@ -483,13 +722,17 @@ def write_log(
         f"- 寿命最长策略（按策略 SOH 中位数）：{longest}。",
         f"- 寿命最短策略（按策略 SOH 中位数）：{shortest}。",
         "",
-        "## 第一轮归档",
+        "## SOH 曲线",
         "",
-        "- 第一轮输出已整理到 `output/A/1/`，共 7 个交付文件。",
+        "- 使用清洗后的 `SOH_smooth` 绘制49张单体曲线和1张全部电池曲线。",
+        "- 单体曲线命名为 `SOH_N.png`；总图命名为 `SOH_ALL.png`，颜色按电池编号由蓝到红渐变。",
         "",
-        "## 输出文件",
+        "## 验收确认",
         "",
     ]
+    for name, passed, evidence in acceptance_results:
+        lines.append(f"- [{'x' if passed else ' '}] {name}：{evidence}。")
+    lines.extend(["", "## 输出文件", ""])
     lines.extend(f"- `{path.relative_to(PROJECT_ROOT).as_posix()}`" for path in output_paths)
     lines.extend(
         [
@@ -498,7 +741,8 @@ def write_log(
             "",
             "- 箱型图纵轴采用“第 200 次循环 SOH”作为使用寿命代理指标；本题数据尚未覆盖 SOH<80% 的真实寿命终止循环。",
             "- IQR 是统计异常筛查，不等同于确认传感器故障；清洗结果用于完成本题指定分析。",
-            "- 策略寿命标签按策略内 SOH 中位数与总体 25%/75% 分位阈值比较得到。",
+            "- 图中的两条参考线统一命名为上四分位线（Q3）和下四分位线（Q1）。",
+            "- 策略报告使用统一后的7种策略，最终SOH统计只纳入完整200循环的40块电池。",
             "",
             "## 原始提示词",
             "",
@@ -527,8 +771,10 @@ def main() -> None:
     data_dir = PROJECT_ROOT / "data"
     output_dir = PROJECT_ROOT / "output" / "A"
     output_dir.mkdir(parents=True, exist_ok=True)
-    summary = pd.read_csv(data_dir / "battery_summary.csv")
-    cycles = pd.read_csv(data_dir / "cycle_train.csv")
+    original_summary = pd.read_csv(data_dir / "battery_summary.csv")
+    original_cycles = pd.read_csv(data_dir / "cycle_train.csv")
+    validate_inputs(original_summary, original_cycles)
+    summary, cycles, policy_mapping = normalize_policies(original_summary, original_cycles)
     validate_inputs(summary, cycles)
 
     cleaned, audit = iqr_clean_by_battery(cycles, MEASUREMENT_COLUMNS, args.iqr_factor)
@@ -542,6 +788,8 @@ def main() -> None:
         policy_order,
         critical_soh_low,
         critical_soh_high,
+        summary,
+        cleaned,
     )
 
     cleaned_path = output_dir / "cycle_train_cleaned.csv"
@@ -552,12 +800,14 @@ def main() -> None:
     scatter_path = output_dir / "SOH_chargetime.png"
     boxplot_path = output_dir / "charge_policy.png"
     policy_summary_path = output_dir / "policy.csv"
-    typical_doc_path = output_dir / "doc" / "1.md"
+    report_path = PROJECT_ROOT / "output" / "doc" / "1.md"
+    acceptance_path = output_dir / "acceptance_3.md"
+    soh_dir = PROJECT_ROOT / "A" / "问题一" / "SOH"
 
-    cleaned.to_csv(cleaned_path, index=False, encoding="utf-8-sig")
-    write_csv_if_changed(policy_table, policy_path)
-    cycle_200.to_csv(summary_path, index=False, encoding="utf-8-sig")
-    policy_summary.to_csv(policy_summary_path, index=False, encoding="utf-8-sig")
+    cleaned_write_path = write_csv_if_changed(cleaned, cleaned_path)
+    policy_write_path = write_csv_if_changed(policy_table, policy_path)
+    summary_write_path = write_csv_if_changed(cycle_200, summary_path)
+    policy_summary_write_path = write_csv_if_changed(policy_summary, policy_summary_path)
 
     font_name = configure_chinese_font()
     plot_battery_soh(cleaned, 1, soh_example_path)
@@ -570,26 +820,52 @@ def main() -> None:
         critical_soh_high,
         policy_order,
     )
-    write_typical_policy_doc(
-        typical_doc_path,
+    write_policy_report(
+        report_path,
         policy_summary,
         critical_soh_low,
         critical_soh_high,
     )
 
+    soh_dir.mkdir(parents=True, exist_ok=True)
+    for stale_plot in soh_dir.glob("SOH_*.png"):
+        stale_plot.unlink()
+    for battery_id in sorted(int(value) for value in cleaned["battery_id"].unique()):
+        plot_battery_soh(cleaned, battery_id, soh_dir / f"SOH_{battery_id}.png")
+    plot_all_battery_soh(cleaned, soh_dir / "SOH_ALL.png")
+
+    acceptance_results = build_acceptance_results(
+        original_summary,
+        summary,
+        cleaned,
+        policy_table,
+        cycle_200,
+        policy_summary,
+        soh_dir,
+        {
+            cleaned_path.name: cleaned_write_path,
+            policy_path.name: policy_write_path,
+            summary_path.name: summary_write_path,
+            policy_summary_path.name: policy_summary_write_path,
+        },
+    )
+    write_acceptance_report(acceptance_path, acceptance_results, policy_mapping)
+
     output_paths = [
-        cleaned_path,
-        policy_path,
-        summary_path,
+        cleaned_write_path,
+        policy_write_path,
+        summary_write_path,
         soh_example_path,
         histogram_path,
         scatter_path,
         boxplot_path,
-        policy_summary_path,
-        typical_doc_path,
+        policy_summary_write_path,
+        report_path,
+        acceptance_path,
+        soh_dir,
     ]
     write_log(
-        PROJECT_ROOT / "A" / "问题一" / "log_2.md",
+        PROJECT_ROOT / "A" / "问题一" / "log_3.md",
         summary,
         cycles,
         audit,
@@ -601,12 +877,18 @@ def main() -> None:
         font_name,
         output_paths,
         (PROJECT_ROOT / "A" / "问题一" / "AGENTS.md").read_text(encoding="utf-8"),
+        policy_mapping,
+        acceptance_results,
     )
 
     print(f"IQR 替换单元格数: {len(audit)}")
     print(f"200 次循环样本数: {len(cycle_200)}")
     print(f"critical_SOH_low: {critical_soh_low:.6f}")
     print(f"critical_SOH_high: {critical_soh_high:.6f}")
+    print(f"策略数量: {len(policy_mapping)} -> {len(set(policy_mapping.values()))}")
+    print(f"SOH曲线数量: {len(list(soh_dir.glob('SOH_*.png')))}")
+    failed = [name for name, passed, _ in acceptance_results if not passed]
+    print(f"验收失败项: {failed}")
     for path in output_paths:
         print(f"已生成: {path}")
 

@@ -11,6 +11,7 @@ matplotlib.use("Agg")
 
 import matplotlib.font_manager as font_manager
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 
@@ -38,8 +39,8 @@ def plot_battery_soh(
     battery_id: int,
     output_path: Path,
 ) -> None:
-    """将指定电池的原始 SOH 与平滑 SOH 绘制到同一张图。"""
-    required = {"battery_id", "cycle", "SOH", "SOH_smooth"}
+    """绘制指定电池的平滑 SOH 曲线。"""
+    required = {"battery_id", "cycle", "SOH_smooth"}
     missing = required.difference(cycles.columns)
     if missing:
         raise ValueError(f"循环数据缺少字段: {sorted(missing)}")
@@ -52,24 +53,66 @@ def plot_battery_soh(
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.plot(
         battery["cycle"],
-        battery["SOH"],
-        color="#4C78A8",
-        linewidth=1.2,
-        alpha=0.65,
-        label="SOH（清洗后）",
-    )
-    ax.plot(
-        battery["cycle"],
         battery["SOH_smooth"],
-        color="#F28E2B",
+        color="#4C78A8",
         linewidth=2.2,
-        label="平滑 SOH",
+        label="平滑 SOH（SOH_smooth）",
     )
     ax.set_title(f"{battery_id} 号电池 SOH 曲线")
     ax.set_xlabel("循环次数")
     ax.set_ylabel("电池健康状态（SOH）")
     ax.grid(True, color="#D9D9D9", linewidth=0.7, alpha=0.7)
     ax.legend(loc="upper right")
+    fig.tight_layout()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+
+def plot_all_battery_soh(cycles: pd.DataFrame, output_path: Path) -> None:
+    """用蓝到红渐变绘制全部电池的平滑 SOH 曲线。"""
+    required = {"battery_id", "cycle", "SOH_smooth"}
+    missing = required.difference(cycles.columns)
+    if missing:
+        raise ValueError(f"循环数据缺少字段: {sorted(missing)}")
+
+    battery_ids = sorted(int(value) for value in cycles["battery_id"].unique())
+    if not battery_ids:
+        raise ValueError("循环数据中没有电池记录")
+
+    configure_chinese_font()
+    fig, ax = plt.subplots(figsize=(14, 8))
+    colormap = matplotlib.colormaps.get_cmap("coolwarm")
+    colors = colormap(np.linspace(0, 1, len(battery_ids)))
+    for color, battery_id in zip(colors, battery_ids):
+        battery = cycles.loc[cycles["battery_id"] == battery_id].sort_values("cycle")
+        ax.plot(
+            battery["cycle"],
+            battery["SOH_smooth"],
+            color=color,
+            linewidth=1.05,
+            alpha=0.78,
+        )
+
+    ax.set_title("全部电池平滑 SOH 曲线")
+    ax.set_xlabel("循环次数")
+    ax.set_ylabel("电池健康状态（SOH_smooth）")
+    ax.grid(True, color="#D9D9D9", linewidth=0.6, alpha=0.6)
+    ax.legend(
+        handles=[
+            plt.Line2D([0], [0], color=colors[0], linewidth=2, label=f"低编号：电池 {battery_ids[0]}"),
+            plt.Line2D([0], [0], color=colors[-1], linewidth=2, label=f"高编号：电池 {battery_ids[-1]}"),
+        ],
+        loc="upper right",
+        title="颜色由蓝到红",
+    )
+    scalar_mappable = plt.cm.ScalarMappable(
+        cmap=colormap,
+        norm=plt.Normalize(vmin=battery_ids[0], vmax=battery_ids[-1]),
+    )
+    scalar_mappable.set_array([])
+    colorbar = fig.colorbar(scalar_mappable, ax=ax, pad=0.015)
+    colorbar.set_label("battery_id")
     fig.tight_layout()
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output_path, dpi=300, bbox_inches="tight")

@@ -1,3 +1,87 @@
+# 问题一第三次迭代运行日志（log_3）
+
+- 运行时间：2026-08-14T02:37:22+08:00
+- IQR 系数：1.5
+- 上四分位线 Q3（75%分位数）：0.996103
+- 下四分位线 Q1（25%分位数）：0.993433
+- 绘图字体：Microsoft YaHei
+
+## 输入质量检查
+
+- battery_summary.csv：49 行，13 列，49 块电池。
+- cycle_train.csv：9350 行，9 列。
+- battery_id + cycle 重复记录：0。
+- 汇总表缺失单元格：3（其中 C1 的结构性缺失保留，不参与循环数据清洗）。
+- 循环表缺失单元格：0。
+- 最大循环数分布：{150: 9, 200: 40}。
+
+## 策略统一命名
+
+- 原始策略数：9；统一后策略数：7；恰好减少 2 种。
+- `80PER_3_6C` 统一为 `3_6C-80PER_3_6C`。
+- `4_8C_80PER_4_8C_NEWSTRUCTURE` 统一为 `4_8C_80PER_4_8C`。
+- 其余策略仅移除 `_NEWSTRUCTURE` 后缀。
+
+## IQR 清洗
+
+- 方法：按 battery_id 分组，对 capacity、SOH、SOH_smooth、chargetime、IR、Tavg 分别计算 Q1、Q3 和 IQR。
+- 判定：小于 Q1 - 1.5×IQR 或大于 Q3 + 1.5×IQR 的值标记为异常。
+- 填补：使用同一电池、同一字段中距离最近的前后正常值均值；边界点仅有一侧正常值时使用该侧值。
+- 共替换 559 个单元格；分字段数量：{'capacity': 36, 'SOH': 36, 'SOH_smooth': 17, 'IR': 142, 'Tavg': 142, 'chargetime': 186}。
+- 原始 data 文件未改写；清洗结果另存为 output/A/cycle_train_cleaned.csv。
+
+## 200 次循环样本
+
+- 纳入：最大 cycle 恰为 200 的 40 块电池。
+- 排除：仅记录至 150 次循环的 9 块测试电池。
+- SOH 范围：0.949733–1.000235，均值 0.991423。
+- 按两个分位数分类：长寿命 10 块，中等寿命 20 块，短寿命 10 块。
+- 寿命最长策略（按策略 SOH 中位数）：4_8C_80PER_4_8C。
+- 寿命最短策略（按策略 SOH 中位数）：3_7C_31PER_5_9C。
+
+## SOH 曲线
+
+- 使用清洗后的 `SOH_smooth` 绘制49张单体曲线和1张全部电池曲线。
+- 单体曲线命名为 `SOH_N.png`；总图命名为 `SOH_ALL.png`，颜色按电池编号由蓝到红渐变。
+
+## 验收确认
+
+- [x] 策略数量恰好减少2种：原始9种，统一后7种，减少2种。
+- [x] 统一策略集合正确：实际策略：['3_6C-80PER_3_6C', '3_7C_31PER_5_9C', '4_8C_80PER_4_8C', '5C_67PER_4C', '5_3C_54PER_4C', '5_6C_19PER_4_6C', '5_6C_36PER_4_3C']。
+- [x] 旧策略名称已消除：禁止名称残留：[]。
+- [x] NEWSTRUCTURE后缀已全部移除：统一后的策略名不含NEWSTRUCTURE。
+- [x] 全部处理表命名一致：清洗循环表、charge_policy和battery_SOH_charge均采用统一名称。
+- [x] charge_policy覆盖49块电池：记录数=49，唯一电池数=49。
+- [x] 核心CSV均写入标准文件名：cycle_train_cleaned.csv->cycle_train_cleaned.csv, charge_policy.csv->charge_policy.csv, battery_SOH_charge.csv->battery_SOH_charge.csv, policy.csv->policy.csv。
+- [x] 策略报告覆盖全部统一策略：报告策略数=7。
+- [x] 49张单体曲线与SOH_ALL齐全：单体曲线=49，SOH_ALL=1。
+
+## 输出文件
+
+- `output/A/cycle_train_cleaned.csv`
+- `output/A/charge_policy.csv`
+- `output/A/battery_SOH_charge.csv`
+- `output/A/SOH_1_example.png`
+- `output/A/SOH_summary.png`
+- `output/A/SOH_chargetime.png`
+- `output/A/charge_policy.png`
+- `output/A/policy.csv`
+- `output/doc/1.md`
+- `output/A/acceptance_3.md`
+- `A/问题一/SOH`
+
+## 说明
+
+- 箱型图纵轴采用“第 200 次循环 SOH”作为使用寿命代理指标；本题数据尚未覆盖 SOH<80% 的真实寿命终止循环。
+- IQR 是统计异常筛查，不等同于确认传感器故障；清洗结果用于完成本题指定分析。
+- 图中的两条参考线统一命名为上四分位线（Q3）和下四分位线（Q1）。
+- 策略报告使用统一后的7种策略，最终SOH统计只纳入完整200循环的40块电池。
+
+## 原始提示词
+
+以下完整保留本次执行时 `A/问题一/AGENTS.md` 的内容：
+
+```text
 ### 数据集介绍
 
 在data文件夹中有 MIT–Stanford 公开锂离子电池循环老化数据集,其包含49个A123 18650型磷酸铁锂电池的循环老化实验数据，额定容量为1.1 Ah。数据覆盖电池从初始健康状态到容量衰减至约80% SOH的老化过程，可用于研究不同快充策略对电池寿命衰减的影响其中：
@@ -77,4 +161,4 @@
 
 2. 代码放到.\src\A中,输出文件放到.\output\A中
 3. 此前已有任务日志log_1-2 在.\A\问题一\ 中输出这次的日志 log_3，日志中要保留原始提示词
-
+```
