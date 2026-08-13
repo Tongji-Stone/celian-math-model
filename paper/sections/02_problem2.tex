@@ -1,0 +1,42 @@
+\section{问题二：充电策略及其参数对寿命衰减的影响}
+
+\begin{todobox}
+本节为建模框架。仓库中尚无问题二的专用脚本与统计表。补全后应删除本框，填入检验统计量、回归系数与诊断图。
+\end{todobox}
+
+\subsection{问题分析}
+
+问题一已表明策略间 \(\mathrm{SOH}_{200}\) 存在可见差异，但 \(C_1,Q_1,C_2\) 并非完全独立变化，策略数仅 9、部分组 \(n=2\)。因此本节重点是：组间差异是否具有统计显著性；三参数与寿命的相关/回归关系；不同 SOC 区间高倍率是否对应不同衰减特征；以及机制解释的局限性\cite{ruiz2023degradation,wang2024agingmodels,geslin2023joule}。
+
+\subsection{数据与可比性规则（拟采用）}
+
+\begin{enumerate}
+  \item 主分析：满 200 圈样本；因变量优先用 \(\mathrm{SOH}_{200}\) 或 \(\mathrm{FadeRate}\)。
+  \item 公平对比：NEWSTRUCTURE 内部互比作为主结论；带/不带该标签的同参数策略不作同条件重复实验。
+  \item 若纳入测试电池，统一截断至第 150 圈再比较，避免窗口不一致。
+\end{enumerate}
+
+\subsection{模型一：策略间差异的显著性检验}
+
+将策略视为分组因子。若各组近似正态且方差齐，采用单因素 ANOVA；否则采用 Kruskal--Wallis 检验，事后比较用 Tukey HSD 或 Dunn 检验，并报告效应量 \(\eta^2\)\cite{kutner2005applied}。
+
+\textbf{待填结果：} \(H\) 或 \(F\) 统计量、\(p\) 值、两两比较中显著的策略对。
+
+\subsection{模型二：参数与寿命的回归 / 相关分析}
+
+考察
+\begin{equation}
+\mathrm{LifeProxy}_i=\beta_0+\beta_1 C_{1,i}+\beta_2 Q_{1,i}+\beta_3 C_{2,i}+\beta_4 C_{2,i}\cdot \mathbf{1}\{Q_{1,i}<Q^\ast\}+\varepsilon_i.
+\label{eq:reg}
+\end{equation}
+因参数共线，可同时报告 Spearman 相关、方差膨胀因子（VIF），必要时采用混合效应（策略随机截距）\cite{pinheiro2000mixed}。交互项用于刻画“高倍率发生在低/高 SOC 区间”的差异。
+
+\textbf{待填结果：} 系数表、标准化系数或变量重要性、残差诊断。
+
+\subsection{不同 SOC 区间高倍率的衰减特征}
+
+将充电过程拆为低 SOC 段 \([0,Q_1]\) 与高 SOC 段 \([Q_1,80\%]\)，比较 \(C_1\) 主导段与 \(C_2\) 主导段对 \(\mathrm{FadeRate}\) 的边际贡献。预期：在数据允许时，\(C_2\) 对寿命的负向作用强于同等幅度的 \(C_1\)\cite{liu2019fastcharging,ma2024mcc}。
+
+\subsection{机制讨论与局限}
+
+拟从 SEI 生长、锂沉积、极化与产热等 LFP 相关路径讨论\cite{dubarry2009lfp,dubarry2012alawa,li2026degradation}，并明确：策略非正交、早期衰减幅度小、cell-to-cell 变异与批次标签会限制因果识别。

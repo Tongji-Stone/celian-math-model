@@ -1,0 +1,36 @@
+\section{问题四：兼顾充电时间与寿命衰减的策略优化}
+
+\begin{todobox}
+本节为建模框架。优化应优先在已有 9 种实验策略内比较；若连续优化，参数须限制在实验数据合理邻域并说明依据\cite{attia2020closedloop,plett2022bms3,frazier2018bo,deb2001moea}。
+\end{todobox}
+
+\subsection{决策变量与目标}
+
+决策变量 \(x=(C_1,Q_1,C_2)\)。目标为在较短充电时间下降低衰减速率或延长寿命：
+\begin{equation}
+\min_{x}\; F(x)=\begin{bmatrix} T_{\mathrm{charge}}(x)\\ \mathrm{DecayRate}(x)\end{bmatrix}
+\quad\text{或}\quad
+\min_{x}\; w_1 T_{\mathrm{charge}}(x)+w_2\,\mathrm{DecayRate}(x).
+\label{eq:moo}
+\end{equation}
+
+\subsection{充电时间模型（拟采用）}
+
+分段恒流近似
+\begin{equation}
+T_{\mathrm{charge}}\approx \frac{Q_1}{C_1}+\frac{0.8-Q_1}{C_2}+T_{\mathrm{CV}},
+\label{eq:time}
+\end{equation}
+并用 \texttt{mean\_chargetime} 回归校准。问题一散点图已显示充电时间与策略分组相关，可用于检验该近似。
+
+\subsection{寿命衰减模型}
+
+沿用问题二回归或问题三预测模型，得到 \(\mathrm{DecayRate}(x)\) 或 \(\mathrm{SOH}_{200}(x)\)。在已有策略上先做离散 Pareto 比较，再考虑邻域连续搜索。
+
+\subsection{约束与邻域}
+
+建议参数盒约束取自样本极值（以最终校核为准）：\(C_1\in[3.6,5.6]\)，\(Q_1\in[19,80]\)，\(C_2\in[3.6,5.9]\)。超出实验凸包的组合须标明外推风险。
+
+\subsection{推荐策略与对比（待填）}
+
+给出推荐 \((C_1^\ast,Q_1^\ast,C_2^\ast)\)，并与问题一的典型长寿命策略 \texttt{3\_6C-80PER\_3\_6C}、\texttt{4\_8C\_80PER\_4\_8C\_NEWSTRUCTURE} 及短寿命策略 \texttt{3\_7C\_31PER\_5\_9C\_NEWSTRUCTURE} 对比充电时间与寿命代理。说明适用范围（LFP、两阶段快充、早期循环窗口）与不可外推情形。

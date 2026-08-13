@@ -1,0 +1,23 @@
+\section{建模源程序}
+\label{app:code}
+
+本节给出问题一全部可运行源代码。运行环境：Python 3，依赖 \texttt{numpy}、\texttt{pandas}、\texttt{matplotlib}。在项目根目录执行：
+\begin{lstlisting}[language=bash]
+python src/A/task1_pipeline.py
+\end{lstlisting}
+可选参数 \texttt{--iqr-factor}（默认 1.5）。单独绘制指定电池 SOH 曲线：
+\begin{lstlisting}[language=bash]
+python src/A/SOH_plot.py --battery-id 1
+\end{lstlisting}
+
+\begin{todobox}
+问题二--四源程序完成后，以同样方式用 \texttt{\textbackslash lstinputlisting} 追加完整代码，确保运行结果与正文图表一致。
+\end{todobox}
+
+\subsection{SOH\_plot.py}
+
+\lstinputlisting[language=Python,caption={SOH 曲线绘制脚本},label={lst:sohplot}]{../src/A/SOH_plot.py}
+
+\subsection{task1\_pipeline.py}
+
+\lstinputlisting[language=Python,caption={问题一分析流水线},label={lst:pipeline}]{../src/A/task1_pipeline.py}
