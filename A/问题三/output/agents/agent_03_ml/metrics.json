@@ -1,0 +1,716 @@
+{
+  "agent": "agent_03_ml",
+  "task": "short-horizon SOH forecasting only",
+  "target": "raw SOH delta relative to the cutoff-cycle raw SOH",
+  "seed": 20260814,
+  "outer_validation": "Leave-One-Battery-Out over 40 non-test batteries",
+  "inner_validation": "one deterministic GroupShuffleSplit holdout by battery_id per outer fold on a prespecified horizon grid [1, 10, 20, 30, 40, 50]",
+  "inner_selection_score": "0.5 * overall RMSE + 0.5 * cutoff-150 RMSE",
+  "ablation_design": "Each outer fold selects one configuration on C_plus_policy; the same configuration is then refit on A/B/C to isolate feature-set effects.",
+  "cutoffs": [
+    50,
+    75,
+    100,
+    125,
+    150
+  ],
+  "forecast_horizon": 50,
+  "candidate_hyperparameters": {
+    "extra_trees": {
+      "n_estimators": 32,
+      "max_features": 0.75,
+      "min_samples_leaf": 2,
+      "bootstrap": false
+    },
+    "random_forest": {
+      "n_estimators": 32,
+      "max_features": 0.75,
+      "min_samples_leaf": 2,
+      "bootstrap": true
+    },
+    "hist_gradient_boosting": {
+      "learning_rate": 0.05,
+      "max_iter": 45,
+      "max_leaf_nodes": 15,
+      "min_samples_leaf": 30,
+      "l2_regularization": 0.1
+    },
+    "xgboost": {
+      "n_estimators": 45,
+      "learning_rate": 0.04,
+      "max_depth": 3,
+      "min_child_weight": 20,
+      "subsample": 0.85,
+      "colsample_bytree": 0.8,
+      "reg_lambda": 5.0
+    }
+  },
+  "selected_configuration_counts": {
+    "extra_trees": 13,
+    "random_forest": 21,
+    "xgboost": 5,
+    "hist_gradient_boosting": 1
+  },
+  "paired_ablation_effects": [
+    {
+      "effect": "dynamic_feature_effect",
+      "cutoff": 50,
+      "source_ablation": "A_SOH_only",
+      "target_ablation": "B_SOH_plus_dynamics",
+      "mean_paired_battery_RMSE_change": 1.6235820835237342e-06,
+      "median_paired_battery_RMSE_change": -3.4134909905601693e-06,
+      "target_improved_fraction": 0.525,
+      "bootstrap_95pct_lower": -4.548527635290373e-05,
+      "bootstrap_95pct_upper": 5.4924766213143705e-05
+    },
+    {
+      "effect": "policy_feature_effect",
+      "cutoff": 50,
+      "source_ablation": "B_SOH_plus_dynamics",
+      "target_ablation": "C_plus_policy",
+      "mean_paired_battery_RMSE_change": -2.5254908884260637e-06,
+      "median_paired_battery_RMSE_change": -4.412359725872053e-07,
+      "target_improved_fraction": 0.5,
+      "bootstrap_95pct_lower": -1.6875949920784587e-05,
+      "bootstrap_95pct_upper": 1.1779558301397658e-05
+    },
+    {
+      "effect": "dynamic_feature_effect",
+      "cutoff": 75,
+      "source_ablation": "A_SOH_only",
+      "target_ablation": "B_SOH_plus_dynamics",
+      "mean_paired_battery_RMSE_change": -1.9653828153802174e-05,
+      "median_paired_battery_RMSE_change": 5.731525451376437e-06,
+      "target_improved_fraction": 0.45,
+      "bootstrap_95pct_lower": -8.323011186237872e-05,
+      "bootstrap_95pct_upper": 3.839189341742551e-05
+    },
+    {
+      "effect": "policy_feature_effect",
+      "cutoff": 75,
+      "source_ablation": "B_SOH_plus_dynamics",
+      "target_ablation": "C_plus_policy",
+      "mean_paired_battery_RMSE_change": -2.9724780164676844e-06,
+      "median_paired_battery_RMSE_change": -8.66905692439694e-07,
+      "target_improved_fraction": 0.525,
+      "bootstrap_95pct_lower": -2.014357841573149e-05,
+      "bootstrap_95pct_upper": 1.404854281022377e-05
+    },
+    {
+      "effect": "dynamic_feature_effect",
+      "cutoff": 100,
+      "source_ablation": "A_SOH_only",
+      "target_ablation": "B_SOH_plus_dynamics",
+      "mean_paired_battery_RMSE_change": 3.081081159374039e-05,
+      "median_paired_battery_RMSE_change": 1.2541795898712307e-05,
+      "target_improved_fraction": 0.375,
+      "bootstrap_95pct_lower": -1.2050043826879212e-05,
+      "bootstrap_95pct_upper": 7.878488028318637e-05
+    },
+    {
+      "effect": "policy_feature_effect",
+      "cutoff": 100,
+      "source_ablation": "B_SOH_plus_dynamics",
+      "target_ablation": "C_plus_policy",
+      "mean_paired_battery_RMSE_change": -8.183417010634672e-06,
+      "median_paired_battery_RMSE_change": -6.18156574706458e-06,
+      "target_improved_fraction": 0.575,
+      "bootstrap_95pct_lower": -2.053075938107854e-05,
+      "bootstrap_95pct_upper": 3.7072679448965664e-06
+    },
+    {
+      "effect": "dynamic_feature_effect",
+      "cutoff": 125,
+      "source_ablation": "A_SOH_only",
+      "target_ablation": "B_SOH_plus_dynamics",
+      "mean_paired_battery_RMSE_change": 3.3473919681827814e-05,
+      "median_paired_battery_RMSE_change": 3.714787991529082e-06,
+      "target_improved_fraction": 0.45,
+      "bootstrap_95pct_lower": 6.135170150924475e-06,
+      "bootstrap_95pct_upper": 7.036754017717283e-05
+    },
+    {
+      "effect": "policy_feature_effect",
+      "cutoff": 125,
+      "source_ablation": "B_SOH_plus_dynamics",
+      "target_ablation": "C_plus_policy",
+      "mean_paired_battery_RMSE_change": -1.751778582282062e-05,
+      "median_paired_battery_RMSE_change": -5.033419211543209e-06,
+      "target_improved_fraction": 0.675,
+      "bootstrap_95pct_lower": -3.691881024038142e-05,
+      "bootstrap_95pct_upper": -3.0643462276305014e-06
+    },
+    {
+      "effect": "dynamic_feature_effect",
+      "cutoff": 150,
+      "source_ablation": "A_SOH_only",
+      "target_ablation": "B_SOH_plus_dynamics",
+      "mean_paired_battery_RMSE_change": 9.080163485727458e-06,
+      "median_paired_battery_RMSE_change": -3.4758914547154283e-06,
+      "target_improved_fraction": 0.525,
+      "bootstrap_95pct_lower": -2.7506193638722472e-05,
+      "bootstrap_95pct_upper": 5.520448885390484e-05
+    },
+    {
+      "effect": "policy_feature_effect",
+      "cutoff": 150,
+      "source_ablation": "B_SOH_plus_dynamics",
+      "target_ablation": "C_plus_policy",
+      "mean_paired_battery_RMSE_change": -4.0743563445865554e-06,
+      "median_paired_battery_RMSE_change": -3.328329947869793e-06,
+      "target_improved_fraction": 0.55,
+      "bootstrap_95pct_lower": -2.0457726229753116e-05,
+      "bootstrap_95pct_upper": 1.254108482075945e-05
+    }
+  ],
+  "metrics_by_cutoff": [
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 50,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002980148436067471,
+      "overall_RMSE": 0.0005320185542734813,
+      "mean_battery_RMSE": 0.00039679879922748814,
+      "median_battery_RMSE": 0.0002624060801680174,
+      "worst_battery_RMSE": 0.001611423863117118
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 75,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003292771760512217,
+      "overall_RMSE": 0.0005865521970533611,
+      "mean_battery_RMSE": 0.00040034012932101126,
+      "median_battery_RMSE": 0.00023771565496780048,
+      "worst_battery_RMSE": 0.0021547372676228543
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 100,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.00035181748251004357,
+      "overall_RMSE": 0.0006662009515209527,
+      "mean_battery_RMSE": 0.00042957608753139206,
+      "median_battery_RMSE": 0.00023629497718254353,
+      "worst_battery_RMSE": 0.0027000797963264963
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 125,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002656256532460952,
+      "overall_RMSE": 0.0005452847137165433,
+      "mean_battery_RMSE": 0.00035747521575558267,
+      "median_battery_RMSE": 0.0002145146077454126,
+      "worst_battery_RMSE": 0.002031127568879538
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002808987149924809,
+      "overall_RMSE": 0.0005612097621004584,
+      "mean_battery_RMSE": 0.00035769688238643406,
+      "median_battery_RMSE": 0.00023776877487013137,
+      "worst_battery_RMSE": 0.002521839735744345
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 50,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.00030023720305470377,
+      "overall_RMSE": 0.0005533726630627918,
+      "mean_battery_RMSE": 0.0003984223813110118,
+      "median_battery_RMSE": 0.00027545207819372784,
+      "worst_battery_RMSE": 0.001704988295899453
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 75,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.00030862220851097947,
+      "overall_RMSE": 0.000541315099874112,
+      "mean_battery_RMSE": 0.0003806863011672091,
+      "median_battery_RMSE": 0.00024460308388208696,
+      "worst_battery_RMSE": 0.0019999856714050007
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 100,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003742152728226191,
+      "overall_RMSE": 0.0007056033933017307,
+      "mean_battery_RMSE": 0.0004603868991251324,
+      "median_battery_RMSE": 0.00024867951629256797,
+      "worst_battery_RMSE": 0.0028624444598995945
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 125,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.00028986468110967086,
+      "overall_RMSE": 0.0005841669146029515,
+      "mean_battery_RMSE": 0.0003909491354374105,
+      "median_battery_RMSE": 0.00023119335340420535,
+      "worst_battery_RMSE": 0.002023891742429304
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002815037922995049,
+      "overall_RMSE": 0.0005769507296036499,
+      "mean_battery_RMSE": 0.0003667770458721615,
+      "median_battery_RMSE": 0.00019901364671523258,
+      "worst_battery_RMSE": 0.002489199492811111
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 50,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003001992812923319,
+      "overall_RMSE": 0.0005540404900081416,
+      "mean_battery_RMSE": 0.0003958968904225858,
+      "median_battery_RMSE": 0.0002714323997070583,
+      "worst_battery_RMSE": 0.0016512420658406318
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 75,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003057529684195816,
+      "overall_RMSE": 0.0005362557110223124,
+      "mean_battery_RMSE": 0.0003777138231507414,
+      "median_battery_RMSE": 0.0002472275212964339,
+      "worst_battery_RMSE": 0.0019530537554159834
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 100,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003678897305750454,
+      "overall_RMSE": 0.0006928710597217809,
+      "mean_battery_RMSE": 0.00045220348211449777,
+      "median_battery_RMSE": 0.00024241108200158138,
+      "worst_battery_RMSE": 0.0027737665045402438
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 125,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.00027906024567859425,
+      "overall_RMSE": 0.0005664551236749417,
+      "mean_battery_RMSE": 0.0003734313496145898,
+      "median_battery_RMSE": 0.00022314449430204812,
+      "worst_battery_RMSE": 0.0020702284112627018
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002791270646152781,
+      "overall_RMSE": 0.0005770532106696422,
+      "mean_battery_RMSE": 0.00036270268952757497,
+      "median_battery_RMSE": 0.0001997676896217116,
+      "worst_battery_RMSE": 0.002468246567754184
+    }
+  ],
+  "policy_metrics_cutoff_150": [
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "MAE": 0.0009685590508897645,
+      "RMSE": 0.001793296651297871
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "MAE": 0.0008450826326006567,
+      "RMSE": 0.00110342767686275
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "MAE": 0.0003752928263455868,
+      "RMSE": 0.0005182170308654198
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "MAE": 0.00018583949199328266,
+      "RMSE": 0.00029987531361188723
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "MAE": 0.00018594919811911007,
+      "RMSE": 0.000228442248731821
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "MAE": 0.00019175001417272845,
+      "RMSE": 0.0002428270438461429
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "MAE": 0.0001629574621321818,
+      "RMSE": 0.0002060676841894576
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "MAE": 0.0001422525123963065,
+      "RMSE": 0.00017825668846101287
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "MAE": 0.0006672335052188139,
+      "RMSE": 0.0008657527667781151
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "MAE": 0.0012177748749945684,
+      "RMSE": 0.001883859969239788
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "MAE": 0.000900020441859809,
+      "RMSE": 0.0012219457062516395
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "MAE": 0.0004416288308672933,
+      "RMSE": 0.0005394508412360433
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "MAE": 0.00018887854842025974,
+      "RMSE": 0.0003007485641658997
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "MAE": 0.0001641966646682728,
+      "RMSE": 0.0002088231165400914
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "MAE": 0.00014325682553710075,
+      "RMSE": 0.00018148448397028983
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "MAE": 0.00015012521920219798,
+      "RMSE": 0.00018809146348832393
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "MAE": 0.0001450534679896173,
+      "RMSE": 0.0001895123725728632
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "MAE": 0.0005713410386617545,
+      "RMSE": 0.000776276761295604
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "MAE": 0.0012565961214505773,
+      "RMSE": 0.001917695660028303
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "MAE": 0.0008924733018411235,
+      "RMSE": 0.0011979633272040768
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "MAE": 0.0003156881977096715,
+      "RMSE": 0.00039215674481439457
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "MAE": 0.00018778112199731824,
+      "RMSE": 0.0003003662625581266
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "MAE": 0.0001666094710229756,
+      "RMSE": 0.00020465748007212836
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "MAE": 0.000151464083011915,
+      "RMSE": 0.00018731601716671616
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "MAE": 0.00015180357375098056,
+      "RMSE": 0.00018523741359122923
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "MAE": 0.0001406193427806901,
+      "RMSE": 0.00019314215200626135
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "MAE": 0.0005948979548394173,
+      "RMSE": 0.0008177288089190601
+    }
+  ],
+  "horizon_metrics_cutoff_150": [
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "horizon_bin": "1-10",
+      "MAE": 0.0001737321414593121,
+      "RMSE": 0.00031288583738372133
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "horizon_bin": "11-20",
+      "MAE": 0.00022091005551046428,
+      "RMSE": 0.0004603470190344732
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "horizon_bin": "21-30",
+      "MAE": 0.00028777892376071477,
+      "RMSE": 0.0006575435446558246
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "horizon_bin": "31-40",
+      "MAE": 0.0002830639162062942,
+      "RMSE": 0.00044577066005027627
+    },
+    {
+      "ablation": "A_SOH_only",
+      "cutoff": 150,
+      "horizon_bin": "41-50",
+      "MAE": 0.00043900853802561897,
+      "RMSE": 0.0007961721332317665
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "horizon_bin": "1-10",
+      "MAE": 0.00017450034282264827,
+      "RMSE": 0.00031122236759553495
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "horizon_bin": "11-20",
+      "MAE": 0.00023017174255155233,
+      "RMSE": 0.0004660205787164929
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "horizon_bin": "21-30",
+      "MAE": 0.00025573104135935055,
+      "RMSE": 0.000636042448467666
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "horizon_bin": "31-40",
+      "MAE": 0.00028422459850922706,
+      "RMSE": 0.0004670757542135488
+    },
+    {
+      "ablation": "B_SOH_plus_dynamics",
+      "cutoff": 150,
+      "horizon_bin": "41-50",
+      "MAE": 0.0004628912362547466,
+      "RMSE": 0.0008530043514806915
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "horizon_bin": "1-10",
+      "MAE": 0.00017299480588395255,
+      "RMSE": 0.0003123072403157604
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "horizon_bin": "11-20",
+      "MAE": 0.0002242520374967888,
+      "RMSE": 0.000468294413087077
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "horizon_bin": "21-30",
+      "MAE": 0.0002784313092789148,
+      "RMSE": 0.0006397524805954922
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "horizon_bin": "31-40",
+      "MAE": 0.0002929025746693162,
+      "RMSE": 0.0004910497093540776
+    },
+    {
+      "ablation": "C_plus_policy",
+      "cutoff": 150,
+      "horizon_bin": "41-50",
+      "MAE": 0.0004270545957474181,
+      "RMSE": 0.0008352864877116633
+    }
+  ],
+  "public_linear_nested_baseline": [
+    {
+      "cutoff": 50,
+      "MAE": 0.0003945208179418,
+      "overall_RMSE": 0.0007014353248321,
+      "mean_battery_RMSE": 0.0004866582715445,
+      "median_battery_RMSE": 0.0002889452455201,
+      "worst_battery_RMSE": 0.0023417018476265
+    },
+    {
+      "cutoff": 75,
+      "MAE": 0.0003966792766474,
+      "overall_RMSE": 0.0007893484217798,
+      "mean_battery_RMSE": 0.0004707682040464,
+      "median_battery_RMSE": 0.0002891481637723,
+      "worst_battery_RMSE": 0.0039989943613218
+    },
+    {
+      "cutoff": 100,
+      "MAE": 0.0002893543511388,
+      "overall_RMSE": 0.0005170378482788,
+      "mean_battery_RMSE": 0.0003698819079749,
+      "median_battery_RMSE": 0.0002381188738904,
+      "worst_battery_RMSE": 0.0020065918660535
+    },
+    {
+      "cutoff": 125,
+      "MAE": 0.0003778887755568,
+      "overall_RMSE": 0.0006313275034291,
+      "mean_battery_RMSE": 0.0004717180352944,
+      "median_battery_RMSE": 0.0003724213472985,
+      "worst_battery_RMSE": 0.0022387932053919
+    },
+    {
+      "cutoff": 150,
+      "MAE": 0.0003361267654739,
+      "overall_RMSE": 0.0006158852451938,
+      "mean_battery_RMSE": 0.0004098649823593,
+      "median_battery_RMSE": 0.0002606802255231,
+      "worst_battery_RMSE": 0.0023322932722179
+    }
+  ],
+  "runtime_seconds": 373.40320750002866,
+  "parameter_count": "not fixed; nonparametric tree ensembles, hyperparameters reported above",
+  "versions": {
+    "python": "3.13.9",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "xgboost": "3.2.0"
+  },
+  "leakage_controls": [
+    "prediction_test batteries excluded from table construction and all selection",
+    "outer and inner folds grouped by battery_id",
+    "all dynamic features recomputed only from cycle <= cutoff",
+    "battery_summary dynamic means never used",
+    "provided SOH_smooth not used; robust SOH processing is fit within each cutoff history"
+  ]
+}

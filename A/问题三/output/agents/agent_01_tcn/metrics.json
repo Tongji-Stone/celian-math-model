@@ -1,0 +1,2312 @@
+{
+  "agent": "agent_01_tcn",
+  "status": "complete",
+  "seed": 20260814,
+  "runtime_seconds": 55.474825500001316,
+  "final_outer_training_runtime_seconds": 8.115833200005,
+  "package_versions": {
+    "python": "3.13.9",
+    "torch": "2.12.0+cpu",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.7.2",
+    "scipy": "1.16.3"
+  },
+  "hyperparameters": {
+    "hidden_channels": 12,
+    "kernel_size": 3,
+    "dilations": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "static_hidden": 8,
+    "decoder_hidden": 32,
+    "dropout": 0.2,
+    "learning_rate": 0.002,
+    "weight_decay": 0.0001,
+    "batch_size": 128,
+    "max_epochs": 30,
+    "patience": 5,
+    "rolling_cutoffs": [
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110,
+      120,
+      130,
+      140,
+      150
+    ],
+    "outer_folds": 5,
+    "target": "SOH(cutoff+h)-SOH(cutoff), h=1..50"
+  },
+  "validation_protocol": {
+    "outer": "policy-aware five-fold split by battery_id",
+    "inner": "battery-level holdout within each outer training fold",
+    "selection": "A/B/C at L=50, then L=20/30/50/75/100 for winning ablation",
+    "normalization": "fit independently on each training fold only",
+    "test_batteries_used": false
+  },
+  "selection": {
+    "folds": [
+      {
+        "outer_fold": 0,
+        "outer_train_ids": [
+          1,
+          4,
+          6,
+          8,
+          13,
+          15,
+          17,
+          18,
+          19,
+          21,
+          22,
+          26,
+          27,
+          28,
+          29,
+          30,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          39,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49
+        ],
+        "outer_validation_ids": [
+          3,
+          7,
+          12,
+          20,
+          23,
+          31,
+          38,
+          40
+        ],
+        "inner_train_ids": [
+          6,
+          8,
+          13,
+          15,
+          18,
+          19,
+          21,
+          22,
+          26,
+          27,
+          28,
+          30,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          39,
+          41,
+          42,
+          46,
+          47,
+          48,
+          49
+        ],
+        "inner_validation_ids": [
+          1,
+          4,
+          17,
+          29,
+          43,
+          44,
+          45
+        ],
+        "selected_ablation": "A_SOH_only",
+        "selected_sequence_length": 50,
+        "selected_epoch": 28,
+        "selection_inner_RMSE": 0.0013006639114625828
+      },
+      {
+        "outer_fold": 1,
+        "outer_train_ids": [
+          3,
+          4,
+          6,
+          7,
+          8,
+          12,
+          15,
+          17,
+          18,
+          19,
+          20,
+          22,
+          23,
+          26,
+          27,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          49
+        ],
+        "outer_validation_ids": [
+          1,
+          13,
+          21,
+          28,
+          37,
+          46,
+          47,
+          48
+        ],
+        "inner_train_ids": [
+          3,
+          6,
+          7,
+          8,
+          12,
+          15,
+          17,
+          18,
+          19,
+          20,
+          22,
+          23,
+          27,
+          31,
+          32,
+          35,
+          36,
+          38,
+          39,
+          40,
+          42,
+          43,
+          44,
+          45,
+          49
+        ],
+        "inner_validation_ids": [
+          4,
+          26,
+          29,
+          30,
+          33,
+          34,
+          41
+        ],
+        "selected_ablation": "C_multivariate_policy",
+        "selected_sequence_length": 30,
+        "selected_epoch": 3,
+        "selection_inner_RMSE": 0.001923338508593016
+      },
+      {
+        "outer_fold": 2,
+        "outer_train_ids": [
+          1,
+          3,
+          4,
+          6,
+          7,
+          8,
+          12,
+          13,
+          15,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          26,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          37,
+          38,
+          39,
+          40,
+          44,
+          46,
+          47,
+          48,
+          49
+        ],
+        "outer_validation_ids": [
+          27,
+          34,
+          35,
+          36,
+          41,
+          42,
+          43,
+          45
+        ],
+        "inner_train_ids": [
+          1,
+          3,
+          4,
+          6,
+          7,
+          8,
+          13,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          26,
+          28,
+          29,
+          31,
+          33,
+          38,
+          39,
+          40,
+          44,
+          46,
+          47,
+          48,
+          49
+        ],
+        "inner_validation_ids": [
+          12,
+          15,
+          17,
+          30,
+          32,
+          37
+        ],
+        "selected_ablation": "B_multivariate",
+        "selected_sequence_length": 75,
+        "selected_epoch": 18,
+        "selection_inner_RMSE": 0.000317417811937308
+      },
+      {
+        "outer_fold": 3,
+        "outer_train_ids": [
+          1,
+          3,
+          4,
+          7,
+          8,
+          12,
+          13,
+          15,
+          17,
+          20,
+          21,
+          23,
+          26,
+          27,
+          28,
+          29,
+          31,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48
+        ],
+        "outer_validation_ids": [
+          6,
+          18,
+          19,
+          22,
+          30,
+          32,
+          39,
+          49
+        ],
+        "inner_train_ids": [
+          1,
+          3,
+          4,
+          7,
+          12,
+          13,
+          15,
+          17,
+          20,
+          21,
+          23,
+          26,
+          27,
+          29,
+          34,
+          35,
+          37,
+          38,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          47,
+          48
+        ],
+        "inner_validation_ids": [
+          8,
+          28,
+          31,
+          33,
+          36,
+          46
+        ],
+        "selected_ablation": "A_SOH_only",
+        "selected_sequence_length": 20,
+        "selected_epoch": 23,
+        "selection_inner_RMSE": 0.00022452673794164593
+      },
+      {
+        "outer_fold": 4,
+        "outer_train_ids": [
+          1,
+          3,
+          6,
+          7,
+          12,
+          13,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          27,
+          28,
+          30,
+          31,
+          32,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          45,
+          46,
+          47,
+          48,
+          49
+        ],
+        "outer_validation_ids": [
+          4,
+          8,
+          15,
+          17,
+          26,
+          29,
+          33,
+          44
+        ],
+        "inner_train_ids": [
+          1,
+          3,
+          6,
+          12,
+          13,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          30,
+          31,
+          32,
+          34,
+          35,
+          37,
+          39,
+          40,
+          41,
+          42,
+          43,
+          45,
+          46,
+          48,
+          49
+        ],
+        "inner_validation_ids": [
+          7,
+          27,
+          28,
+          36,
+          38,
+          47
+        ],
+        "selected_ablation": "A_SOH_only",
+        "selected_sequence_length": 50,
+        "selected_epoch": 25,
+        "selection_inner_RMSE": 0.0005250902538563594
+      }
+    ],
+    "selected_configuration_counts": {
+      "A_SOH_only": 3,
+      "C_multivariate_policy": 1,
+      "B_multivariate": 1
+    },
+    "selected_sequence_length_counts": {
+      "50": 2,
+      "30": 1,
+      "75": 1,
+      "20": 1
+    }
+  },
+  "model_complexity": {
+    "parameter_count_min": 5630,
+    "parameter_count_max": 6174,
+    "parameter_count_by_fold": [
+      5630,
+      6174,
+      6142,
+      5630,
+      5630
+    ]
+  },
+  "overall_metrics": [
+    {
+      "model": "TCN-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0008192059,
+      "overall_RMSE": 0.0022103881,
+      "mean_battery_RMSE": 0.0009483028,
+      "median_battery_RMSE": 0.0004253645,
+      "worst_battery_RMSE": 0.0125065737,
+      "cutoff": 50
+    },
+    {
+      "model": "Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0023582293,
+      "overall_RMSE": 0.0035610689,
+      "mean_battery_RMSE": 0.0025812285,
+      "median_battery_RMSE": 0.0020356458,
+      "worst_battery_RMSE": 0.0173082594,
+      "cutoff": 50
+    },
+    {
+      "model": "Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003945208,
+      "overall_RMSE": 0.0007014353,
+      "mean_battery_RMSE": 0.0004866583,
+      "median_battery_RMSE": 0.0002889452,
+      "worst_battery_RMSE": 0.0023417018,
+      "cutoff": 50
+    },
+    {
+      "model": "TCN-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0007152415,
+      "overall_RMSE": 0.0021485601,
+      "mean_battery_RMSE": 0.0008512922,
+      "median_battery_RMSE": 0.0003519777,
+      "worst_battery_RMSE": 0.0127001921,
+      "cutoff": 75
+    },
+    {
+      "model": "Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0004475496,
+      "overall_RMSE": 0.0006260909,
+      "mean_battery_RMSE": 0.0005216884,
+      "median_battery_RMSE": 0.00045399,
+      "worst_battery_RMSE": 0.0016135008,
+      "cutoff": 75
+    },
+    {
+      "model": "Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003966793,
+      "overall_RMSE": 0.0007893484,
+      "mean_battery_RMSE": 0.0004707682,
+      "median_battery_RMSE": 0.0002891482,
+      "worst_battery_RMSE": 0.0039989944,
+      "cutoff": 75
+    },
+    {
+      "model": "TCN-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0007671744,
+      "overall_RMSE": 0.002151615,
+      "mean_battery_RMSE": 0.0008968471,
+      "median_battery_RMSE": 0.0004360596,
+      "worst_battery_RMSE": 0.0126357646,
+      "cutoff": 100
+    },
+    {
+      "model": "Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003140104,
+      "overall_RMSE": 0.000570537,
+      "mean_battery_RMSE": 0.0003913692,
+      "median_battery_RMSE": 0.0002453928,
+      "worst_battery_RMSE": 0.0022674559,
+      "cutoff": 100
+    },
+    {
+      "model": "Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002893544,
+      "overall_RMSE": 0.0005170378,
+      "mean_battery_RMSE": 0.0003698819,
+      "median_battery_RMSE": 0.0002381189,
+      "worst_battery_RMSE": 0.0020065919,
+      "cutoff": 100
+    },
+    {
+      "model": "TCN-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0006519061,
+      "overall_RMSE": 0.0021026033,
+      "mean_battery_RMSE": 0.0007936832,
+      "median_battery_RMSE": 0.0003264868,
+      "worst_battery_RMSE": 0.0126481534,
+      "cutoff": 125
+    },
+    {
+      "model": "Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003778888,
+      "overall_RMSE": 0.0006313275,
+      "mean_battery_RMSE": 0.000471718,
+      "median_battery_RMSE": 0.0003724213,
+      "worst_battery_RMSE": 0.0022387932,
+      "cutoff": 125
+    },
+    {
+      "model": "Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003778888,
+      "overall_RMSE": 0.0006313275,
+      "mean_battery_RMSE": 0.000471718,
+      "median_battery_RMSE": 0.0003724213,
+      "worst_battery_RMSE": 0.0022387932,
+      "cutoff": 125
+    },
+    {
+      "model": "TCN-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0006766192,
+      "overall_RMSE": 0.0021606715,
+      "mean_battery_RMSE": 0.0008223372,
+      "median_battery_RMSE": 0.0003556339,
+      "worst_battery_RMSE": 0.0128823452,
+      "cutoff": 150
+    },
+    {
+      "model": "Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003102482,
+      "overall_RMSE": 0.0005684708,
+      "mean_battery_RMSE": 0.0003887949,
+      "median_battery_RMSE": 0.0002606802,
+      "worst_battery_RMSE": 0.0023322933,
+      "cutoff": 150
+    },
+    {
+      "model": "Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003361268,
+      "overall_RMSE": 0.0006158852,
+      "mean_battery_RMSE": 0.000409865,
+      "median_battery_RMSE": 0.0002606802,
+      "worst_battery_RMSE": 0.0023322933,
+      "cutoff": 150
+    }
+  ],
+  "per_policy_metrics": [
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0008987004,
+      "MAE": 0.0007916051
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0031028867,
+      "MAE": 0.0026454336
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.000736646,
+      "MAE": 0.0005735353
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0056197577,
+      "MAE": 0.0025744449
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0006020865,
+      "MAE": 0.000437021
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004972638,
+      "MAE": 0.0003615373
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003137155,
+      "MAE": 0.0002332073
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004547644,
+      "MAE": 0.0003097532
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0021823454,
+      "MAE": 0.0014606269
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0124445006,
+      "MAE": 0.00945675
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0015473616,
+      "MAE": 0.0013804939
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0039630732,
+      "MAE": 0.003633257
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0022289318,
+      "MAE": 0.0019437152
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0021074197,
+      "MAE": 0.0018862251
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0022920794,
+      "MAE": 0.0020185308
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.002205287,
+      "MAE": 0.0019737805
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0020620242,
+      "MAE": 0.0018704119
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0021501978,
+      "MAE": 0.0016565903
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006295938,
+      "MAE": 0.0005519862
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0003649754,
+      "MAE": 0.0002280929
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0015944938,
+      "MAE": 0.0013687443
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0012145218,
+      "MAE": 0.0008240932
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0005026319,
+      "MAE": 0.0003322214
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002291392,
+      "MAE": 0.000172096
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003196098,
+      "MAE": 0.0002219413
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002104998,
+      "MAE": 0.0001476273
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0012752534,
+      "MAE": 0.0007888696
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006473246,
+      "MAE": 0.0004888906
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0022389912,
+      "MAE": 0.0015364688
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0013211044,
+      "MAE": 0.0010094133
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0057125484,
+      "MAE": 0.0026356314
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0004370323,
+      "MAE": 0.0002939959
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004580607,
+      "MAE": 0.000315101
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002680704,
+      "MAE": 0.0002102737
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0005482416,
+      "MAE": 0.0003888336
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0009771877,
+      "MAE": 0.0005992617
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006412411,
+      "MAE": 0.0005322508
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0008291707,
+      "MAE": 0.0005614226
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0014031855,
+      "MAE": 0.0012007152
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0005167996,
+      "MAE": 0.0004010138
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0005943014,
+      "MAE": 0.0004901318
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004524568,
+      "MAE": 0.0003766254
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004529413,
+      "MAE": 0.0003560218
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000383641,
+      "MAE": 0.0002882411
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0010465081,
+      "MAE": 0.0006105645
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0005299586,
+      "MAE": 0.0004394462
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0007035238,
+      "MAE": 0.0004916608
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0009574574,
+      "MAE": 0.0007817434
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0007336353,
+      "MAE": 0.0004593166
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0003210316,
+      "MAE": 0.0002304242
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003232688,
+      "MAE": 0.0002214472
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003347037,
+      "MAE": 0.0002673972
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002870535,
+      "MAE": 0.0002310629
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0028404057,
+      "MAE": 0.0018614953
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006157474,
+      "MAE": 0.0004924093
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.001755794,
+      "MAE": 0.0014773871
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0016930813,
+      "MAE": 0.0012734946
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0057548734,
+      "MAE": 0.0030610541
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0004398177,
+      "MAE": 0.0002862865
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003919121,
+      "MAE": 0.0002480221
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002399773,
+      "MAE": 0.0001863709
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004831868,
+      "MAE": 0.0003712019
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0011521427,
+      "MAE": 0.0007691193
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006244807,
+      "MAE": 0.000288609
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0005154062,
+      "MAE": 0.000428076
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0013556267,
+      "MAE": 0.0011325177
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003323537,
+      "MAE": 0.0002540093
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002993448,
+      "MAE": 0.000218897
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003063443,
+      "MAE": 0.000204747
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002665415,
+      "MAE": 0.0002132035
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002557009,
+      "MAE": 0.0001906606
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0016327818,
+      "MAE": 0.0010091528
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0007482006,
+      "MAE": 0.0003568569
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002494548,
+      "MAE": 0.0001935757
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0009487204,
+      "MAE": 0.0007478849
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003791851,
+      "MAE": 0.0002730174
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002394601,
+      "MAE": 0.0001820643
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003702427,
+      "MAE": 0.0002511116
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002337626,
+      "MAE": 0.0001696516
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000293837,
+      "MAE": 0.0002229268
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0015230748,
+      "MAE": 0.0010071182
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0012752577,
+      "MAE": 0.0006797957
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0014915646,
+      "MAE": 0.0011392676
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0012244785,
+      "MAE": 0.0009639237
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0056732392,
+      "MAE": 0.0025059211
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0003667471,
+      "MAE": 0.0002625621
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003530894,
+      "MAE": 0.0002511084
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000275247,
+      "MAE": 0.0002066442
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003307121,
+      "MAE": 0.0002479013
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0010566412,
+      "MAE": 0.000732858
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0015849719,
+      "MAE": 0.0007099926
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002906358,
+      "MAE": 0.0002292642
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.00138049,
+      "MAE": 0.0011843594
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0004305627,
+      "MAE": 0.0003281352
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.00027457,
+      "MAE": 0.0002151037
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000362813,
+      "MAE": 0.0002864767
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003461146,
+      "MAE": 0.0002886142
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004159179,
+      "MAE": 0.0003342343
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0011375618,
+      "MAE": 0.0007858717
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0015849719,
+      "MAE": 0.0007099926
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002906358,
+      "MAE": 0.0002292642
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.00138049,
+      "MAE": 0.0011843594
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0004305627,
+      "MAE": 0.0003281352
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.00027457,
+      "MAE": 0.0002151037
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000362813,
+      "MAE": 0.0002864767
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003461146,
+      "MAE": 0.0002886142
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004159179,
+      "MAE": 0.0003342343
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0011375618,
+      "MAE": 0.0007858717
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0019729911,
+      "MAE": 0.0012190636
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.00180763,
+      "MAE": 0.0014954995
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0004452247,
+      "MAE": 0.0003219429
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0057764203,
+      "MAE": 0.0025045343
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0003284936,
+      "MAE": 0.000244778
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004980996,
+      "MAE": 0.0003790824
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002159271,
+      "MAE": 0.000173426
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004248602,
+      "MAE": 0.0003016775
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0007790753,
+      "MAE": 0.000510557
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0016528764,
+      "MAE": 0.0008661739
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002503449,
+      "MAE": 0.0001914895
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0013127212,
+      "MAE": 0.0011605767
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003680226,
+      "MAE": 0.0002210027
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002928031,
+      "MAE": 0.0002359673
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001897014,
+      "MAE": 0.0001417116
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003259772,
+      "MAE": 0.0002666024
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002456477,
+      "MAE": 0.0001992291
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0008002507,
+      "MAE": 0.0005999137
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0016528764,
+      "MAE": 0.0008661739
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002503449,
+      "MAE": 0.0001914895
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0013127212,
+      "MAE": 0.0011605767
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003680226,
+      "MAE": 0.0002210027
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002928031,
+      "MAE": 0.0002359673
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001897014,
+      "MAE": 0.0001417116
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003259772,
+      "MAE": 0.0002666024
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002456477,
+      "MAE": 0.0001992291
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0013279734,
+      "MAE": 0.0011174857
+    }
+  ],
+  "horizon_bin_metrics": [
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0007945284,
+      "MAE": 0.0002986388
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0013009512,
+      "MAE": 0.0005412933
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0020087031,
+      "MAE": 0.0008002109
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0025765727,
+      "MAE": 0.0010940946
+    },
+    {
+      "cutoff": 50,
+      "model": "TCN-Nested",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0033810816,
+      "MAE": 0.001361792
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0014545955,
+      "MAE": 0.0010180983
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0024199304,
+      "MAE": 0.0016827675
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0032742088,
+      "MAE": 0.0023575078
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0042342126,
+      "MAE": 0.0030298415
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-50",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0051754371,
+      "MAE": 0.0037029313
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004981015,
+      "MAE": 0.0002021493
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0006276466,
+      "MAE": 0.0002701061
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005347664,
+      "MAE": 0.0003556148
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008035943,
+      "MAE": 0.0004991497
+    },
+    {
+      "cutoff": 50,
+      "model": "Linear-Nested",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009414209,
+      "MAE": 0.0006455843
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0005976645,
+      "MAE": 0.0002442271
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "horizon_bin": "11-20",
+      "RMSE": 0.001191902,
+      "MAE": 0.0004565907
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0019725081,
+      "MAE": 0.0006967028
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0024734871,
+      "MAE": 0.0009213461
+    },
+    {
+      "cutoff": 75,
+      "model": "TCN-Nested",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0033607728,
+      "MAE": 0.0012573406
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004172534,
+      "MAE": 0.0002342833
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0003434727,
+      "MAE": 0.0002727557
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005847698,
+      "MAE": 0.0004755779
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0007493514,
+      "MAE": 0.0005912366
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-50",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008742952,
+      "MAE": 0.0006638945
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004512412,
+      "MAE": 0.0001660821
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004287783,
+      "MAE": 0.000251471
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006626831,
+      "MAE": 0.0003827335
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0009442346,
+      "MAE": 0.0005270933
+    },
+    {
+      "cutoff": 75,
+      "model": "Linear-Nested",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0011820141,
+      "MAE": 0.0006560165
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0005747794,
+      "MAE": 0.0002652761
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0012441186,
+      "MAE": 0.0005608691
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0020116056,
+      "MAE": 0.0008011431
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0024624362,
+      "MAE": 0.0009374028
+    },
+    {
+      "cutoff": 100,
+      "model": "TCN-Nested",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0033404915,
+      "MAE": 0.0012711807
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002687202,
+      "MAE": 0.0001592773
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "horizon_bin": "11-20",
+      "RMSE": 0.000408652,
+      "MAE": 0.0002328742
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0004109825,
+      "MAE": 0.0002635034
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0006279228,
+      "MAE": 0.0003835612
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-50",
+      "horizon_bin": "41-50",
+      "RMSE": 0.000908384,
+      "MAE": 0.000530836
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002583811,
+      "MAE": 0.0001606334
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0003799969,
+      "MAE": 0.0002104635
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0003259018,
+      "MAE": 0.0002041789
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0005596745,
+      "MAE": 0.0003514909
+    },
+    {
+      "cutoff": 100,
+      "model": "Linear-Nested",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008402587,
+      "MAE": 0.0005200051
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0005372828,
+      "MAE": 0.0002231695
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0012008747,
+      "MAE": 0.0004677909
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0019467815,
+      "MAE": 0.0006425821
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0024262632,
+      "MAE": 0.0008299665
+    },
+    {
+      "cutoff": 125,
+      "model": "TCN-Nested",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0032706605,
+      "MAE": 0.0010960216
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003231359,
+      "MAE": 0.0001885956
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0005317442,
+      "MAE": 0.0003037778
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0004463343,
+      "MAE": 0.0002950238
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "horizon_bin": "31-40",
+      "RMSE": 0.000665541,
+      "MAE": 0.0004669962
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-50",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009816029,
+      "MAE": 0.0006350504
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003231359,
+      "MAE": 0.0001885956
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0005317442,
+      "MAE": 0.0003037778
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0004463343,
+      "MAE": 0.0002950238
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "horizon_bin": "31-40",
+      "RMSE": 0.000665541,
+      "MAE": 0.0004669962
+    },
+    {
+      "cutoff": 125,
+      "model": "Linear-Nested",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009816029,
+      "MAE": 0.0006350504
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0005395089,
+      "MAE": 0.0002348965
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0012216471,
+      "MAE": 0.0004575158
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0020423692,
+      "MAE": 0.0006940854
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "horizon_bin": "31-40",
+      "RMSE": 0.002449496,
+      "MAE": 0.0008267516
+    },
+    {
+      "cutoff": 150,
+      "model": "TCN-Nested",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0033745685,
+      "MAE": 0.0011698464
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "horizon_bin": "1-10",
+      "RMSE": 0.000289715,
+      "MAE": 0.0001677339
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004483509,
+      "MAE": 0.000250443
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006591643,
+      "MAE": 0.000317453
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0004666641,
+      "MAE": 0.0003040621
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-50",
+      "horizon_bin": "41-50",
+      "RMSE": 0.000823753,
+      "MAE": 0.0005115489
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003359694,
+      "MAE": 0.0001814643
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0005024248,
+      "MAE": 0.0002748741
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006754749,
+      "MAE": 0.00033502
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0005529711,
+      "MAE": 0.0003375712
+    },
+    {
+      "cutoff": 150,
+      "model": "Linear-Nested",
+      "horizon_bin": "41-50",
+      "RMSE": 0.000877054,
+      "MAE": 0.0005517041
+    }
+  ],
+  "cutoff_150_paired_comparison": {
+    "paired_batteries": 40,
+    "mean_battery_RMSE_difference_TCN_minus_Linear50": 0.0004335423340252931,
+    "median_battery_RMSE_difference_TCN_minus_Linear50": 1.8853155767247127e-05,
+    "bootstrap_95pct_CI_for_mean_difference": [
+      8.439388333904294e-06,
+      0.0011408573726738895
+    ],
+    "one_sided_Wilcoxon_p_TCN_less_than_Linear50": 0.9106517921381965,
+    "TCN_better_battery_count": 18,
+    "Linear50_better_or_tied_battery_count": 22
+  },
+  "conclusion": {
+    "significantly_outperforms_recent_linear": false,
+    "recommend_as_primary_model": false,
+    "recommendation_cn": "TCN 未显著优于 recent-linear baseline，不推荐作为问题三主模型。",
+    "tcn_rmse_150": 0.0021606714853590826,
+    "linear50_rmse_150": 0.0005684707818042979,
+    "relative_rmse_change_vs_linear50_pct": 280.08487938486815
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "stage1": "Power(last_101_cycles) + Linear(last_50_cycles)",
+  "power_weight": 0.66839585251145,
+  "linear_weight": 0.33160414748855005,
+  "reported_cv": {
+    "MAE": 0.0002707585545361976,
+    "overall_RMSE": 0.0004952391449642149,
+    "mean_battery_RMSE": 0.00033806639014123967,
+    "median_battery_RMSE": 0.00023400157458058926,
+    "worst_battery_RMSE": 0.002231462345711048
+  },
+  "stage2": "linear/power/exponential x fit_start 1/20/50/80 sensitivity envelope",
+  "seed": 20260815
+}

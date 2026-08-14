@@ -1,0 +1,6121 @@
+{
+  "agent": "agent_06_ensemble",
+  "seed": 20260814,
+  "runtime_seconds": 277.2547576999932,
+  "package_versions": {
+    "python": "3.13.9",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "scipy": "1.16.3",
+    "scikit_learn": "1.7.2"
+  },
+  "model_complexity": {
+    "global_weights": {
+      "stored_coefficients": 6,
+      "degrees_of_freedom": 5
+    },
+    "horizon_weights": {
+      "stored_coefficients": 30,
+      "degrees_of_freedom": 25
+    },
+    "adaptive_gate": {
+      "maximum_input_features": 21,
+      "outputs": 30,
+      "ridge_coefficients_including_intercepts": 660
+    },
+    "extra_trees": {
+      "trees": 40,
+      "max_depth": 7,
+      "fixed_parameter_count": null,
+      "note": "fitted node count varies by outer fold"
+    },
+    "gp": {
+      "optimized_kernel_hyperparameters": 0,
+      "maximum_training_observations_per_forecast": 50
+    }
+  },
+  "validation": {
+    "outer": "Leave-One-Battery-Out over 40 training batteries",
+    "inner": "3-fold battery-grouped cross-fitting within each outer training set",
+    "meta_calibration": "3-fold battery-grouped cross-fitting over inner OOF expert predictions",
+    "cutoffs": [
+      50,
+      75,
+      100,
+      125,
+      150
+    ],
+    "forecast_horizon": 50,
+    "test_batteries_used": false
+  },
+  "hyperparameters": {
+    "experts": [
+      "linear20",
+      "linear30",
+      "linear50",
+      "same_policy",
+      "feature_ml",
+      "gp"
+    ],
+    "extra_trees": {
+      "n_estimators": 40,
+      "max_depth": 7,
+      "min_samples_leaf": 8,
+      "max_features": 0.8
+    },
+    "gp": {
+      "mean": "recent-50 linear",
+      "kernel": "2e-7 * Matern(length_scale=12, nu=1.5) + WhiteKernel(2e-8)",
+      "optimizer": null
+    },
+    "adaptive_gate": {
+      "model": "standardized multi-output Ridge on log expert RMSE",
+      "alpha": 5.0,
+      "temperature": 0.75,
+      "horizon_prior_blend": 0.5
+    },
+    "interval": {
+      "scale_floor": 5e-05,
+      "levels": [
+        0.9,
+        0.95
+      ],
+      "score": "battery maximum normalized residual within each 10-cycle horizon bin"
+    }
+  },
+  "overall_metrics": [
+    {
+      "model": "Expert Linear-20",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003945208,
+      "overall_RMSE": 0.0007014353,
+      "mean_battery_RMSE": 0.0004866583,
+      "median_battery_RMSE": 0.0002889452,
+      "worst_battery_RMSE": 0.0023417018,
+      "cutoff": 50
+    },
+    {
+      "model": "Expert Linear-30",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005458199,
+      "overall_RMSE": 0.000781312,
+      "mean_battery_RMSE": 0.0006688108,
+      "median_battery_RMSE": 0.0005793056,
+      "worst_battery_RMSE": 0.0017152833,
+      "cutoff": 50
+    },
+    {
+      "model": "Expert Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0023582293,
+      "overall_RMSE": 0.0035610689,
+      "mean_battery_RMSE": 0.0025812285,
+      "median_battery_RMSE": 0.0020356458,
+      "worst_battery_RMSE": 0.0173082594,
+      "cutoff": 50
+    },
+    {
+      "model": "Expert Same-policy",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000504114,
+      "overall_RMSE": 0.0011184283,
+      "mean_battery_RMSE": 0.0006360471,
+      "median_battery_RMSE": 0.0003375867,
+      "worst_battery_RMSE": 0.0042968051,
+      "cutoff": 50
+    },
+    {
+      "model": "Expert Feature-ML",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003291967,
+      "overall_RMSE": 0.0006930003,
+      "mean_battery_RMSE": 0.0004263672,
+      "median_battery_RMSE": 0.0002232666,
+      "worst_battery_RMSE": 0.0028396288,
+      "cutoff": 50
+    },
+    {
+      "model": "Expert GP",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0019375378,
+      "overall_RMSE": 0.0032798506,
+      "mean_battery_RMSE": 0.0022223281,
+      "median_battery_RMSE": 0.0017274166,
+      "worst_battery_RMSE": 0.0168725456,
+      "cutoff": 50
+    },
+    {
+      "model": "Ensemble Global",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003673053,
+      "overall_RMSE": 0.0007184401,
+      "mean_battery_RMSE": 0.0004612953,
+      "median_battery_RMSE": 0.0002497068,
+      "worst_battery_RMSE": 0.0030287934,
+      "cutoff": 50
+    },
+    {
+      "model": "Ensemble Horizon",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003630111,
+      "overall_RMSE": 0.0007113401,
+      "mean_battery_RMSE": 0.0004570515,
+      "median_battery_RMSE": 0.0002580242,
+      "worst_battery_RMSE": 0.0029917989,
+      "cutoff": 50
+    },
+    {
+      "model": "Ensemble Adaptive",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003328904,
+      "overall_RMSE": 0.0006240769,
+      "mean_battery_RMSE": 0.0004218766,
+      "median_battery_RMSE": 0.0002543923,
+      "worst_battery_RMSE": 0.00237593,
+      "cutoff": 50
+    },
+    {
+      "model": "Expert Linear-20",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003474236,
+      "overall_RMSE": 0.0007528668,
+      "mean_battery_RMSE": 0.0004218629,
+      "median_battery_RMSE": 0.0002718205,
+      "worst_battery_RMSE": 0.0039989944,
+      "cutoff": 75
+    },
+    {
+      "model": "Expert Linear-30",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003371612,
+      "overall_RMSE": 0.0005351305,
+      "mean_battery_RMSE": 0.0004105088,
+      "median_battery_RMSE": 0.0002891482,
+      "worst_battery_RMSE": 0.0015886172,
+      "cutoff": 75
+    },
+    {
+      "model": "Expert Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0004475496,
+      "overall_RMSE": 0.0006260909,
+      "mean_battery_RMSE": 0.0005216884,
+      "median_battery_RMSE": 0.00045399,
+      "worst_battery_RMSE": 0.0016135008,
+      "cutoff": 75
+    },
+    {
+      "model": "Expert Same-policy",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005290556,
+      "overall_RMSE": 0.0011553782,
+      "mean_battery_RMSE": 0.0006325416,
+      "median_battery_RMSE": 0.0003156954,
+      "worst_battery_RMSE": 0.0043697913,
+      "cutoff": 75
+    },
+    {
+      "model": "Expert Feature-ML",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003774117,
+      "overall_RMSE": 0.0007048556,
+      "mean_battery_RMSE": 0.0004541853,
+      "median_battery_RMSE": 0.0002503848,
+      "worst_battery_RMSE": 0.0025276137,
+      "cutoff": 75
+    },
+    {
+      "model": "Expert GP",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0004411876,
+      "overall_RMSE": 0.0006294269,
+      "mean_battery_RMSE": 0.0005296646,
+      "median_battery_RMSE": 0.0004820998,
+      "worst_battery_RMSE": 0.0016526523,
+      "cutoff": 75
+    },
+    {
+      "model": "Ensemble Global",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003880875,
+      "overall_RMSE": 0.0006955305,
+      "mean_battery_RMSE": 0.000464711,
+      "median_battery_RMSE": 0.0003011926,
+      "worst_battery_RMSE": 0.0030137108,
+      "cutoff": 75
+    },
+    {
+      "model": "Ensemble Horizon",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003671545,
+      "overall_RMSE": 0.0006695222,
+      "mean_battery_RMSE": 0.0004505007,
+      "median_battery_RMSE": 0.0003059149,
+      "worst_battery_RMSE": 0.0028821448,
+      "cutoff": 75
+    },
+    {
+      "model": "Ensemble Adaptive",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003186667,
+      "overall_RMSE": 0.0005801351,
+      "mean_battery_RMSE": 0.0003911715,
+      "median_battery_RMSE": 0.0002961404,
+      "worst_battery_RMSE": 0.0025878257,
+      "cutoff": 75
+    },
+    {
+      "model": "Expert Linear-20",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003991467,
+      "overall_RMSE": 0.0007708871,
+      "mean_battery_RMSE": 0.0004745939,
+      "median_battery_RMSE": 0.0002598436,
+      "worst_battery_RMSE": 0.0037517508,
+      "cutoff": 100
+    },
+    {
+      "model": "Expert Linear-30",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002893544,
+      "overall_RMSE": 0.0005170378,
+      "mean_battery_RMSE": 0.0003698819,
+      "median_battery_RMSE": 0.0002381189,
+      "worst_battery_RMSE": 0.0020065919,
+      "cutoff": 100
+    },
+    {
+      "model": "Expert Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003140104,
+      "overall_RMSE": 0.000570537,
+      "mean_battery_RMSE": 0.0003913692,
+      "median_battery_RMSE": 0.0002453928,
+      "worst_battery_RMSE": 0.0022674559,
+      "cutoff": 100
+    },
+    {
+      "model": "Expert Same-policy",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0006183109,
+      "overall_RMSE": 0.0012623176,
+      "mean_battery_RMSE": 0.0007391438,
+      "median_battery_RMSE": 0.0002991294,
+      "worst_battery_RMSE": 0.0044357376,
+      "cutoff": 100
+    },
+    {
+      "model": "Expert Feature-ML",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003714721,
+      "overall_RMSE": 0.0006629207,
+      "mean_battery_RMSE": 0.0004486925,
+      "median_battery_RMSE": 0.000238703,
+      "worst_battery_RMSE": 0.0021764308,
+      "cutoff": 100
+    },
+    {
+      "model": "Expert GP",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002965207,
+      "overall_RMSE": 0.0005553688,
+      "mean_battery_RMSE": 0.0003790926,
+      "median_battery_RMSE": 0.0002345064,
+      "worst_battery_RMSE": 0.0021840571,
+      "cutoff": 100
+    },
+    {
+      "model": "Ensemble Global",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003044277,
+      "overall_RMSE": 0.0005862107,
+      "mean_battery_RMSE": 0.0003816302,
+      "median_battery_RMSE": 0.0002276832,
+      "worst_battery_RMSE": 0.0026133775,
+      "cutoff": 100
+    },
+    {
+      "model": "Ensemble Horizon",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003113536,
+      "overall_RMSE": 0.000598874,
+      "mean_battery_RMSE": 0.0003966958,
+      "median_battery_RMSE": 0.0002510737,
+      "worst_battery_RMSE": 0.0026295031,
+      "cutoff": 100
+    },
+    {
+      "model": "Ensemble Adaptive",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002834074,
+      "overall_RMSE": 0.0005555358,
+      "mean_battery_RMSE": 0.0003600657,
+      "median_battery_RMSE": 0.0002141833,
+      "worst_battery_RMSE": 0.0024932441,
+      "cutoff": 100
+    },
+    {
+      "model": "Expert Linear-20",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005884134,
+      "overall_RMSE": 0.0007877453,
+      "mean_battery_RMSE": 0.0006974133,
+      "median_battery_RMSE": 0.0006583271,
+      "worst_battery_RMSE": 0.0020095831,
+      "cutoff": 125
+    },
+    {
+      "model": "Expert Linear-30",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005041668,
+      "overall_RMSE": 0.0007058297,
+      "mean_battery_RMSE": 0.000598107,
+      "median_battery_RMSE": 0.0005431776,
+      "worst_battery_RMSE": 0.0020971363,
+      "cutoff": 125
+    },
+    {
+      "model": "Expert Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003778888,
+      "overall_RMSE": 0.0006313275,
+      "mean_battery_RMSE": 0.000471718,
+      "median_battery_RMSE": 0.0003724213,
+      "worst_battery_RMSE": 0.0022387932,
+      "cutoff": 125
+    },
+    {
+      "model": "Expert Same-policy",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005705499,
+      "overall_RMSE": 0.0012247079,
+      "mean_battery_RMSE": 0.0007141045,
+      "median_battery_RMSE": 0.0003084065,
+      "worst_battery_RMSE": 0.0040971805,
+      "cutoff": 125
+    },
+    {
+      "model": "Expert Feature-ML",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002810899,
+      "overall_RMSE": 0.000551445,
+      "mean_battery_RMSE": 0.0003731687,
+      "median_battery_RMSE": 0.0002095401,
+      "worst_battery_RMSE": 0.001876716,
+      "cutoff": 125
+    },
+    {
+      "model": "Expert GP",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003452896,
+      "overall_RMSE": 0.0006156804,
+      "mean_battery_RMSE": 0.0004436389,
+      "median_battery_RMSE": 0.0003359538,
+      "worst_battery_RMSE": 0.0022407594,
+      "cutoff": 125
+    },
+    {
+      "model": "Ensemble Global",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002637203,
+      "overall_RMSE": 0.0005170886,
+      "mean_battery_RMSE": 0.000357757,
+      "median_battery_RMSE": 0.0002459981,
+      "worst_battery_RMSE": 0.0020166218,
+      "cutoff": 125
+    },
+    {
+      "model": "Ensemble Horizon",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002661892,
+      "overall_RMSE": 0.0005228622,
+      "mean_battery_RMSE": 0.0003571519,
+      "median_battery_RMSE": 0.0002378796,
+      "worst_battery_RMSE": 0.0020026498,
+      "cutoff": 125
+    },
+    {
+      "model": "Ensemble Adaptive",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002623143,
+      "overall_RMSE": 0.0005136754,
+      "mean_battery_RMSE": 0.0003557559,
+      "median_battery_RMSE": 0.000245228,
+      "worst_battery_RMSE": 0.0020367618,
+      "cutoff": 125
+    },
+    {
+      "model": "Expert Linear-20",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0004714832,
+      "overall_RMSE": 0.0007349848,
+      "mean_battery_RMSE": 0.0005543917,
+      "median_battery_RMSE": 0.0004656139,
+      "worst_battery_RMSE": 0.0031349158,
+      "cutoff": 150
+    },
+    {
+      "model": "Expert Linear-30",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003592485,
+      "overall_RMSE": 0.0005955597,
+      "mean_battery_RMSE": 0.0004263649,
+      "median_battery_RMSE": 0.000334295,
+      "worst_battery_RMSE": 0.0022365063,
+      "cutoff": 150
+    },
+    {
+      "model": "Expert Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003102482,
+      "overall_RMSE": 0.0005684708,
+      "mean_battery_RMSE": 0.0003887949,
+      "median_battery_RMSE": 0.0002606802,
+      "worst_battery_RMSE": 0.0023322933,
+      "cutoff": 150
+    },
+    {
+      "model": "Expert Same-policy",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0006205372,
+      "overall_RMSE": 0.0013470972,
+      "mean_battery_RMSE": 0.0007669532,
+      "median_battery_RMSE": 0.0002586111,
+      "worst_battery_RMSE": 0.0041743191,
+      "cutoff": 150
+    },
+    {
+      "model": "Expert Feature-ML",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003045958,
+      "overall_RMSE": 0.0006272119,
+      "mean_battery_RMSE": 0.0003903019,
+      "median_battery_RMSE": 0.000220095,
+      "worst_battery_RMSE": 0.0028626339,
+      "cutoff": 150
+    },
+    {
+      "model": "Expert GP",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003035326,
+      "overall_RMSE": 0.0005683976,
+      "mean_battery_RMSE": 0.0003890896,
+      "median_battery_RMSE": 0.0002764385,
+      "worst_battery_RMSE": 0.0023740688,
+      "cutoff": 150
+    },
+    {
+      "model": "Ensemble Global",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002613312,
+      "overall_RMSE": 0.0005473336,
+      "mean_battery_RMSE": 0.0003409656,
+      "median_battery_RMSE": 0.0001999911,
+      "worst_battery_RMSE": 0.0025557767,
+      "cutoff": 150
+    },
+    {
+      "model": "Ensemble Horizon",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002771764,
+      "overall_RMSE": 0.0005470125,
+      "mean_battery_RMSE": 0.0003574047,
+      "median_battery_RMSE": 0.0002216867,
+      "worst_battery_RMSE": 0.0024781938,
+      "cutoff": 150
+    },
+    {
+      "model": "Ensemble Adaptive",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002613371,
+      "overall_RMSE": 0.0005265412,
+      "mean_battery_RMSE": 0.0003381871,
+      "median_battery_RMSE": 0.0002048482,
+      "worst_battery_RMSE": 0.0024177735,
+      "cutoff": 150
+    }
+  ],
+  "policy_metrics": [
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006295938,
+      "MAE": 0.0005519862
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0003649754,
+      "MAE": 0.0002280929
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0015944938,
+      "MAE": 0.0013687443
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0012145218,
+      "MAE": 0.0008240932
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0005026319,
+      "MAE": 0.0003322214
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002291392,
+      "MAE": 0.000172096
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003196098,
+      "MAE": 0.0002219413
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002104998,
+      "MAE": 0.0001476273
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0012752534,
+      "MAE": 0.0007888696
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006408973,
+      "MAE": 0.0005056123
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0005357984,
+      "MAE": 0.0004044977
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0014403083,
+      "MAE": 0.0012456007
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0009749648,
+      "MAE": 0.0006254312
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0006455956,
+      "MAE": 0.0004577996
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0007375378,
+      "MAE": 0.0005364572
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0005719496,
+      "MAE": 0.0004670995
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0005497859,
+      "MAE": 0.0004203282
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.001305046,
+      "MAE": 0.0008401133
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0124445006,
+      "MAE": 0.00945675
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0015473616,
+      "MAE": 0.0013804939
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0039630732,
+      "MAE": 0.003633257
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0022289318,
+      "MAE": 0.0019437152
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0021074197,
+      "MAE": 0.0018862251
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0022920794,
+      "MAE": 0.0020185308
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.002205287,
+      "MAE": 0.0019737805
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0020620242,
+      "MAE": 0.0018704119
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0021501978,
+      "MAE": 0.0016565903
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0004825939,
+      "MAE": 0.0002934356
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0013501882,
+      "MAE": 0.0011133639
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0012221659,
+      "MAE": 0.0010792826
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0008460305,
+      "MAE": 0.0003707763
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002618453,
+      "MAE": 0.000207556
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003125888,
+      "MAE": 0.0002348624
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002855787,
+      "MAE": 0.0001887692
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003307856,
+      "MAE": 0.0002416853
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0042968051,
+      "MAE": 0.0037179795
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0011933151,
+      "MAE": 0.0008598227
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0011427917,
+      "MAE": 0.0009002768
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0007938556,
+      "MAE": 0.0005571476
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0007595369,
+      "MAE": 0.0003031458
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002593439,
+      "MAE": 0.0002074317
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001775888,
+      "MAE": 0.0001245467
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002049227,
+      "MAE": 0.0001486949
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002087149,
+      "MAE": 0.0001528679
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0020471842,
+      "MAE": 0.0013951449
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.012067689,
+      "MAE": 0.0086139698
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0017311996,
+      "MAE": 0.0015004886
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0032878337,
+      "MAE": 0.0028695535
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0019685806,
+      "MAE": 0.0016011409
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0017040318,
+      "MAE": 0.0014455166
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0018565119,
+      "MAE": 0.0015407632
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0018104974,
+      "MAE": 0.001546655
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0017096046,
+      "MAE": 0.0014789828
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0018834647,
+      "MAE": 0.001444938
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0008757091,
+      "MAE": 0.0007183191
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0006925617,
+      "MAE": 0.000396076
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0012044827,
+      "MAE": 0.0010261619
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0008625499,
+      "MAE": 0.0004795282
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.000355948,
+      "MAE": 0.0002477853
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000251672,
+      "MAE": 0.0001725834
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002787715,
+      "MAE": 0.0002007383
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001996984,
+      "MAE": 0.0001408318
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0021800227,
+      "MAE": 0.001463835
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0008585172,
+      "MAE": 0.000687882
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0007308912,
+      "MAE": 0.0004296003
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0011576213,
+      "MAE": 0.0009943333
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0008642418,
+      "MAE": 0.0004804558
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0003098617,
+      "MAE": 0.0002235968
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002544897,
+      "MAE": 0.0001728059
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002773916,
+      "MAE": 0.0002024006
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001996446,
+      "MAE": 0.0001426016
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0021720805,
+      "MAE": 0.0014641479
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.000657987,
+      "MAE": 0.0005664139
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0005736625,
+      "MAE": 0.0003428423
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0010764905,
+      "MAE": 0.0009184328
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0008396697,
+      "MAE": 0.0004534954
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002911064,
+      "MAE": 0.0002137648
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002327081,
+      "MAE": 0.0001620976
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002702108,
+      "MAE": 0.0001955966
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001977041,
+      "MAE": 0.0001430127
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0018082705,
+      "MAE": 0.0013026132
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0003259673,
+      "MAE": 0.0002344959
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0005768375,
+      "MAE": 0.000456225
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0011172017,
+      "MAE": 0.0009331389
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003384555,
+      "MAE": 0.0002230608
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.00031794,
+      "MAE": 0.0002379474
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000155771,
+      "MAE": 0.0001096604
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003369097,
+      "MAE": 0.0002339641
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003817219,
+      "MAE": 0.0002826391
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0028402813,
+      "MAE": 0.0018611956
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0005299586,
+      "MAE": 0.0004394462
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0007035238,
+      "MAE": 0.0004916608
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0009574574,
+      "MAE": 0.0007817434
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0007336353,
+      "MAE": 0.0004593166
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0003210316,
+      "MAE": 0.0002304242
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003232688,
+      "MAE": 0.0002214472
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003347037,
+      "MAE": 0.0002673972
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002870535,
+      "MAE": 0.0002310629
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0011548935,
+      "MAE": 0.0006711339
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006412411,
+      "MAE": 0.0005322508
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0008291707,
+      "MAE": 0.0005614226
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0014031855,
+      "MAE": 0.0012007152
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0005167996,
+      "MAE": 0.0004010138
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0005943014,
+      "MAE": 0.0004901318
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004524568,
+      "MAE": 0.0003766254
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004529413,
+      "MAE": 0.0003560218
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000383641,
+      "MAE": 0.0002882411
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0010465081,
+      "MAE": 0.0006105645
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0003460912,
+      "MAE": 0.0002706037
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0020794603,
+      "MAE": 0.001791058
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0013258008,
+      "MAE": 0.001093805
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003238158,
+      "MAE": 0.0002267429
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002577738,
+      "MAE": 0.0002249735
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003046462,
+      "MAE": 0.0002273958
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002860078,
+      "MAE": 0.0002359468
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003064085,
+      "MAE": 0.0002562233
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0043697913,
+      "MAE": 0.0036653866
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0009417204,
+      "MAE": 0.0006831562
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.001622963,
+      "MAE": 0.0013161344
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0010818425,
+      "MAE": 0.0008399021
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0006642768,
+      "MAE": 0.0004197065
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.00020263,
+      "MAE": 0.000141721
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001854928,
+      "MAE": 0.0001369984
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002757211,
+      "MAE": 0.0002211233
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002802672,
+      "MAE": 0.0002101449
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0018323303,
+      "MAE": 0.0012456788
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006450845,
+      "MAE": 0.0005333401
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.000840297,
+      "MAE": 0.0005823747
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0014267424,
+      "MAE": 0.0011854902
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.000515034,
+      "MAE": 0.0003904513
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0005755192,
+      "MAE": 0.0004601778
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004991514,
+      "MAE": 0.0004070184
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004369148,
+      "MAE": 0.0003294982
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003863975,
+      "MAE": 0.0002841698
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0010228373,
+      "MAE": 0.0005934833
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.000539541,
+      "MAE": 0.0004434166
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0008018386,
+      "MAE": 0.0005456372
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0012032875,
+      "MAE": 0.0010013018
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0006949693,
+      "MAE": 0.0003996251
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0003773319,
+      "MAE": 0.000282627
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003301275,
+      "MAE": 0.0002357496
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003418264,
+      "MAE": 0.0002781064
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002706032,
+      "MAE": 0.0002099814
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0021475599,
+      "MAE": 0.0013910203
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0005319324,
+      "MAE": 0.0004221725
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0007787032,
+      "MAE": 0.00053397
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0011504806,
+      "MAE": 0.0009565807
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0006689776,
+      "MAE": 0.0003420704
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.000365239,
+      "MAE": 0.0002658855
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003171461,
+      "MAE": 0.0002209982
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000331159,
+      "MAE": 0.0002680944
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002713908,
+      "MAE": 0.0002109043
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0020590253,
+      "MAE": 0.0013275442
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0004579071,
+      "MAE": 0.0003467725
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0008027177,
+      "MAE": 0.0005736636
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0010288364,
+      "MAE": 0.0008538682
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.000379634,
+      "MAE": 0.0002251443
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002861476,
+      "MAE": 0.0002087193
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002401812,
+      "MAE": 0.0001702674
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003176955,
+      "MAE": 0.0002605822
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002568447,
+      "MAE": 0.0001991857
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0018511066,
+      "MAE": 0.0012048869
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0005907867,
+      "MAE": 0.0003204203
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0001857332,
+      "MAE": 0.0001277206
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0007924595,
+      "MAE": 0.0005982281
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0005856117,
+      "MAE": 0.0004728643
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0003317208,
+      "MAE": 0.0002388811
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004666329,
+      "MAE": 0.0003265118
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002982867,
+      "MAE": 0.0002281589
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002909859,
+      "MAE": 0.0002278491
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0028838295,
+      "MAE": 0.002298941
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0007482006,
+      "MAE": 0.0003568569
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002494548,
+      "MAE": 0.0001935757
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0009487204,
+      "MAE": 0.0007478849
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003791851,
+      "MAE": 0.0002730174
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002394601,
+      "MAE": 0.0001820643
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003702427,
+      "MAE": 0.0002511116
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002337626,
+      "MAE": 0.0001696516
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000293837,
+      "MAE": 0.0002229268
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0015230748,
+      "MAE": 0.0010071182
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006244807,
+      "MAE": 0.000288609
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0005154062,
+      "MAE": 0.000428076
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0013556267,
+      "MAE": 0.0011325177
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003323537,
+      "MAE": 0.0002540093
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002993448,
+      "MAE": 0.000218897
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003063443,
+      "MAE": 0.000204747
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002665415,
+      "MAE": 0.0002132035
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002557009,
+      "MAE": 0.0001906606
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0016327818,
+      "MAE": 0.0010091528
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0009320485,
+      "MAE": 0.0005498027
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0022802784,
+      "MAE": 0.0019839201
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0018302384,
+      "MAE": 0.0015776232
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0008484596,
+      "MAE": 0.0007576866
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002100447,
+      "MAE": 0.0001585033
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002809202,
+      "MAE": 0.0002092133
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002444337,
+      "MAE": 0.0001859369
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003196434,
+      "MAE": 0.0002421392
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0044357376,
+      "MAE": 0.0036546334
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0008662438,
+      "MAE": 0.0006474976
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0015149901,
+      "MAE": 0.0011249276
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0006916777,
+      "MAE": 0.0005675526
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0008519347,
+      "MAE": 0.0007033944
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0001857197,
+      "MAE": 0.0001334961
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002323172,
+      "MAE": 0.000167346
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002001761,
+      "MAE": 0.000149336
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002302149,
+      "MAE": 0.0001744471
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0016830583,
+      "MAE": 0.001211538
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006240702,
+      "MAE": 0.0002828345
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0005541576,
+      "MAE": 0.0004460738
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0013481539,
+      "MAE": 0.0010960067
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0002596651,
+      "MAE": 0.0001996393
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002927349,
+      "MAE": 0.0002136387
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002935631,
+      "MAE": 0.0001919293
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002639562,
+      "MAE": 0.0002045339
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002529885,
+      "MAE": 0.0001823581
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0015682721,
+      "MAE": 0.0009396108
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006682573,
+      "MAE": 0.000295877
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0004931468,
+      "MAE": 0.0004106295
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0011933884,
+      "MAE": 0.0009696875
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003513783,
+      "MAE": 0.0002705702
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002530279,
+      "MAE": 0.0001900479
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003008614,
+      "MAE": 0.0002031239
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002201172,
+      "MAE": 0.0001670028
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002453059,
+      "MAE": 0.0001833694
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0018871092,
+      "MAE": 0.001228554
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0007278884,
+      "MAE": 0.0003278119
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0004582706,
+      "MAE": 0.0003877218
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0011836925,
+      "MAE": 0.0009529865
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003834555,
+      "MAE": 0.000298411
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002442268,
+      "MAE": 0.0001807294
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000326417,
+      "MAE": 0.0002121319
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002255832,
+      "MAE": 0.0001647794
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002680638,
+      "MAE": 0.0001962585
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0019191082,
+      "MAE": 0.0012642427
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006789895,
+      "MAE": 0.0002971794
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0003503941,
+      "MAE": 0.0002879983
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0010734521,
+      "MAE": 0.0008480161
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003650227,
+      "MAE": 0.0002820271
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002191182,
+      "MAE": 0.0001535037
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003040121,
+      "MAE": 0.0002019985
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002088611,
+      "MAE": 0.0001555041
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002435871,
+      "MAE": 0.0001841228
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0018097852,
+      "MAE": 0.0011736869
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.001427769,
+      "MAE": 0.0006175005
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0003241069,
+      "MAE": 0.0002637162
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0010184572,
+      "MAE": 0.0008237387
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0006913897,
+      "MAE": 0.0005625922
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0005026988,
+      "MAE": 0.0004097426
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000650168,
+      "MAE": 0.0005455733
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0007360139,
+      "MAE": 0.000599765
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0008364331,
+      "MAE": 0.0007171714
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0012052666,
+      "MAE": 0.0009088196
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0014853565,
+      "MAE": 0.0006263786
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0001865464,
+      "MAE": 0.0001475721
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0012182684,
+      "MAE": 0.001035382
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0007512097,
+      "MAE": 0.00065205
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0004124994,
+      "MAE": 0.0003487776
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004675789,
+      "MAE": 0.0003706363
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0005284611,
+      "MAE": 0.0004563513
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000661548,
+      "MAE": 0.000562145
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0010212627,
+      "MAE": 0.0007355813
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0015849719,
+      "MAE": 0.0007099926
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002906358,
+      "MAE": 0.0002292642
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.00138049,
+      "MAE": 0.0011843594
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0004305627,
+      "MAE": 0.0003281352
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.00027457,
+      "MAE": 0.0002151037
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000362813,
+      "MAE": 0.0002864767
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003461146,
+      "MAE": 0.0002886142
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004159179,
+      "MAE": 0.0003342343
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0011375618,
+      "MAE": 0.0007858717
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0021459282,
+      "MAE": 0.0011953745
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0022781856,
+      "MAE": 0.0019753849
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0014173523,
+      "MAE": 0.0012090735
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003714479,
+      "MAE": 0.0002721945
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002348528,
+      "MAE": 0.0001790891
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002987019,
+      "MAE": 0.0002207461
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002880098,
+      "MAE": 0.0002283366
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002899616,
+      "MAE": 0.0002176628
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0040971805,
+      "MAE": 0.003479802
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.001452194,
+      "MAE": 0.0008639505
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0012745305,
+      "MAE": 0.0009222546
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0006778969,
+      "MAE": 0.0005421896
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0002747449,
+      "MAE": 0.0002050481
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.000174752,
+      "MAE": 0.0001308802
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002078558,
+      "MAE": 0.0001543435
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002135919,
+      "MAE": 0.0001666849
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002336079,
+      "MAE": 0.0001704278
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0010520319,
+      "MAE": 0.0006680452
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0015866078,
+      "MAE": 0.000713373
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002245671,
+      "MAE": 0.0001563999
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0013694219,
+      "MAE": 0.0011364484
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003786681,
+      "MAE": 0.0002705976
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002654077,
+      "MAE": 0.0002037104
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003291303,
+      "MAE": 0.0002542967
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003115606,
+      "MAE": 0.0002543911
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003769563,
+      "MAE": 0.0002982266
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0011628216,
+      "MAE": 0.0007877448
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0014788831,
+      "MAE": 0.0007772688
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0004229444,
+      "MAE": 0.0003115309
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0008876208,
+      "MAE": 0.0007028696
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0002714185,
+      "MAE": 0.0001585725
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0001618304,
+      "MAE": 0.0001282443
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002280122,
+      "MAE": 0.0001587404
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002198554,
+      "MAE": 0.0001707388
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003094992,
+      "MAE": 0.0002341529
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0011156264,
+      "MAE": 0.0007288596
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0014690298,
+      "MAE": 0.0007570039
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0004190116,
+      "MAE": 0.0003202166
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0008957673,
+      "MAE": 0.0007226013
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0002717665,
+      "MAE": 0.0001677051
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0001432994,
+      "MAE": 0.000116971
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002241075,
+      "MAE": 0.0001620791
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002178,
+      "MAE": 0.0001733713
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003046908,
+      "MAE": 0.0002300573
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0011910885,
+      "MAE": 0.0007745094
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0014942273,
+      "MAE": 0.0007447887
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.00029511,
+      "MAE": 0.0002165258
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0008947336,
+      "MAE": 0.0007031479
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0002848646,
+      "MAE": 0.000176781
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0001610558,
+      "MAE": 0.0001316875
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002358696,
+      "MAE": 0.00017619
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002263124,
+      "MAE": 0.000180859
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002961565,
+      "MAE": 0.0002228575
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0010932732,
+      "MAE": 0.0007151369
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0022194438,
+      "MAE": 0.0010987516
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0007257054,
+      "MAE": 0.0006531944
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0007169829,
+      "MAE": 0.0005781021
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0006810414,
+      "MAE": 0.0005335531
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0005202801,
+      "MAE": 0.0004232081
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0005300183,
+      "MAE": 0.0004476569
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0004152369,
+      "MAE": 0.0003433389
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003367624,
+      "MAE": 0.0002796188
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0009392376,
+      "MAE": 0.0007489572
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0015864111,
+      "MAE": 0.0008611468
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0005421845,
+      "MAE": 0.0004862161
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0009932153,
+      "MAE": 0.0008464421
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003612947,
+      "MAE": 0.0002282262
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0003373699,
+      "MAE": 0.0002701934
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003367622,
+      "MAE": 0.0002699774
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002595435,
+      "MAE": 0.0002038692
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003277524,
+      "MAE": 0.0002703524
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0012728791,
+      "MAE": 0.0010053234
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0016528764,
+      "MAE": 0.0008661739
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002503449,
+      "MAE": 0.0001914895
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0013127212,
+      "MAE": 0.0011605767
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003680226,
+      "MAE": 0.0002210027
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002928031,
+      "MAE": 0.0002359673
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001897014,
+      "MAE": 0.0001417116
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003259772,
+      "MAE": 0.0002666024
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002456477,
+      "MAE": 0.0001992291
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0008002507,
+      "MAE": 0.0005999137
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0030295255,
+      "MAE": 0.0019782461
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0022204821,
+      "MAE": 0.0020030396
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0018982658,
+      "MAE": 0.0016512925
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003625134,
+      "MAE": 0.0002593648
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002370823,
+      "MAE": 0.000187117
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002287854,
+      "MAE": 0.0001805377
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002268245,
+      "MAE": 0.0001832801
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002908413,
+      "MAE": 0.0002291314
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0041743191,
+      "MAE": 0.0034930819
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0021570565,
+      "MAE": 0.0013410973
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.00111716,
+      "MAE": 0.0009086982
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0007403956,
+      "MAE": 0.0006101487
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003191721,
+      "MAE": 0.0002045049
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002336363,
+      "MAE": 0.0001906095
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.000208359,
+      "MAE": 0.0001672302
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002129379,
+      "MAE": 0.000175474
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001479841,
+      "MAE": 0.0001144922
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0007829699,
+      "MAE": 0.0005486944
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0016813721,
+      "MAE": 0.0008414883
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002149892,
+      "MAE": 0.0001549746
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0012956605,
+      "MAE": 0.0011115674
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003510225,
+      "MAE": 0.0002100134
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002799976,
+      "MAE": 0.0002253406
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001904572,
+      "MAE": 0.0001431147
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0003269014,
+      "MAE": 0.0002645331
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002819927,
+      "MAE": 0.0002251353
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0007661635,
+      "MAE": 0.0005468266
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0018310504,
+      "MAE": 0.0009929384
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0002864016,
+      "MAE": 0.0002162552
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0011076345,
+      "MAE": 0.0009562551
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003301722,
+      "MAE": 0.000183289
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002488857,
+      "MAE": 0.0001892475
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001632206,
+      "MAE": 0.0001304496
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002438701,
+      "MAE": 0.0001976329
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001493668,
+      "MAE": 0.0001161953
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0007014305,
+      "MAE": 0.0004802382
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0017767346,
+      "MAE": 0.0009662487
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0004136699,
+      "MAE": 0.0003365715
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0010896558,
+      "MAE": 0.0009254797
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003403895,
+      "MAE": 0.0001970029
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002694452,
+      "MAE": 0.0002141104
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001945185,
+      "MAE": 0.0001523317
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002466628,
+      "MAE": 0.0002032305
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001483906,
+      "MAE": 0.0001156002
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0007343577,
+      "MAE": 0.0005313217
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "policy": "3_6C-80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0017405591,
+      "MAE": 0.0009687708
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "policy": "3_7C_31PER_5_9C_NEWSTRUCTURE",
+      "n_batteries": 2,
+      "RMSE": 0.0003491728,
+      "MAE": 0.0002721318
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "policy": "4_8C_80PER_4_8C",
+      "n_batteries": 2,
+      "RMSE": 0.0010366634,
+      "MAE": 0.0008872537
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "policy": "4_8C_80PER_4_8C_NEWSTRUCTURE",
+      "n_batteries": 5,
+      "RMSE": 0.0003356409,
+      "MAE": 0.0001899181
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "policy": "5C_67PER_4C_NEWSTRUCTURE",
+      "n_batteries": 6,
+      "RMSE": 0.0002480189,
+      "MAE": 0.0002010548
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "policy": "5_3C_54PER_4C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001676376,
+      "MAE": 0.0001335298
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "policy": "5_6C_19PER_4_6C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0002382489,
+      "MAE": 0.0001973857
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "policy": "5_6C_36PER_4_3C_NEWSTRUCTURE",
+      "n_batteries": 7,
+      "RMSE": 0.0001384861,
+      "MAE": 0.000107118
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "policy": "80PER_3_6C",
+      "n_batteries": 2,
+      "RMSE": 0.0006988879,
+      "MAE": 0.0004875089
+    }
+  ],
+  "horizon_metrics": [
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004981015,
+      "MAE": 0.0002021493
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0006276466,
+      "MAE": 0.0002701061
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005347664,
+      "MAE": 0.0003556148
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008035943,
+      "MAE": 0.0004991497
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-20",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009414209,
+      "MAE": 0.0006455843
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0005139895,
+      "MAE": 0.0001989387
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0006326144,
+      "MAE": 0.0003408331
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006285745,
+      "MAE": 0.0005311444
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0009072405,
+      "MAE": 0.0007248873
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-30",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0010815105,
+      "MAE": 0.000933296
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0014545955,
+      "MAE": 0.0010180983
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0024199304,
+      "MAE": 0.0016827675
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0032742088,
+      "MAE": 0.0023575078
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0042342126,
+      "MAE": 0.0030298415
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Linear-50",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0051754371,
+      "MAE": 0.0037029313
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0006691283,
+      "MAE": 0.0002543392
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0009733932,
+      "MAE": 0.0003858375
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0008811314,
+      "MAE": 0.0004744464
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0013295966,
+      "MAE": 0.0006327661
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Same-policy",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0015215002,
+      "MAE": 0.0007731807
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0005662213,
+      "MAE": 0.0002107801
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0006598851,
+      "MAE": 0.0002648313
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0004920601,
+      "MAE": 0.0002828781
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008018833,
+      "MAE": 0.0003917048
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008718096,
+      "MAE": 0.0004957895
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0008621326,
+      "MAE": 0.000459001
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0020294266,
+      "MAE": 0.0012691698
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0029962324,
+      "MAE": 0.0020034024
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0039863236,
+      "MAE": 0.0026626537
+    },
+    {
+      "cutoff": 50,
+      "model": "Expert GP",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0049048009,
+      "MAE": 0.0032934619
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0005216912,
+      "MAE": 0.0001831693
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0006764153,
+      "MAE": 0.0002667265
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005241511,
+      "MAE": 0.000321227
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008323847,
+      "MAE": 0.000456041
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Global",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009399379,
+      "MAE": 0.0006093625
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0005188426,
+      "MAE": 0.0001794645
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0006677455,
+      "MAE": 0.0002865078
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005289168,
+      "MAE": 0.0003178601
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008222596,
+      "MAE": 0.0004433464
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009268646,
+      "MAE": 0.0005878766
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004979751,
+      "MAE": 0.0001750522
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0006137097,
+      "MAE": 0.0002469678
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0004523518,
+      "MAE": 0.0003004218
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0007294515,
+      "MAE": 0.000422295
+    },
+    {
+      "cutoff": 50,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0007655191,
+      "MAE": 0.0005197154
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004383693,
+      "MAE": 0.0001434735
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004084939,
+      "MAE": 0.0002450314
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006174811,
+      "MAE": 0.0003187186
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008919404,
+      "MAE": 0.0004396307
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-20",
+      "horizon_bin": "41-50",
+      "RMSE": 0.001139371,
+      "MAE": 0.0005902639
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003857735,
+      "MAE": 0.0001620357
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0003029869,
+      "MAE": 0.0002090949
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0004545323,
+      "MAE": 0.0003209957
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0006184185,
+      "MAE": 0.000442293
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-30",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0007759896,
+      "MAE": 0.0005513867
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004172534,
+      "MAE": 0.0002342833
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0003434727,
+      "MAE": 0.0002727557
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005847698,
+      "MAE": 0.0004755779
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0007493514,
+      "MAE": 0.0005912366
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Linear-50",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008742952,
+      "MAE": 0.0006638945
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0005883866,
+      "MAE": 0.0002038072
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0005570639,
+      "MAE": 0.00032095
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0009595269,
+      "MAE": 0.0005044549
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0013795703,
+      "MAE": 0.0007155828
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Same-policy",
+      "horizon_bin": "41-50",
+      "RMSE": 0.001787196,
+      "MAE": 0.0009004831
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004098778,
+      "MAE": 0.0001834844
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0003582107,
+      "MAE": 0.0002406577
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "21-30",
+      "RMSE": 0.00058236,
+      "MAE": 0.0003560067
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008221995,
+      "MAE": 0.0004789452
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0010828837,
+      "MAE": 0.0006279645
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003799059,
+      "MAE": 0.0001648966
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0003169184,
+      "MAE": 0.0002480597
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005891091,
+      "MAE": 0.0004908509
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0007678874,
+      "MAE": 0.0006191485
+    },
+    {
+      "cutoff": 75,
+      "model": "Expert GP",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008941056,
+      "MAE": 0.0006829823
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004205601,
+      "MAE": 0.0001624839
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0003637218,
+      "MAE": 0.0002361309
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005884508,
+      "MAE": 0.0003858049
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008303147,
+      "MAE": 0.0005214
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Global",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0010363166,
+      "MAE": 0.0006346179
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003944848,
+      "MAE": 0.0001489744
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0002822078,
+      "MAE": 0.0001972363
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005654207,
+      "MAE": 0.0003460906
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008405775,
+      "MAE": 0.0005100768
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009898331,
+      "MAE": 0.0006333941
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004036326,
+      "MAE": 0.0001430766
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0002848115,
+      "MAE": 0.0001934789
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005091792,
+      "MAE": 0.0003111681
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0007654626,
+      "MAE": 0.0004368755
+    },
+    {
+      "cutoff": 75,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0007704221,
+      "MAE": 0.0005087343
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003257718,
+      "MAE": 0.0001841435
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0005710535,
+      "MAE": 0.0003373125
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005712771,
+      "MAE": 0.0003467991
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008554646,
+      "MAE": 0.0004467564
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-20",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0012169338,
+      "MAE": 0.0006807219
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002583811,
+      "MAE": 0.0001606334
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0003799969,
+      "MAE": 0.0002104635
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0003259018,
+      "MAE": 0.0002041789
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0005596745,
+      "MAE": 0.0003514909
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-30",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008402587,
+      "MAE": 0.0005200051
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002687202,
+      "MAE": 0.0001592773
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "horizon_bin": "11-20",
+      "RMSE": 0.000408652,
+      "MAE": 0.0002328742
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0004109825,
+      "MAE": 0.0002635034
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0006279228,
+      "MAE": 0.0003835612
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Linear-50",
+      "horizon_bin": "41-50",
+      "RMSE": 0.000908384,
+      "MAE": 0.000530836
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004158343,
+      "MAE": 0.0002366292
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0007923876,
+      "MAE": 0.0004312859
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0009566509,
+      "MAE": 0.0005595503
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0014976399,
+      "MAE": 0.0008055278
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Same-policy",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0020020805,
+      "MAE": 0.0010585614
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003895671,
+      "MAE": 0.0002240243
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0005158692,
+      "MAE": 0.0002987768
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0004841323,
+      "MAE": 0.0003168041
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0007126988,
+      "MAE": 0.000424606
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0010183869,
+      "MAE": 0.0005931492
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002386558,
+      "MAE": 0.0001299441
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0003854126,
+      "MAE": 0.0002075007
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0003903852,
+      "MAE": 0.0002433831
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0006171125,
+      "MAE": 0.0003770805
+    },
+    {
+      "cutoff": 100,
+      "model": "Expert GP",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008963507,
+      "MAE": 0.0005246952
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002592142,
+      "MAE": 0.0001460229
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004202526,
+      "MAE": 0.0002205811
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0003968691,
+      "MAE": 0.0002411924
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0006488641,
+      "MAE": 0.0003754522
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Global",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009465098,
+      "MAE": 0.0005388898
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002637909,
+      "MAE": 0.0001494598
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004118163,
+      "MAE": 0.0002175468
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0003933245,
+      "MAE": 0.0002417662
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0006514692,
+      "MAE": 0.0003793386
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009873986,
+      "MAE": 0.0005686568
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002548494,
+      "MAE": 0.0001405853
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004057357,
+      "MAE": 0.0002158703
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0003734454,
+      "MAE": 0.0002239154
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0006018712,
+      "MAE": 0.0003355754
+    },
+    {
+      "cutoff": 100,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009010106,
+      "MAE": 0.0005010907
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003646989,
+      "MAE": 0.0002450324
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0006314729,
+      "MAE": 0.0004634495
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006057318,
+      "MAE": 0.000513425
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0008547348,
+      "MAE": 0.0007370369
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-20",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0012138646,
+      "MAE": 0.0009831231
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003601179,
+      "MAE": 0.0002388073
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0005755259,
+      "MAE": 0.0004008763
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0005099201,
+      "MAE": 0.0004163451
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0007793601,
+      "MAE": 0.0006372405
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-30",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0010782587,
+      "MAE": 0.0008275647
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003231359,
+      "MAE": 0.0001885956
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0005317442,
+      "MAE": 0.0003037778
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0004463343,
+      "MAE": 0.0002950238
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "horizon_bin": "31-40",
+      "RMSE": 0.000665541,
+      "MAE": 0.0004669962
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Linear-50",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009816029,
+      "MAE": 0.0006350504
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0004536476,
+      "MAE": 0.0001838585
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0008425938,
+      "MAE": 0.0003897022
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0010207906,
+      "MAE": 0.00052721
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0013518268,
+      "MAE": 0.0007484464
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Same-policy",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0019272618,
+      "MAE": 0.0010035323
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003010412,
+      "MAE": 0.0001487186
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "11-20",
+      "RMSE": 0.00047347,
+      "MAE": 0.0002613544
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0003640362,
+      "MAE": 0.000234801
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0005009373,
+      "MAE": 0.0002937408
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009067511,
+      "MAE": 0.0004668345
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002943694,
+      "MAE": 0.0001427601
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0005193553,
+      "MAE": 0.0002804762
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0004369372,
+      "MAE": 0.0002712542
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0006438666,
+      "MAE": 0.0004317626
+    },
+    {
+      "cutoff": 125,
+      "model": "Expert GP",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009661523,
+      "MAE": 0.0006001949
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002895404,
+      "MAE": 0.0001376064
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004661498,
+      "MAE": 0.000222984
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0003451315,
+      "MAE": 0.0001993385
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "horizon_bin": "31-40",
+      "RMSE": 0.000489389,
+      "MAE": 0.0003017552
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Global",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008228952,
+      "MAE": 0.0004569173
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003094067,
+      "MAE": 0.0001615499
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004810439,
+      "MAE": 0.0002285359
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0003937392,
+      "MAE": 0.0002204581
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0004600406,
+      "MAE": 0.0002714651
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008204395,
+      "MAE": 0.000448937
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002985632,
+      "MAE": 0.0001466778
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004735292,
+      "MAE": 0.0002305495
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0003474926,
+      "MAE": 0.0002049576
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0004732589,
+      "MAE": 0.0002834443
+    },
+    {
+      "cutoff": 125,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008131525,
+      "MAE": 0.0004459425
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "horizon_bin": "1-10",
+      "RMSE": 0.000360014,
+      "MAE": 0.0002507133
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0005890436,
+      "MAE": 0.0003831952
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0007943612,
+      "MAE": 0.0004360121
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0006078305,
+      "MAE": 0.0005087568
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-20",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0011063287,
+      "MAE": 0.0007787385
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003759543,
+      "MAE": 0.0002396633
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004950825,
+      "MAE": 0.0002890995
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006243322,
+      "MAE": 0.0003094571
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0005727758,
+      "MAE": 0.0003998254
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-30",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008180134,
+      "MAE": 0.0005581973
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "horizon_bin": "1-10",
+      "RMSE": 0.000289715,
+      "MAE": 0.0001677339
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004483509,
+      "MAE": 0.000250443
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006591643,
+      "MAE": 0.000317453
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0004666641,
+      "MAE": 0.0003040621
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Linear-50",
+      "horizon_bin": "41-50",
+      "RMSE": 0.000823753,
+      "MAE": 0.0005115489
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0003502696,
+      "MAE": 0.0001943171
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0008651093,
+      "MAE": 0.0004501244
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0014326647,
+      "MAE": 0.0006878937
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0014010841,
+      "MAE": 0.0007064372
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Same-policy",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0020461393,
+      "MAE": 0.0010639138
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002660852,
+      "MAE": 0.0001500461
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004939711,
+      "MAE": 0.0002491416
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0007497918,
+      "MAE": 0.0003142157
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "31-40",
+      "RMSE": 0.000446702,
+      "MAE": 0.0002942061
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert Feature-ML",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0009436285,
+      "MAE": 0.0005153697
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002456701,
+      "MAE": 0.0001236814
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004578197,
+      "MAE": 0.0002439781
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006722389,
+      "MAE": 0.000330285
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0004640557,
+      "MAE": 0.0003057339
+    },
+    {
+      "cutoff": 150,
+      "model": "Expert GP",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0008235131,
+      "MAE": 0.0005139847
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002726336,
+      "MAE": 0.0001561811
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004509873,
+      "MAE": 0.0002221246
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006681177,
+      "MAE": 0.0002625907
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0003811329,
+      "MAE": 0.000238031
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Global",
+      "horizon_bin": "41-50",
+      "RMSE": 0.000792785,
+      "MAE": 0.0004277286
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002698737,
+      "MAE": 0.000158576
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004667563,
+      "MAE": 0.0002402898
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006680621,
+      "MAE": 0.0002664584
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "31-40",
+      "RMSE": 0.00040462,
+      "MAE": 0.0002749831
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Horizon",
+      "horizon_bin": "41-50",
+      "RMSE": 0.000771619,
+      "MAE": 0.0004455747
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "1-10",
+      "RMSE": 0.0002633693,
+      "MAE": 0.0001506793
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "11-20",
+      "RMSE": 0.0004578465,
+      "MAE": 0.0002405261
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "21-30",
+      "RMSE": 0.0006439961,
+      "MAE": 0.0002561111
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "31-40",
+      "RMSE": 0.0003799222,
+      "MAE": 0.0002466802
+    },
+    {
+      "cutoff": 150,
+      "model": "Ensemble Adaptive",
+      "horizon_bin": "41-50",
+      "RMSE": 0.0007403845,
+      "MAE": 0.0004126889
+    }
+  ],
+  "uncertainty_metrics": [
+    {
+      "cutoff": 50,
+      "ensemble": "global",
+      "nominal_level": 0.9,
+      "point_coverage": 0.9725,
+      "full_50_cycle_path_coverage": 0.8,
+      "mean_interval_width": 0.0039994099,
+      "median_interval_width": 0.0024632395,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 50,
+      "ensemble": "global",
+      "nominal_level": 0.95,
+      "point_coverage": 0.985,
+      "full_50_cycle_path_coverage": 0.925,
+      "mean_interval_width": 0.0053734391,
+      "median_interval_width": 0.0030217007,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 50,
+      "ensemble": "horizon",
+      "nominal_level": 0.9,
+      "point_coverage": 0.9775,
+      "full_50_cycle_path_coverage": 0.8,
+      "mean_interval_width": 0.0041985714,
+      "median_interval_width": 0.0026399177,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 50,
+      "ensemble": "horizon",
+      "nominal_level": 0.95,
+      "point_coverage": 0.984,
+      "full_50_cycle_path_coverage": 0.9,
+      "mean_interval_width": 0.0056876417,
+      "median_interval_width": 0.003451853,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 50,
+      "ensemble": "adaptive",
+      "nominal_level": 0.9,
+      "point_coverage": 0.9765,
+      "full_50_cycle_path_coverage": 0.8,
+      "mean_interval_width": 0.0032776462,
+      "median_interval_width": 0.0023118815,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 50,
+      "ensemble": "adaptive",
+      "nominal_level": 0.95,
+      "point_coverage": 0.9905,
+      "full_50_cycle_path_coverage": 0.875,
+      "mean_interval_width": 0.0046384004,
+      "median_interval_width": 0.0034122127,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 75,
+      "ensemble": "global",
+      "nominal_level": 0.9,
+      "point_coverage": 0.9865,
+      "full_50_cycle_path_coverage": 0.8,
+      "mean_interval_width": 0.0033749122,
+      "median_interval_width": 0.0025262937,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 75,
+      "ensemble": "global",
+      "nominal_level": 0.95,
+      "point_coverage": 0.996,
+      "full_50_cycle_path_coverage": 0.875,
+      "mean_interval_width": 0.0048251108,
+      "median_interval_width": 0.0036344877,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 75,
+      "ensemble": "horizon",
+      "nominal_level": 0.9,
+      "point_coverage": 0.981,
+      "full_50_cycle_path_coverage": 0.75,
+      "mean_interval_width": 0.0036313654,
+      "median_interval_width": 0.0025538377,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 75,
+      "ensemble": "horizon",
+      "nominal_level": 0.95,
+      "point_coverage": 0.9935,
+      "full_50_cycle_path_coverage": 0.85,
+      "mean_interval_width": 0.0058189114,
+      "median_interval_width": 0.0038106128,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 75,
+      "ensemble": "adaptive",
+      "nominal_level": 0.9,
+      "point_coverage": 0.9635,
+      "full_50_cycle_path_coverage": 0.725,
+      "mean_interval_width": 0.0022254295,
+      "median_interval_width": 0.0016413063,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 75,
+      "ensemble": "adaptive",
+      "nominal_level": 0.95,
+      "point_coverage": 0.983,
+      "full_50_cycle_path_coverage": 0.825,
+      "mean_interval_width": 0.0034260075,
+      "median_interval_width": 0.0027064756,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 100,
+      "ensemble": "global",
+      "nominal_level": 0.9,
+      "point_coverage": 0.973,
+      "full_50_cycle_path_coverage": 0.775,
+      "mean_interval_width": 0.0022291964,
+      "median_interval_width": 0.0018329739,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 100,
+      "ensemble": "global",
+      "nominal_level": 0.95,
+      "point_coverage": 0.9895,
+      "full_50_cycle_path_coverage": 0.875,
+      "mean_interval_width": 0.0032419297,
+      "median_interval_width": 0.0026272703,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 100,
+      "ensemble": "horizon",
+      "nominal_level": 0.9,
+      "point_coverage": 0.974,
+      "full_50_cycle_path_coverage": 0.75,
+      "mean_interval_width": 0.0022233126,
+      "median_interval_width": 0.0017795841,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 100,
+      "ensemble": "horizon",
+      "nominal_level": 0.95,
+      "point_coverage": 0.9895,
+      "full_50_cycle_path_coverage": 0.85,
+      "mean_interval_width": 0.0030197646,
+      "median_interval_width": 0.0023900374,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 100,
+      "ensemble": "adaptive",
+      "nominal_level": 0.9,
+      "point_coverage": 0.9725,
+      "full_50_cycle_path_coverage": 0.75,
+      "mean_interval_width": 0.0021893735,
+      "median_interval_width": 0.0016606853,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 100,
+      "ensemble": "adaptive",
+      "nominal_level": 0.95,
+      "point_coverage": 0.9875,
+      "full_50_cycle_path_coverage": 0.875,
+      "mean_interval_width": 0.0031473894,
+      "median_interval_width": 0.0022993534,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 125,
+      "ensemble": "global",
+      "nominal_level": 0.9,
+      "point_coverage": 0.968,
+      "full_50_cycle_path_coverage": 0.85,
+      "mean_interval_width": 0.0023753058,
+      "median_interval_width": 0.0020905462,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 125,
+      "ensemble": "global",
+      "nominal_level": 0.95,
+      "point_coverage": 0.987,
+      "full_50_cycle_path_coverage": 0.9,
+      "mean_interval_width": 0.004527544,
+      "median_interval_width": 0.0033393857,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 125,
+      "ensemble": "horizon",
+      "nominal_level": 0.9,
+      "point_coverage": 0.9665,
+      "full_50_cycle_path_coverage": 0.8,
+      "mean_interval_width": 0.0025980942,
+      "median_interval_width": 0.0020188642,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 125,
+      "ensemble": "horizon",
+      "nominal_level": 0.95,
+      "point_coverage": 0.9875,
+      "full_50_cycle_path_coverage": 0.875,
+      "mean_interval_width": 0.0050608777,
+      "median_interval_width": 0.0033250648,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 125,
+      "ensemble": "adaptive",
+      "nominal_level": 0.9,
+      "point_coverage": 0.978,
+      "full_50_cycle_path_coverage": 0.75,
+      "mean_interval_width": 0.0021576229,
+      "median_interval_width": 0.0018411048,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 125,
+      "ensemble": "adaptive",
+      "nominal_level": 0.95,
+      "point_coverage": 0.99,
+      "full_50_cycle_path_coverage": 0.95,
+      "mean_interval_width": 0.0043063253,
+      "median_interval_width": 0.0032972877,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 150,
+      "ensemble": "global",
+      "nominal_level": 0.9,
+      "point_coverage": 0.9705,
+      "full_50_cycle_path_coverage": 0.75,
+      "mean_interval_width": 0.0026807805,
+      "median_interval_width": 0.0019371781,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 150,
+      "ensemble": "global",
+      "nominal_level": 0.95,
+      "point_coverage": 0.9865,
+      "full_50_cycle_path_coverage": 0.85,
+      "mean_interval_width": 0.0038746146,
+      "median_interval_width": 0.0027952994,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 150,
+      "ensemble": "horizon",
+      "nominal_level": 0.9,
+      "point_coverage": 0.9755,
+      "full_50_cycle_path_coverage": 0.8,
+      "mean_interval_width": 0.0030251121,
+      "median_interval_width": 0.0018412282,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 150,
+      "ensemble": "horizon",
+      "nominal_level": 0.95,
+      "point_coverage": 0.988,
+      "full_50_cycle_path_coverage": 0.85,
+      "mean_interval_width": 0.0044360766,
+      "median_interval_width": 0.0028532988,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 150,
+      "ensemble": "adaptive",
+      "nominal_level": 0.9,
+      "point_coverage": 0.976,
+      "full_50_cycle_path_coverage": 0.8,
+      "mean_interval_width": 0.0025391679,
+      "median_interval_width": 0.0018184867,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    },
+    {
+      "cutoff": 150,
+      "ensemble": "adaptive",
+      "nominal_level": 0.95,
+      "point_coverage": 0.99,
+      "full_50_cycle_path_coverage": 0.85,
+      "mean_interval_width": 0.0038355916,
+      "median_interval_width": 0.0029332992,
+      "calibration_batteries_per_outer_fold": 39,
+      "calibration_note": "battery-grouped meta cross-fit; max normalized residual calibrated separately in five 10-cycle horizon bins"
+    }
+  ],
+  "public_baseline_metrics": [
+    {
+      "model": "Persistence",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000921398,
+      "overall_RMSE": 0.0016453572,
+      "mean_battery_RMSE": 0.0010960434,
+      "median_battery_RMSE": 0.0007665479,
+      "worst_battery_RMSE": 0.0059591536,
+      "cutoff": 50
+    },
+    {
+      "model": "Linear-10",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0007146283,
+      "overall_RMSE": 0.0014218503,
+      "mean_battery_RMSE": 0.0008297948,
+      "median_battery_RMSE": 0.0004969744,
+      "worst_battery_RMSE": 0.0060994484,
+      "cutoff": 50
+    },
+    {
+      "model": "Linear-20",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003945208,
+      "overall_RMSE": 0.0007014353,
+      "mean_battery_RMSE": 0.0004866583,
+      "median_battery_RMSE": 0.0002889452,
+      "worst_battery_RMSE": 0.0023417018,
+      "cutoff": 50
+    },
+    {
+      "model": "Linear-30",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005458199,
+      "overall_RMSE": 0.000781312,
+      "mean_battery_RMSE": 0.0006688108,
+      "median_battery_RMSE": 0.0005793056,
+      "worst_battery_RMSE": 0.0017152833,
+      "cutoff": 50
+    },
+    {
+      "model": "Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0023582293,
+      "overall_RMSE": 0.0035610689,
+      "mean_battery_RMSE": 0.0025812285,
+      "median_battery_RMSE": 0.0020356458,
+      "worst_battery_RMSE": 0.0173082594,
+      "cutoff": 50
+    },
+    {
+      "model": "Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003945208,
+      "overall_RMSE": 0.0007014353,
+      "mean_battery_RMSE": 0.0004866583,
+      "median_battery_RMSE": 0.0002889452,
+      "worst_battery_RMSE": 0.0023417018,
+      "cutoff": 50
+    },
+    {
+      "model": "Same-policy mean delta",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000504114,
+      "overall_RMSE": 0.0011184283,
+      "mean_battery_RMSE": 0.0006360471,
+      "median_battery_RMSE": 0.0003375867,
+      "worst_battery_RMSE": 0.0042968051,
+      "cutoff": 50
+    },
+    {
+      "model": "Persistence",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0009735677,
+      "overall_RMSE": 0.0017030198,
+      "mean_battery_RMSE": 0.0011350504,
+      "median_battery_RMSE": 0.0007093228,
+      "worst_battery_RMSE": 0.0065522308,
+      "cutoff": 75
+    },
+    {
+      "model": "Linear-10",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000546299,
+      "overall_RMSE": 0.0007927434,
+      "mean_battery_RMSE": 0.0006345946,
+      "median_battery_RMSE": 0.0004746176,
+      "worst_battery_RMSE": 0.0021015581,
+      "cutoff": 75
+    },
+    {
+      "model": "Linear-20",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003474236,
+      "overall_RMSE": 0.0007528668,
+      "mean_battery_RMSE": 0.0004218629,
+      "median_battery_RMSE": 0.0002718205,
+      "worst_battery_RMSE": 0.0039989944,
+      "cutoff": 75
+    },
+    {
+      "model": "Linear-30",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003371612,
+      "overall_RMSE": 0.0005351305,
+      "mean_battery_RMSE": 0.0004105088,
+      "median_battery_RMSE": 0.0002891482,
+      "worst_battery_RMSE": 0.0015886172,
+      "cutoff": 75
+    },
+    {
+      "model": "Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0004475496,
+      "overall_RMSE": 0.0006260909,
+      "mean_battery_RMSE": 0.0005216884,
+      "median_battery_RMSE": 0.00045399,
+      "worst_battery_RMSE": 0.0016135008,
+      "cutoff": 75
+    },
+    {
+      "model": "Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003966793,
+      "overall_RMSE": 0.0007893484,
+      "mean_battery_RMSE": 0.0004707682,
+      "median_battery_RMSE": 0.0002891482,
+      "worst_battery_RMSE": 0.0039989944,
+      "cutoff": 75
+    },
+    {
+      "model": "Same-policy mean delta",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005290556,
+      "overall_RMSE": 0.0011553782,
+      "mean_battery_RMSE": 0.0006325416,
+      "median_battery_RMSE": 0.0003156954,
+      "worst_battery_RMSE": 0.0043697913,
+      "cutoff": 75
+    },
+    {
+      "model": "Persistence",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0010814639,
+      "overall_RMSE": 0.0018510329,
+      "mean_battery_RMSE": 0.0012784559,
+      "median_battery_RMSE": 0.0008991044,
+      "worst_battery_RMSE": 0.0065919288,
+      "cutoff": 100
+    },
+    {
+      "model": "Linear-10",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000749134,
+      "overall_RMSE": 0.0011052019,
+      "mean_battery_RMSE": 0.0008554782,
+      "median_battery_RMSE": 0.0007037492,
+      "worst_battery_RMSE": 0.0028266283,
+      "cutoff": 100
+    },
+    {
+      "model": "Linear-20",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003991467,
+      "overall_RMSE": 0.0007708871,
+      "mean_battery_RMSE": 0.0004745939,
+      "median_battery_RMSE": 0.0002598436,
+      "worst_battery_RMSE": 0.0037517508,
+      "cutoff": 100
+    },
+    {
+      "model": "Linear-30",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002893544,
+      "overall_RMSE": 0.0005170378,
+      "mean_battery_RMSE": 0.0003698819,
+      "median_battery_RMSE": 0.0002381189,
+      "worst_battery_RMSE": 0.0020065919,
+      "cutoff": 100
+    },
+    {
+      "model": "Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003140104,
+      "overall_RMSE": 0.000570537,
+      "mean_battery_RMSE": 0.0003913692,
+      "median_battery_RMSE": 0.0002453928,
+      "worst_battery_RMSE": 0.0022674559,
+      "cutoff": 100
+    },
+    {
+      "model": "Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0002893544,
+      "overall_RMSE": 0.0005170378,
+      "mean_battery_RMSE": 0.0003698819,
+      "median_battery_RMSE": 0.0002381189,
+      "worst_battery_RMSE": 0.0020065919,
+      "cutoff": 100
+    },
+    {
+      "model": "Same-policy mean delta",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0006183109,
+      "overall_RMSE": 0.0012623176,
+      "mean_battery_RMSE": 0.0007391438,
+      "median_battery_RMSE": 0.0002991294,
+      "worst_battery_RMSE": 0.0044357376,
+      "cutoff": 100
+    },
+    {
+      "model": "Persistence",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0013204946,
+      "overall_RMSE": 0.0020193395,
+      "mean_battery_RMSE": 0.0015341678,
+      "median_battery_RMSE": 0.0011168201,
+      "worst_battery_RMSE": 0.0066184172,
+      "cutoff": 125
+    },
+    {
+      "model": "Linear-10",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005778717,
+      "overall_RMSE": 0.0008945843,
+      "mean_battery_RMSE": 0.0006780333,
+      "median_battery_RMSE": 0.0004838871,
+      "worst_battery_RMSE": 0.0032074331,
+      "cutoff": 125
+    },
+    {
+      "model": "Linear-20",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005884134,
+      "overall_RMSE": 0.0007877453,
+      "mean_battery_RMSE": 0.0006974133,
+      "median_battery_RMSE": 0.0006583271,
+      "worst_battery_RMSE": 0.0020095831,
+      "cutoff": 125
+    },
+    {
+      "model": "Linear-30",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005041668,
+      "overall_RMSE": 0.0007058297,
+      "mean_battery_RMSE": 0.000598107,
+      "median_battery_RMSE": 0.0005431776,
+      "worst_battery_RMSE": 0.0020971363,
+      "cutoff": 125
+    },
+    {
+      "model": "Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003778888,
+      "overall_RMSE": 0.0006313275,
+      "mean_battery_RMSE": 0.000471718,
+      "median_battery_RMSE": 0.0003724213,
+      "worst_battery_RMSE": 0.0022387932,
+      "cutoff": 125
+    },
+    {
+      "model": "Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003778888,
+      "overall_RMSE": 0.0006313275,
+      "mean_battery_RMSE": 0.000471718,
+      "median_battery_RMSE": 0.0003724213,
+      "worst_battery_RMSE": 0.0022387932,
+      "cutoff": 125
+    },
+    {
+      "model": "Same-policy mean delta",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0005705499,
+      "overall_RMSE": 0.0012247079,
+      "mean_battery_RMSE": 0.0007141045,
+      "median_battery_RMSE": 0.0003084065,
+      "worst_battery_RMSE": 0.0040971805,
+      "cutoff": 125
+    },
+    {
+      "model": "Persistence",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0013890125,
+      "overall_RMSE": 0.0021096467,
+      "mean_battery_RMSE": 0.0016197368,
+      "median_battery_RMSE": 0.0011335931,
+      "worst_battery_RMSE": 0.0064247675,
+      "cutoff": 150
+    },
+    {
+      "model": "Linear-10",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0009312202,
+      "overall_RMSE": 0.0016932178,
+      "mean_battery_RMSE": 0.0010751891,
+      "median_battery_RMSE": 0.0006481522,
+      "worst_battery_RMSE": 0.0074618954,
+      "cutoff": 150
+    },
+    {
+      "model": "Linear-20",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0004714832,
+      "overall_RMSE": 0.0007349848,
+      "mean_battery_RMSE": 0.0005543917,
+      "median_battery_RMSE": 0.0004656139,
+      "worst_battery_RMSE": 0.0031349158,
+      "cutoff": 150
+    },
+    {
+      "model": "Linear-30",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003592485,
+      "overall_RMSE": 0.0005955597,
+      "mean_battery_RMSE": 0.0004263649,
+      "median_battery_RMSE": 0.000334295,
+      "worst_battery_RMSE": 0.0022365063,
+      "cutoff": 150
+    },
+    {
+      "model": "Linear-50",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003102482,
+      "overall_RMSE": 0.0005684708,
+      "mean_battery_RMSE": 0.0003887949,
+      "median_battery_RMSE": 0.0002606802,
+      "worst_battery_RMSE": 0.0023322933,
+      "cutoff": 150
+    },
+    {
+      "model": "Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0003361268,
+      "overall_RMSE": 0.0006158852,
+      "mean_battery_RMSE": 0.000409865,
+      "median_battery_RMSE": 0.0002606802,
+      "worst_battery_RMSE": 0.0023322933,
+      "cutoff": 150
+    },
+    {
+      "model": "Same-policy mean delta",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0006205372,
+      "overall_RMSE": 0.0013470972,
+      "mean_battery_RMSE": 0.0007669532,
+      "median_battery_RMSE": 0.0002586111,
+      "worst_battery_RMSE": 0.0041743191,
+      "cutoff": 150
+    }
+  ]
+}

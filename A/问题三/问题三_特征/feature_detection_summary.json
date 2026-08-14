@@ -1,0 +1,90 @@
+{
+  "early_window": 150,
+  "full_window": 200,
+  "battery_count": 49,
+  "dev_battery_count": 40,
+  "per_cycle_feature_count": 42,
+  "battery_level_feature_count": 35,
+  "policies": [
+    "3_6C-80PER_3_6C",
+    "3_7C_31PER_5_9C",
+    "4_8C_80PER_4_8C",
+    "5C_67PER_4C",
+    "5_3C_54PER_4C",
+    "5_6C_19PER_4_6C",
+    "5_6C_36PER_4_3C"
+  ],
+  "font": "Microsoft YaHei",
+  "top_battery_features_by_soh200_spearman": [
+    "soh150",
+    "exp_c",
+    "exp_a",
+    "d50_100",
+    "d100_150",
+    "fade150",
+    "soh_lin_slope",
+    "exp_b"
+  ],
+  "top_overall_by_spearman": [
+    {
+      "feature": "SOH_smooth",
+      "pearson": 1.0,
+      "spearman": 1.0
+    },
+    {
+      "feature": "SOH",
+      "pearson": 0.9013419153669724,
+      "spearman": 0.9837657553457921
+    },
+    {
+      "feature": "soh_loss",
+      "pearson": -0.6137195945254904,
+      "spearman": -0.7881610796543962
+    },
+    {
+      "feature": "soh_slope_w50",
+      "pearson": 0.3299757786788883,
+      "spearman": 0.7676978212922435
+    },
+    {
+      "feature": "soh_slope_w25",
+      "pearson": 0.31043848459884843,
+      "spearman": 0.747203072614619
+    },
+    {
+      "feature": "soh_slope_w10",
+      "pearson": 0.21720187208027136,
+      "spearman": 0.694210414879932
+    },
+    {
+      "feature": "cycle",
+      "pearson": -0.25203651878298594,
+      "spearman": -0.6611509071805224
+    },
+    {
+      "feature": "log_cycle",
+      "pearson": -0.19573524580507395,
+      "spearman": -0.6611509071805224
+    },
+    {
+      "feature": "cycle_sq",
+      "pearson": -0.25595509182509113,
+      "spearman": -0.6611509071805224
+    },
+    {
+      "feature": "dsoh",
+      "pearson": 0.0944979568915734,
+      "spearman": 0.6237909008002959
+    },
+    {
+      "feature": "abs_dsoh",
+      "pearson": 0.07323029260727013,
+      "spearman": -0.5107302914062164
+    },
+    {
+      "feature": "tavg_std_w25",
+      "pearson": -0.2592009539299053,
+      "spearman": -0.45845033862329104
+    }
+  ]
+}

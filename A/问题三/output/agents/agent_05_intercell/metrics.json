@@ -1,0 +1,1229 @@
+{
+  "agent": "agent_05_intercell",
+  "seed": 20260814,
+  "runtime_seconds": 36.63430969999172,
+  "parameter_count": 0,
+  "versions": {
+    "python": "3.13.9",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "data": {
+    "training_batteries": 40,
+    "excluded_prediction_test_batteries": 9,
+    "cutoffs": [
+      50,
+      75,
+      100,
+      125,
+      150
+    ],
+    "forecast_horizon": 50,
+    "prediction_rows": 10000
+  },
+  "validation": {
+    "outer": "Leave-One-Battery-Out over 40 non-test batteries",
+    "inner": "Leave-One-Battery-Out over each outer training pool",
+    "selection_metric": "point-weighted inner RMSE over horizons 1-50",
+    "cutoff_features": "cycle <= cutoff only",
+    "target_future_in_reference_pool": false,
+    "prediction_test_used": false,
+    "public_same_policy_reconciliation_max_abs_diff": 0.0
+  },
+  "hyperparameter_grids": {
+    "trajectory": [
+      {
+        "L": 20,
+        "tau_scale": 0.75
+      },
+      {
+        "L": 20,
+        "tau_scale": 1.5
+      },
+      {
+        "L": 30,
+        "tau_scale": 0.75
+      },
+      {
+        "L": 30,
+        "tau_scale": 1.5
+      },
+      {
+        "L": 50,
+        "tau_scale": 0.75
+      },
+      {
+        "L": 50,
+        "tau_scale": 1.5
+      }
+    ],
+    "slope": [
+      {
+        "L": 20,
+        "tau_scale": 0.75,
+        "clip_low": 0.5,
+        "clip_high": 1.5
+      },
+      {
+        "L": 20,
+        "tau_scale": 0.75,
+        "clip_low": 0.75,
+        "clip_high": 1.25
+      },
+      {
+        "L": 20,
+        "tau_scale": 0.75,
+        "clip_low": 0.25,
+        "clip_high": 2.0
+      },
+      {
+        "L": 20,
+        "tau_scale": 1.5,
+        "clip_low": 0.5,
+        "clip_high": 1.5
+      },
+      {
+        "L": 20,
+        "tau_scale": 1.5,
+        "clip_low": 0.75,
+        "clip_high": 1.25
+      },
+      {
+        "L": 20,
+        "tau_scale": 1.5,
+        "clip_low": 0.25,
+        "clip_high": 2.0
+      },
+      {
+        "L": 30,
+        "tau_scale": 0.75,
+        "clip_low": 0.5,
+        "clip_high": 1.5
+      },
+      {
+        "L": 30,
+        "tau_scale": 0.75,
+        "clip_low": 0.75,
+        "clip_high": 1.25
+      },
+      {
+        "L": 30,
+        "tau_scale": 0.75,
+        "clip_low": 0.25,
+        "clip_high": 2.0
+      },
+      {
+        "L": 30,
+        "tau_scale": 1.5,
+        "clip_low": 0.5,
+        "clip_high": 1.5
+      },
+      {
+        "L": 30,
+        "tau_scale": 1.5,
+        "clip_low": 0.75,
+        "clip_high": 1.25
+      },
+      {
+        "L": 30,
+        "tau_scale": 1.5,
+        "clip_low": 0.25,
+        "clip_high": 2.0
+      },
+      {
+        "L": 50,
+        "tau_scale": 0.75,
+        "clip_low": 0.5,
+        "clip_high": 1.5
+      },
+      {
+        "L": 50,
+        "tau_scale": 0.75,
+        "clip_low": 0.75,
+        "clip_high": 1.25
+      },
+      {
+        "L": 50,
+        "tau_scale": 0.75,
+        "clip_low": 0.25,
+        "clip_high": 2.0
+      },
+      {
+        "L": 50,
+        "tau_scale": 1.5,
+        "clip_low": 0.5,
+        "clip_high": 1.5
+      },
+      {
+        "L": 50,
+        "tau_scale": 1.5,
+        "clip_low": 0.75,
+        "clip_high": 1.25
+      },
+      {
+        "L": 50,
+        "tau_scale": 1.5,
+        "clip_low": 0.25,
+        "clip_high": 2.0
+      }
+    ],
+    "multivariate": [
+      {
+        "L": 20,
+        "tau_scale": 0.75,
+        "dynamic_weight": 0.25
+      },
+      {
+        "L": 20,
+        "tau_scale": 0.75,
+        "dynamic_weight": 0.5
+      },
+      {
+        "L": 20,
+        "tau_scale": 0.75,
+        "dynamic_weight": 1.0
+      },
+      {
+        "L": 20,
+        "tau_scale": 1.5,
+        "dynamic_weight": 0.25
+      },
+      {
+        "L": 20,
+        "tau_scale": 1.5,
+        "dynamic_weight": 0.5
+      },
+      {
+        "L": 20,
+        "tau_scale": 1.5,
+        "dynamic_weight": 1.0
+      },
+      {
+        "L": 30,
+        "tau_scale": 0.75,
+        "dynamic_weight": 0.25
+      },
+      {
+        "L": 30,
+        "tau_scale": 0.75,
+        "dynamic_weight": 0.5
+      },
+      {
+        "L": 30,
+        "tau_scale": 0.75,
+        "dynamic_weight": 1.0
+      },
+      {
+        "L": 30,
+        "tau_scale": 1.5,
+        "dynamic_weight": 0.25
+      },
+      {
+        "L": 30,
+        "tau_scale": 1.5,
+        "dynamic_weight": 0.5
+      },
+      {
+        "L": 30,
+        "tau_scale": 1.5,
+        "dynamic_weight": 1.0
+      },
+      {
+        "L": 50,
+        "tau_scale": 0.75,
+        "dynamic_weight": 0.25
+      },
+      {
+        "L": 50,
+        "tau_scale": 0.75,
+        "dynamic_weight": 0.5
+      },
+      {
+        "L": 50,
+        "tau_scale": 0.75,
+        "dynamic_weight": 1.0
+      },
+      {
+        "L": 50,
+        "tau_scale": 1.5,
+        "dynamic_weight": 0.25
+      },
+      {
+        "L": 50,
+        "tau_scale": 1.5,
+        "dynamic_weight": 0.5
+      },
+      {
+        "L": 50,
+        "tau_scale": 1.5,
+        "dynamic_weight": 1.0
+      }
+    ],
+    "soft_policy": [
+      {
+        "L": 20,
+        "tau_scale": 0.75,
+        "strategy_tau": 0.5
+      },
+      {
+        "L": 20,
+        "tau_scale": 0.75,
+        "strategy_tau": 1.0
+      },
+      {
+        "L": 20,
+        "tau_scale": 0.75,
+        "strategy_tau": 2.0
+      },
+      {
+        "L": 20,
+        "tau_scale": 1.5,
+        "strategy_tau": 0.5
+      },
+      {
+        "L": 20,
+        "tau_scale": 1.5,
+        "strategy_tau": 1.0
+      },
+      {
+        "L": 20,
+        "tau_scale": 1.5,
+        "strategy_tau": 2.0
+      },
+      {
+        "L": 30,
+        "tau_scale": 0.75,
+        "strategy_tau": 0.5
+      },
+      {
+        "L": 30,
+        "tau_scale": 0.75,
+        "strategy_tau": 1.0
+      },
+      {
+        "L": 30,
+        "tau_scale": 0.75,
+        "strategy_tau": 2.0
+      },
+      {
+        "L": 30,
+        "tau_scale": 1.5,
+        "strategy_tau": 0.5
+      },
+      {
+        "L": 30,
+        "tau_scale": 1.5,
+        "strategy_tau": 1.0
+      },
+      {
+        "L": 30,
+        "tau_scale": 1.5,
+        "strategy_tau": 2.0
+      },
+      {
+        "L": 50,
+        "tau_scale": 0.75,
+        "strategy_tau": 0.5
+      },
+      {
+        "L": 50,
+        "tau_scale": 0.75,
+        "strategy_tau": 1.0
+      },
+      {
+        "L": 50,
+        "tau_scale": 0.75,
+        "strategy_tau": 2.0
+      },
+      {
+        "L": 50,
+        "tau_scale": 1.5,
+        "strategy_tau": 0.5
+      },
+      {
+        "L": 50,
+        "tau_scale": 1.5,
+        "strategy_tau": 1.0
+      },
+      {
+        "L": 50,
+        "tau_scale": 1.5,
+        "strategy_tau": 2.0
+      }
+    ]
+  },
+  "overall_metrics": [
+    {
+      "model": "Public Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000394520817942,
+      "overall_RMSE": 0.000701435324832,
+      "mean_battery_RMSE": 0.000486658271545,
+      "median_battery_RMSE": 0.00028894524552,
+      "worst_battery_RMSE": 0.002341701847627,
+      "cutoff": 50
+    },
+    {
+      "model": "Exact-policy mean delta",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000504113967904,
+      "overall_RMSE": 0.001118428306314,
+      "mean_battery_RMSE": 0.000636047134664,
+      "median_battery_RMSE": 0.000337586678337,
+      "worst_battery_RMSE": 0.004296805062459,
+      "cutoff": 50
+    },
+    {
+      "model": "Trajectory similarity",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000481281986035,
+      "overall_RMSE": 0.001108508960602,
+      "mean_battery_RMSE": 0.000605080731148,
+      "median_battery_RMSE": 0.000294809560708,
+      "worst_battery_RMSE": 0.004296805062459,
+      "cutoff": 50
+    },
+    {
+      "model": "Slope-adapted cohort",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.00036455362557,
+      "overall_RMSE": 0.000792294774726,
+      "mean_battery_RMSE": 0.000469155245653,
+      "median_battery_RMSE": 0.000289811299781,
+      "worst_battery_RMSE": 0.003943458006149,
+      "cutoff": 50
+    },
+    {
+      "model": "Multivariate similarity",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000482537322501,
+      "overall_RMSE": 0.001107681738873,
+      "mean_battery_RMSE": 0.000603020341516,
+      "median_battery_RMSE": 0.000303301000164,
+      "worst_battery_RMSE": 0.004296805062459,
+      "cutoff": 50
+    },
+    {
+      "model": "Soft-policy neighbors",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000396166289346,
+      "overall_RMSE": 0.000989779563797,
+      "mean_battery_RMSE": 0.00049619257259,
+      "median_battery_RMSE": 0.000248267320343,
+      "worst_battery_RMSE": 0.004458944383463,
+      "cutoff": 50
+    },
+    {
+      "model": "Public Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000396679276647,
+      "overall_RMSE": 0.00078934842178,
+      "mean_battery_RMSE": 0.000470768204046,
+      "median_battery_RMSE": 0.000289148163772,
+      "worst_battery_RMSE": 0.003998994361322,
+      "cutoff": 75
+    },
+    {
+      "model": "Exact-policy mean delta",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000529055581487,
+      "overall_RMSE": 0.001155378244235,
+      "mean_battery_RMSE": 0.000632541583929,
+      "median_battery_RMSE": 0.000315695370594,
+      "worst_battery_RMSE": 0.004369791313954,
+      "cutoff": 75
+    },
+    {
+      "model": "Trajectory similarity",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000501416121795,
+      "overall_RMSE": 0.001149168030145,
+      "mean_battery_RMSE": 0.000604590939354,
+      "median_battery_RMSE": 0.000271291401245,
+      "worst_battery_RMSE": 0.004369791313954,
+      "cutoff": 75
+    },
+    {
+      "model": "Slope-adapted cohort",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000374410406008,
+      "overall_RMSE": 0.000776180370525,
+      "mean_battery_RMSE": 0.000455053365496,
+      "median_battery_RMSE": 0.000339731070185,
+      "worst_battery_RMSE": 0.004147989580601,
+      "cutoff": 75
+    },
+    {
+      "model": "Multivariate similarity",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000496149128032,
+      "overall_RMSE": 0.001148263438272,
+      "mean_battery_RMSE": 0.000599448568267,
+      "median_battery_RMSE": 0.000235441589787,
+      "worst_battery_RMSE": 0.004369791313954,
+      "cutoff": 75
+    },
+    {
+      "model": "Soft-policy neighbors",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000448555457261,
+      "overall_RMSE": 0.001033129328054,
+      "mean_battery_RMSE": 0.000531648235748,
+      "median_battery_RMSE": 0.000252883078113,
+      "worst_battery_RMSE": 0.004194283957105,
+      "cutoff": 75
+    },
+    {
+      "model": "Public Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000289354351139,
+      "overall_RMSE": 0.000517037848279,
+      "mean_battery_RMSE": 0.000369881907975,
+      "median_battery_RMSE": 0.00023811887389,
+      "worst_battery_RMSE": 0.002006591866054,
+      "cutoff": 100
+    },
+    {
+      "model": "Exact-policy mean delta",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000618310938422,
+      "overall_RMSE": 0.001262317617278,
+      "mean_battery_RMSE": 0.000739143771208,
+      "median_battery_RMSE": 0.000299129417929,
+      "worst_battery_RMSE": 0.004435737571674,
+      "cutoff": 100
+    },
+    {
+      "model": "Trajectory similarity",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.0006360637056,
+      "overall_RMSE": 0.001278283879984,
+      "mean_battery_RMSE": 0.000755570158469,
+      "median_battery_RMSE": 0.00028861085817,
+      "worst_battery_RMSE": 0.004435737571674,
+      "cutoff": 100
+    },
+    {
+      "model": "Slope-adapted cohort",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000357888304269,
+      "overall_RMSE": 0.000684833435134,
+      "mean_battery_RMSE": 0.000438658439699,
+      "median_battery_RMSE": 0.000256413325533,
+      "worst_battery_RMSE": 0.00319552148714,
+      "cutoff": 100
+    },
+    {
+      "model": "Multivariate similarity",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000623846312772,
+      "overall_RMSE": 0.001268171171313,
+      "mean_battery_RMSE": 0.000742376282929,
+      "median_battery_RMSE": 0.00027576239938,
+      "worst_battery_RMSE": 0.004435737571674,
+      "cutoff": 100
+    },
+    {
+      "model": "Soft-policy neighbors",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000535105684524,
+      "overall_RMSE": 0.001202796104395,
+      "mean_battery_RMSE": 0.0006247173611,
+      "median_battery_RMSE": 0.000244684986013,
+      "worst_battery_RMSE": 0.004805163620814,
+      "cutoff": 100
+    },
+    {
+      "model": "Public Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000377888775557,
+      "overall_RMSE": 0.000631327503429,
+      "mean_battery_RMSE": 0.000471718035294,
+      "median_battery_RMSE": 0.000372421347299,
+      "worst_battery_RMSE": 0.002238793205392,
+      "cutoff": 125
+    },
+    {
+      "model": "Exact-policy mean delta",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000570549887929,
+      "overall_RMSE": 0.001224707927076,
+      "mean_battery_RMSE": 0.000714104518158,
+      "median_battery_RMSE": 0.000308406479893,
+      "worst_battery_RMSE": 0.004097180507764,
+      "cutoff": 125
+    },
+    {
+      "model": "Trajectory similarity",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000525844040428,
+      "overall_RMSE": 0.001213513398242,
+      "mean_battery_RMSE": 0.000669121455253,
+      "median_battery_RMSE": 0.000210737502966,
+      "worst_battery_RMSE": 0.004097180507764,
+      "cutoff": 125
+    },
+    {
+      "model": "Slope-adapted cohort",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000381771189387,
+      "overall_RMSE": 0.000792430815052,
+      "mean_battery_RMSE": 0.000491949525287,
+      "median_battery_RMSE": 0.000331394145273,
+      "worst_battery_RMSE": 0.003387030335643,
+      "cutoff": 125
+    },
+    {
+      "model": "Multivariate similarity",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000549268419608,
+      "overall_RMSE": 0.001220660476748,
+      "mean_battery_RMSE": 0.000694176316128,
+      "median_battery_RMSE": 0.000282860425186,
+      "worst_battery_RMSE": 0.004097180507764,
+      "cutoff": 125
+    },
+    {
+      "model": "Soft-policy neighbors",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000514739764912,
+      "overall_RMSE": 0.001163309247541,
+      "mean_battery_RMSE": 0.000629778372354,
+      "median_battery_RMSE": 0.00023260465763,
+      "worst_battery_RMSE": 0.004192565484993,
+      "cutoff": 125
+    },
+    {
+      "model": "Public Linear-Nested",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000336126765474,
+      "overall_RMSE": 0.000615885245194,
+      "mean_battery_RMSE": 0.000409864982359,
+      "median_battery_RMSE": 0.000260680225523,
+      "worst_battery_RMSE": 0.002332293272218,
+      "cutoff": 150
+    },
+    {
+      "model": "Exact-policy mean delta",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000620537244267,
+      "overall_RMSE": 0.00134709715416,
+      "mean_battery_RMSE": 0.000766953153531,
+      "median_battery_RMSE": 0.000258611102976,
+      "worst_battery_RMSE": 0.004174319081089,
+      "cutoff": 150
+    },
+    {
+      "model": "Trajectory similarity",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000595606154981,
+      "overall_RMSE": 0.001342730980132,
+      "mean_battery_RMSE": 0.000739908419543,
+      "median_battery_RMSE": 0.000205854067138,
+      "worst_battery_RMSE": 0.004174319081089,
+      "cutoff": 150
+    },
+    {
+      "model": "Slope-adapted cohort",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000307136666676,
+      "overall_RMSE": 0.00069272857426,
+      "mean_battery_RMSE": 0.000401670226862,
+      "median_battery_RMSE": 0.000218342640978,
+      "worst_battery_RMSE": 0.00277120183715,
+      "cutoff": 150
+    },
+    {
+      "model": "Multivariate similarity",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000606462134781,
+      "overall_RMSE": 0.001345458557884,
+      "mean_battery_RMSE": 0.000752124065203,
+      "median_battery_RMSE": 0.000244559138453,
+      "worst_battery_RMSE": 0.004174319081089,
+      "cutoff": 150
+    },
+    {
+      "model": "Soft-policy neighbors",
+      "n_batteries": 40,
+      "n_points": 2000,
+      "MAE": 0.000516108820304,
+      "overall_RMSE": 0.001148236033732,
+      "mean_battery_RMSE": 0.000627486215957,
+      "median_battery_RMSE": 0.000253272284997,
+      "worst_battery_RMSE": 0.004347962400032,
+      "cutoff": 150
+    }
+  ],
+  "best_cutoff_150": {
+    "model": "Slope-adapted cohort",
+    "n_batteries": 40,
+    "n_points": 2000,
+    "MAE": 0.0003071367,
+    "overall_RMSE": 0.0006927286,
+    "mean_battery_RMSE": 0.0004016702,
+    "median_battery_RMSE": 0.0002183426,
+    "worst_battery_RMSE": 0.0027712018,
+    "cutoff": 150,
+    "RMSE_reduction_vs_public_linear_percent": -12.476890730113096
+  },
+  "best_overall_including_public_baseline_cutoff_150": {
+    "model": "Public Linear-Nested",
+    "n_batteries": 40,
+    "n_points": 2000,
+    "MAE": 0.0003361268,
+    "overall_RMSE": 0.0006158852,
+    "mean_battery_RMSE": 0.000409865,
+    "median_battery_RMSE": 0.0002606802,
+    "worst_battery_RMSE": 0.0023322933,
+    "cutoff": 150
+  },
+  "configuration_frequencies": [
+    {
+      "cutoff": 50,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 34
+    },
+    {
+      "cutoff": 50,
+      "method": "multivariate",
+      "selected_config": "{\"L\":30,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 3
+    },
+    {
+      "cutoff": 50,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":0.5,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 50,
+      "method": "multivariate",
+      "selected_config": "{\"L\":50,\"dynamic_weight\":1.0,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 50,
+      "method": "slope",
+      "selected_config": "{\"L\":20,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":1.5}",
+      "outer_fold_count": 33
+    },
+    {
+      "cutoff": 50,
+      "method": "slope",
+      "selected_config": "{\"L\":20,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 5
+    },
+    {
+      "cutoff": 50,
+      "method": "slope",
+      "selected_config": "{\"L\":20,\"clip_high\":1.5,\"clip_low\":0.5,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 50,
+      "method": "slope",
+      "selected_config": "{\"L\":50,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 50,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":20,\"strategy_tau\":1.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 38
+    },
+    {
+      "cutoff": 50,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":20,\"strategy_tau\":2.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 50,
+      "method": "trajectory",
+      "selected_config": "{\"L\":20,\"tau_scale\":0.75}",
+      "outer_fold_count": 31
+    },
+    {
+      "cutoff": 50,
+      "method": "trajectory",
+      "selected_config": "{\"L\":30,\"tau_scale\":0.75}",
+      "outer_fold_count": 6
+    },
+    {
+      "cutoff": 50,
+      "method": "trajectory",
+      "selected_config": "{\"L\":50,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 50,
+      "method": "trajectory",
+      "selected_config": "{\"L\":30,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 50,
+      "method": "trajectory",
+      "selected_config": "{\"L\":20,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 75,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 36
+    },
+    {
+      "cutoff": 75,
+      "method": "multivariate",
+      "selected_config": "{\"L\":50,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 3
+    },
+    {
+      "cutoff": 75,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":1.0,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 75,
+      "method": "slope",
+      "selected_config": "{\"L\":30,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 29
+    },
+    {
+      "cutoff": 75,
+      "method": "slope",
+      "selected_config": "{\"L\":30,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":1.5}",
+      "outer_fold_count": 6
+    },
+    {
+      "cutoff": 75,
+      "method": "slope",
+      "selected_config": "{\"L\":20,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 4
+    },
+    {
+      "cutoff": 75,
+      "method": "slope",
+      "selected_config": "{\"L\":30,\"clip_high\":1.5,\"clip_low\":0.5,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 75,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":20,\"strategy_tau\":1.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 25
+    },
+    {
+      "cutoff": 75,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":50,\"strategy_tau\":1.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 10
+    },
+    {
+      "cutoff": 75,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":30,\"strategy_tau\":1.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 3
+    },
+    {
+      "cutoff": 75,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":30,\"strategy_tau\":2.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 75,
+      "method": "trajectory",
+      "selected_config": "{\"L\":20,\"tau_scale\":0.75}",
+      "outer_fold_count": 36
+    },
+    {
+      "cutoff": 75,
+      "method": "trajectory",
+      "selected_config": "{\"L\":50,\"tau_scale\":0.75}",
+      "outer_fold_count": 4
+    },
+    {
+      "cutoff": 100,
+      "method": "multivariate",
+      "selected_config": "{\"L\":30,\"dynamic_weight\":1.0,\"tau_scale\":1.5}",
+      "outer_fold_count": 33
+    },
+    {
+      "cutoff": 100,
+      "method": "multivariate",
+      "selected_config": "{\"L\":30,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 3
+    },
+    {
+      "cutoff": 100,
+      "method": "multivariate",
+      "selected_config": "{\"L\":30,\"dynamic_weight\":0.5,\"tau_scale\":1.5}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 100,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":0.5,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 100,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":0.25,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 100,
+      "method": "slope",
+      "selected_config": "{\"L\":20,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":1.5}",
+      "outer_fold_count": 37
+    },
+    {
+      "cutoff": 100,
+      "method": "slope",
+      "selected_config": "{\"L\":20,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 100,
+      "method": "slope",
+      "selected_config": "{\"L\":50,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 100,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":50,\"strategy_tau\":1.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 37
+    },
+    {
+      "cutoff": 100,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":20,\"strategy_tau\":2.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 100,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":20,\"strategy_tau\":1.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 100,
+      "method": "trajectory",
+      "selected_config": "{\"L\":20,\"tau_scale\":1.5}",
+      "outer_fold_count": 27
+    },
+    {
+      "cutoff": 100,
+      "method": "trajectory",
+      "selected_config": "{\"L\":50,\"tau_scale\":1.5}",
+      "outer_fold_count": 6
+    },
+    {
+      "cutoff": 100,
+      "method": "trajectory",
+      "selected_config": "{\"L\":50,\"tau_scale\":0.75}",
+      "outer_fold_count": 3
+    },
+    {
+      "cutoff": 100,
+      "method": "trajectory",
+      "selected_config": "{\"L\":30,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 100,
+      "method": "trajectory",
+      "selected_config": "{\"L\":30,\"tau_scale\":1.5}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 125,
+      "method": "multivariate",
+      "selected_config": "{\"L\":50,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 34
+    },
+    {
+      "cutoff": 125,
+      "method": "multivariate",
+      "selected_config": "{\"L\":30,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 125,
+      "method": "multivariate",
+      "selected_config": "{\"L\":50,\"dynamic_weight\":1.0,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 125,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 125,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":1.0,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 125,
+      "method": "multivariate",
+      "selected_config": "{\"L\":50,\"dynamic_weight\":0.25,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 125,
+      "method": "slope",
+      "selected_config": "{\"L\":20,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 35
+    },
+    {
+      "cutoff": 125,
+      "method": "slope",
+      "selected_config": "{\"L\":20,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":1.5}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 125,
+      "method": "slope",
+      "selected_config": "{\"L\":50,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 125,
+      "method": "slope",
+      "selected_config": "{\"L\":30,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 125,
+      "method": "slope",
+      "selected_config": "{\"L\":20,\"clip_high\":1.5,\"clip_low\":0.5,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 125,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":20,\"strategy_tau\":1.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 36
+    },
+    {
+      "cutoff": 125,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":30,\"strategy_tau\":1.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 125,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":20,\"strategy_tau\":0.5,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 125,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":20,\"strategy_tau\":2.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 125,
+      "method": "trajectory",
+      "selected_config": "{\"L\":50,\"tau_scale\":0.75}",
+      "outer_fold_count": 36
+    },
+    {
+      "cutoff": 125,
+      "method": "trajectory",
+      "selected_config": "{\"L\":30,\"tau_scale\":0.75}",
+      "outer_fold_count": 3
+    },
+    {
+      "cutoff": 125,
+      "method": "trajectory",
+      "selected_config": "{\"L\":20,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 150,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 34
+    },
+    {
+      "cutoff": 150,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":0.25,\"tau_scale\":1.5}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 150,
+      "method": "multivariate",
+      "selected_config": "{\"L\":50,\"dynamic_weight\":1.0,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 150,
+      "method": "multivariate",
+      "selected_config": "{\"L\":30,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 150,
+      "method": "multivariate",
+      "selected_config": "{\"L\":20,\"dynamic_weight\":1.0,\"tau_scale\":1.5}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 150,
+      "method": "multivariate",
+      "selected_config": "{\"L\":50,\"dynamic_weight\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 150,
+      "method": "slope",
+      "selected_config": "{\"L\":30,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":1.5}",
+      "outer_fold_count": 35
+    },
+    {
+      "cutoff": 150,
+      "method": "slope",
+      "selected_config": "{\"L\":50,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 3
+    },
+    {
+      "cutoff": 150,
+      "method": "slope",
+      "selected_config": "{\"L\":30,\"clip_high\":2.0,\"clip_low\":0.25,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 150,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":20,\"strategy_tau\":2.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 35
+    },
+    {
+      "cutoff": 150,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":30,\"strategy_tau\":0.5,\"tau_scale\":0.75}",
+      "outer_fold_count": 3
+    },
+    {
+      "cutoff": 150,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":20,\"strategy_tau\":0.5,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 150,
+      "method": "soft_policy",
+      "selected_config": "{\"L\":50,\"strategy_tau\":1.0,\"tau_scale\":0.75}",
+      "outer_fold_count": 1
+    },
+    {
+      "cutoff": 150,
+      "method": "trajectory",
+      "selected_config": "{\"L\":50,\"tau_scale\":0.75}",
+      "outer_fold_count": 36
+    },
+    {
+      "cutoff": 150,
+      "method": "trajectory",
+      "selected_config": "{\"L\":30,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    },
+    {
+      "cutoff": 150,
+      "method": "trajectory",
+      "selected_config": "{\"L\":20,\"tau_scale\":0.75}",
+      "outer_fold_count": 2
+    }
+  ],
+  "artifacts": {
+    "predictions": "predictions.csv",
+    "ablation": "ablation.csv",
+    "policy_metrics": "policy_metrics.csv",
+    "horizon_metrics": "horizon_metrics.csv",
+    "cohort_size_metrics": "cohort_size_metrics.csv",
+    "selected_hyperparameters": "selected_hyperparameters.csv",
+    "report": "report.md"
+  },
+  "literature": [
+    {
+      "title": "Battery lifetime prediction across diverse ageing conditions with inter-cell deep learning",
+      "authors": [
+        "Han Zhang",
+        "Yuqi Li",
+        "Shun Zheng",
+        "Ziheng Lu",
+        "Xiaofan Gui",
+        "Wei Xu",
+        "Jiang Bian"
+      ],
+      "journal": "Nature Machine Intelligence",
+      "year": 2025,
+      "doi": "10.1038/s42256-024-00972-x"
+    },
+    {
+      "title": "Data-driven prediction of battery cycle life before capacity degradation",
+      "authors": [
+        "Kristen A. Severson",
+        "Peter M. Attia",
+        "Norman Jin",
+        "Nicholas Perkins",
+        "Benben Jiang",
+        "Zi Yang",
+        "Michael H. Chen",
+        "Muratahan Aykol",
+        "Patrick K. Herring",
+        "Dimitrios Fraggedakis",
+        "Martin Z. Bazant",
+        "Stephen J. Harris",
+        "William C. Chueh",
+        "Richard D. Braatz"
+      ],
+      "journal": "Nature Energy",
+      "year": 2019,
+      "doi": "10.1038/s41560-019-0356-8"
+    }
+  ]
+}
