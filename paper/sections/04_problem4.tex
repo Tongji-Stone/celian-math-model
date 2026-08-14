@@ -1,7 +1,7 @@
 \section{问题四：兼顾充电时间与寿命衰减的策略优化}
 
 \begin{todobox}
-本节为建模框架。优化应优先在已有 9 种实验策略内比较；若连续优化，参数须限制在实验数据合理邻域并说明依据\cite{attia2020closedloop,plett2022bms3,frazier2018bo,deb2001moea}。
+本节为建模框架。优化应优先在问题一统一后的 7 种实验策略内比较；若连续优化，参数须限制在实验数据合理邻域并说明依据\cite{attia2020closedloop,plett2022bms3,frazier2018bo,deb2001moea}。
 \end{todobox}
 
 \subsection{决策变量与目标}
@@ -33,4 +33,4 @@ T_{\mathrm{charge}}\approx \frac{Q_1}{C_1}+\frac{0.8-Q_1}{C_2}+T_{\mathrm{CV}},
 
 \subsection{推荐策略与对比（待填）}
 
-给出推荐 \((C_1^\ast,Q_1^\ast,C_2^\ast)\)，并与问题一的典型长寿命策略 \texttt{3\_6C-80PER\_3\_6C}、\texttt{4\_8C\_80PER\_4\_8C\_NEWSTRUCTURE} 及短寿命策略 \texttt{3\_7C\_31PER\_5\_9C\_NEWSTRUCTURE} 对比充电时间与寿命代理。说明适用范围（LFP、两阶段快充、早期循环窗口）与不可外推情形。
+给出推荐 \((C_1^\ast,Q_1^\ast,C_2^\ast)\)，并与问题一的典型长寿命策略（如 \texttt{5C\_67PER\_4C}、\texttt{5\_3C\_54PER\_4C}）及短寿命策略 \texttt{3\_7C\_31PER\_5\_9C} 对比充电时间与寿命代理。说明适用范围（LFP、两阶段快充、早期循环窗口）与不可外推情形。
