@@ -1,42 +1,138 @@
 \section{问题二：充电策略及其参数对寿命衰减的影响}
 
-\begin{todobox}
-本节为建模框架。仓库中尚无问题二的专用脚本与统计表。补全后应删除本框，填入检验统计量、回归系数与诊断图。
-\end{todobox}
+\subsection{分析口径与样本选择}
 
-\subsection{问题分析}
+赛题提供的循环记录最多至第 200 圈，且观测到的最低 SOH 仍约为 0.95，未观测到
+\(\mathrm{SOH}=80\%\) 的真实 EOL。因此，本节不把 ``寿命'' 解释为真实循环寿命，
+而采用第 200 圈平滑健康状态 \(\mathrm{SOH}_{200}\) 及其衰减量
+\begin{equation}
+  \mathrm{Fade}_{200}=\mathrm{SOH}_{1}-\mathrm{SOH}_{200}
+\end{equation}
+作为早期健康保持程度的代理指标。
 
-问题一已表明策略间 \(\mathrm{SOH}_{200}\) 存在可见差异，但 \(C_1,Q_1,C_2\) 并非完全独立变化，策略数仅 9、部分组 \(n=2\)。因此本节重点是：组间差异是否具有统计显著性；三参数与寿命的相关/回归关系；不同 SOC 区间高倍率是否对应不同衰减特征；以及机制解释的局限性\cite{ruiz2023degradation,wang2024agingmodels,geslin2023joule}。
+为降低不同数据批次及实验结构带来的混杂，主分析仅保留
+\texttt{dataset\_id=3}、非问题三测试集且完整记录至第 200 圈的电池，共 34 块。
+将策略名称中的 \texttt{\_NEWSTRUCTURE} 后缀移除后，得到 6 个策略组；全部 40 块
+完整 200 圈样本仅用于敏感性参考。由于策略参数并非完全析因设计，以下结果均解释为
+样本内统计关联而非严格因果效应。
 
-\subsection{数据与可比性规则（拟采用）}
+\subsection{策略间差异检验}
 
+针对样本量不均衡、部分策略组很小的特点，对 \(\mathrm{SOH}_{200}\) 采用
+Kruskal--Wallis 秩和检验。结果为 \(H=12.3346\)、\(p=0.0305\)，表明六个策略组的
+\(\mathrm{SOH}_{200}\) 分布在总体上存在差异。进一步进行 15 组 Mann--Whitney 两两比较，
+并采用 Holm 方法校正多重检验；校正后没有单一策略对达到 \(0.05\) 显著性水平。
+这说明总体差异主要由样本少、差异大的策略和组内离散性共同驱动，不宜将某一具体
+策略对写成已被充分验证的优劣结论。
+
+\begin{table}[htbp]
+\centering
+\caption{主分析队列的第 200 圈 SOH 与衰减汇总}
+\label{tab:q2-policy-summary}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+策略 & 样本数 & \(\overline{\mathrm{SOH}_{200}}\) & \(\mathrm{median}(\mathrm{SOH}_{200})\) & \(\overline{\mathrm{Fade}_{200}}\) \\
+\midrule
+\texttt{4\_8C\_80PER\_4\_8C} & 5 & 0.987369 & 0.996961 & 0.001888 \\
+\texttt{5C\_67PER\_4C} & 6 & 0.995523 & 0.995249 & 0.002686 \\
+\texttt{5\_3C\_54PER\_4C} & 7 & 0.995469 & 0.995451 & 0.002563 \\
+\texttt{5\_6C\_19PER\_4\_6C} & 7 & 0.993987 & 0.993929 & 0.004392 \\
+\texttt{5\_6C\_36PER\_4\_3C} & 7 & 0.994696 & 0.994186 & 0.003716 \\
+\texttt{3\_7C\_31PER\_5\_9C} & 2 & 0.965908 & 0.965908 & 0.033751 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+图~\ref{fig:q2-box} 显示，\texttt{3\_7C\_31PER\_5\_9C} 组在本窗口内的衰减量显著更大，
+但该组仅有 2 块电池；\texttt{4\_8C\_80PER\_4\_8C} 组包含一个明显较低的个体，
+故不能仅凭组均值或中位数进行排序。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.96\linewidth]{question2/figures/policy_soh200_boxplot.png}
+  \caption{同一实验结构下，各策略第 200 圈 SOH 的箱线图与单体观测值}
+  \label{fig:q2-box}
+\end{figure}
+
+\subsection{参数关联与回归诊断}
+
+首先考察参数与 \(\mathrm{Fade}_{200}\) 的 Spearman 相关。\(Q_1\) 与衰减量呈负相关
+（\(\rho=-0.5889,\ p=0.00025\)），\(C_1\) 与 \(C_2\) 的相关在本样本中均未达到
+\(0.05\) 显著性水平。作为探索性补充，拟合
+\begin{equation}
+\mathrm{Fade}_{200,i}=\beta_0+\beta_1C_{1,i}+\beta_2Q_{1,i}+\beta_3C_{2,i}+\varepsilon_i,
+\label{eq:q2-reg}
+\end{equation}
+并采用 HC3 稳健标准误。模型调整 \(R^2=0.9025\)，但 \(C_1\) 与 \(C_2\) 的 VIF
+分别为 31.88 和 33.09，表明严重共线性；因此该模型不能用来独立识别三项参数的
+边际因果贡献。特别地，式~\eqref{eq:q2-reg} 中 \(C_1\) 的负系数和 \(Q_1\) 的负系数
+反映的是当前少量策略组合的共同变化，不能推出“提高 \(C_1\)”或“提高 \(Q_1\)”必然
+降低衰减。
+
+结合图~\ref{fig:q2-traj}，本数据支持的稳妥表述是：在观测窗口内，低切换 SOC
+（\(Q_1=31\%\)）后继续采用较高第二阶段倍率（\(C_2=5.9\mathrm{C}\)）的策略出现了
+更快衰减的\emph{现象}；这与高 SOC 区间更强极化、产热和锂沉积风险的机理相一致
+\cite{liu2019fastcharging,dubarry2009lfp,ma2024mcc}，但仍需独立、正交的重复实验来验证。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{question2/figures/policy_soh_trajectories.png}
+  \caption{各策略的平滑 SOH 平均轨迹；阴影为均值的 95\% 近似区间}
+  \label{fig:q2-traj}
+\end{figure}
+
+\subsection{纵向混合效应分析}
+
+为避免将同一电池 200 个循环点视为相互独立，进一步使用全部 1--200 圈的
+\(\mathrm{SOH}_{\mathrm{smooth}}\)，拟合固定效应为 \(\mathrm{cycle}\times\mathrm{policy}\)，
+并为电池设置随机截距和随机循环斜率。以 \texttt{3\_7C\_31PER\_5\_9C} 为参考组、
+将循环次数缩放为每 100 圈后，固定效应估计的参考组斜率为 \(-0.018\)，其余策略的
+交互项为 \(+0.015\sim+0.016\)，即各策略的估计平均斜率如表~\ref{tab:q2-mixed-slope}。
+
+\begin{table}[htbp]
+\centering
+\caption{混合效应模型给出的平滑 SOH 平均斜率（每 100 圈）}
+\label{tab:q2-mixed-slope}
+\small
+\begin{tabular}{lrr}
+\toprule
+策略 & 固定效应斜率 & 样本数 \\
+\midrule
+\texttt{3\_7C\_31PER\_5\_9C}（参考） & -0.018 & 2 \\
+\texttt{4\_8C\_80PER\_4\_8C} & -0.002 & 5 \\
+\texttt{5C\_67PER\_4C} & -0.002 & 6 \\
+\texttt{5\_3C\_54PER\_4C} & -0.002 & 7 \\
+\texttt{5\_6C\_19PER\_4\_6C} & -0.003 & 7 \\
+\texttt{5\_6C\_36PER\_4\_3C} & -0.002 & 7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+该模型在数值上收敛，但随机截距和随机斜率方差均被估计在边界附近，表明在当前
+34 块电池、且已使用平滑 SOH 的数据条件下，电池间随机变异未被稳定识别。因此，
+表~\ref{tab:q2-mixed-slope} 只用于量化图~\ref{fig:q2-traj} 中的轨迹现象；不将 6800 条
+循环记录当作独立实验样本，也不据此报告策略间的显著性优劣。
+
+\subsection{后续尝试方向}
+
+本题当前数据适合提出机制假设与早期衰减关联，尚不足以完成强因果识别。后续可按
+以下路线推进：
 \begin{enumerate}
-  \item 主分析：满 200 圈样本；因变量优先用 \(\mathrm{SOH}_{200}\) 或 \(\mathrm{FadeRate}\)。
-  \item 公平对比：NEWSTRUCTURE 内部互比作为主结论；带/不带该标签的同参数策略不作同条件重复实验。
-  \item 若纳入测试电池，统一截断至第 150 圈再比较，避免窗口不一致。
+  \item \textbf{补足终止事件。} 获取完整循环至 \(\mathrm{SOH}=80\%\) 的记录后，以真实
+  \(N_{\mathrm{EOL}}\) 为响应，采用加速失效时间模型或右删失生存模型；当前所有样本
+  在 150/200 圈时均未发生 EOL，不能估计真实寿命分布。
+  \item \textbf{补做正交重复实验。} 在相同批次、温度和单体条件下，独立改变 \(C_1\)、
+  \(Q_1\)、\(C_2\)，并针对高 SOC 区间的倍率设置配对对照；每个组合应有足够重复，
+  才能区分参数效应与批次/个体差异。
+  \item \textbf{改进纵向模型。} 以电池为重采样单位进行 cluster bootstrap，比较线性混合模型、
+  样条/GAMM 和分段退化模型；同时将初始容量、温度、内阻及批次纳入协变量，并采用
+  留一策略交叉验证检验外推稳定性。
+  \item \textbf{重参数化与稳健推断。} 用低/高 SOC 区间的加权倍率暴露量替代高度共线的
+  \(C_1,Q_1,C_2\)，结合岭回归或贝叶斯层级模型报告电池层面的置信区间，而不是直接
+  解读当前 OLS 的单个系数。
 \end{enumerate}
 
-\subsection{模型一：策略间差异的显著性检验}
-
-将策略视为分组因子。若各组近似正态且方差齐，采用单因素 ANOVA；否则采用 Kruskal--Wallis 检验，事后比较用 Tukey HSD 或 Dunn 检验，并报告效应量 \(\eta^2\)\cite{kutner2005applied}。
-
-\textbf{待填结果：} \(H\) 或 \(F\) 统计量、\(p\) 值、两两比较中显著的策略对。
-
-\subsection{模型二：参数与寿命的回归 / 相关分析}
-
-考察
-\begin{equation}
-\mathrm{LifeProxy}_i=\beta_0+\beta_1 C_{1,i}+\beta_2 Q_{1,i}+\beta_3 C_{2,i}+\beta_4 C_{2,i}\cdot \mathbf{1}\{Q_{1,i}<Q^\ast\}+\varepsilon_i.
-\label{eq:reg}
-\end{equation}
-因参数共线，可同时报告 Spearman 相关、方差膨胀因子（VIF），必要时采用混合效应（策略随机截距）\cite{pinheiro2000mixed}。交互项用于刻画“高倍率发生在低/高 SOC 区间”的差异。
-
-\textbf{待填结果：} 系数表、标准化系数或变量重要性、残差诊断。
-
-\subsection{不同 SOC 区间高倍率的衰减特征}
-
-将充电过程拆为低 SOC 段 \([0,Q_1]\) 与高 SOC 段 \([Q_1,80\%]\)，比较 \(C_1\) 主导段与 \(C_2\) 主导段对 \(\mathrm{FadeRate}\) 的边际贡献。预期：在数据允许时，\(C_2\) 对寿命的负向作用强于同等幅度的 \(C_1\)\cite{liu2019fastcharging,ma2024mcc}。
-
-\subsection{机制讨论与局限}
-
-拟从 SEI 生长、锂沉积、极化与产热等 LFP 相关路径讨论\cite{dubarry2009lfp,dubarry2012alawa,li2026degradation}，并明确：策略非正交、早期衰减幅度小、cell-to-cell 变异与批次标签会限制因果识别。
+综上，问题二的统计证据表明策略间早期健康保持程度存在总体差异；高 SOC 区间高倍率
+策略的较快衰减值得在后续实验和问题四优化中作为风险约束考虑。但由于样本小、参数
+共线且缺少真实 EOL 观测，本文不把第 200 圈 SOH 的差异外推为真实寿命差异。
