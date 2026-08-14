@@ -1,0 +1,6 @@
+# Local external audit labels can reveal the competition test targets.
+# references/matr_source/external_eol_audit/
+
+# Python runtime artifacts
+__pycache__/
+# *.py[cod]

@@ -1,0 +1,50 @@
+﻿battery_id,global_id,dataset_id,prediction_test,policy,matr_source_key,external_eol_cycles,eol_status,eol_evidence,contest_last_cycle,contest_last_soh,mapping_method
+1,1,1,0,3_6C-80PER_3_6C,MATR_b1c0.pkl,1858,available,公开 Life Labels 直接给出,200,0.9971576252006654,batch-1 顺序映射
+2,2,1,1,3_6C-80PER_3_6C,MATR_b1c1.pkl,2154,available,公开 Life Labels 直接给出,150,0.995243813,batch-1 顺序映射
+3,3,1,0,3_6C-80PER_3_6C,MATR_b1c2.pkl,2237,available,公开 Life Labels 直接给出,200,0.995110204,batch-1 顺序映射
+4,54,2,0,80PER_3_6C,MATR_b1c0.pkl,1858,available,公开 Life Labels 直接给出,200,0.967671016,batch-2 接续至 batch-1（公开说明）
+5,55,2,1,80PER_3_6C,MATR_b1c1.pkl,2154,available,公开 Life Labels 直接给出,150,0.99630725,batch-2 接续至 batch-1（公开说明）
+6,56,2,0,80PER_3_6C,MATR_b1c2.pkl,2237,available,公开 Life Labels 直接给出,200,0.993831561,batch-2 接续至 batch-1（公开说明）
+7,71,2,0,4_8C_80PER_4_8C,MATR_b2c24.pkl,494,available,公开 Life Labels 直接给出,200,0.98965845,batch-2 顺序映射（待曲线复核）
+8,72,2,0,4_8C_80PER_4_8C,MATR_b2c25.pkl,460,available,公开 Life Labels 直接给出,200,0.98143554,batch-2 顺序映射（待曲线复核）
+9,73,2,1,4_8C_80PER_4_8C,MATR_b2c26.pkl,470,available,公开 Life Labels 直接给出,150,0.988996369,batch-2 顺序映射（待曲线复核）
+10,95,3,1,5C_67PER_4C_NEWSTRUCTURE,MATR_b3c0.pkl,1007,available,公开 Life Labels 直接给出,150,0.997163961,batch-3 顺序映射（待曲线复核）
+11,96,3,1,5_3C_54PER_4C_NEWSTRUCTURE,MATR_b3c1.pkl,1061,available,公开 Life Labels 直接给出,150,0.996765144,batch-3 顺序映射（待曲线复核）
+12,97,3,0,5_6C_19PER_4_6C_NEWSTRUCTURE,MATR_b3c2.pkl,,unavailable_quality_exclusion,"原始 LoadData 的 nind=[3,40:41] 中第3条 batch-3 记录；噪声剔除。",200,0.994199351,batch-3 顺序映射（待曲线复核）
+13,98,3,0,5_6C_36PER_4_3C_NEWSTRUCTURE,MATR_b3c3.pkl,1113,available,公开 Life Labels 直接给出,200,0.995155787,batch-3 顺序映射（待曲线复核）
+14,99,3,1,5_6C_19PER_4_6C_NEWSTRUCTURE,MATR_b3c4.pkl,1045,available,公开 Life Labels 直接给出,150,0.997543987,batch-3 顺序映射（待曲线复核）
+15,100,3,0,5_6C_36PER_4_3C_NEWSTRUCTURE,MATR_b3c5.pkl,826,available,公开 Life Labels 直接给出,200,0.993561366,batch-3 顺序映射（待曲线复核）
+16,101,3,1,3_7C_31PER_5_9C_NEWSTRUCTURE,MATR_b3c6.pkl,665,available,公开 Life Labels 直接给出,150,0.972184136,batch-3 顺序映射（待曲线复核）
+17,102,3,0,4_8C_80PER_4_8C_NEWSTRUCTURE,MATR_b3c7.pkl,1834,available,公开 Life Labels 直接给出,200,0.997381893,batch-3 顺序映射（待曲线复核）
+18,103,3,0,5C_67PER_4C_NEWSTRUCTURE,MATR_b3c8.pkl,826,available,公开 Life Labels 直接给出,200,0.995022141,batch-3 顺序映射（待曲线复核）
+19,104,3,0,5_3C_54PER_4C_NEWSTRUCTURE,MATR_b3c9.pkl,1036,available,公开 Life Labels 直接给出,200,0.997276849,batch-3 顺序映射（待曲线复核）
+20,105,3,0,4_8C_80PER_4_8C_NEWSTRUCTURE,MATR_b3c10.pkl,1076,available,公开 Life Labels 直接给出,200,0.995832332,batch-3 顺序映射（待曲线复核）
+21,106,3,0,5_6C_19PER_4_6C_NEWSTRUCTURE,MATR_b3c11.pkl,815,available,公开 Life Labels 直接给出,200,0.993268711,batch-3 顺序映射（待曲线复核）
+22,107,3,0,5_6C_36PER_4_3C_NEWSTRUCTURE,MATR_b3c12.pkl,930,available,公开 Life Labels 直接给出,200,0.996730027,batch-3 顺序映射（待曲线复核）
+23,108,3,0,5_6C_19PER_4_6C_NEWSTRUCTURE,MATR_b3c13.pkl,814,available,公开 Life Labels 直接给出,200,0.993248052,batch-3 顺序映射（待曲线复核）
+24,109,3,1,5_6C_36PER_4_3C_NEWSTRUCTURE,MATR_b3c14.pkl,856,available,公开 Life Labels 直接给出,150,0.99751666,batch-3 顺序映射（待曲线复核）
+25,111,3,1,4_8C_80PER_4_8C_NEWSTRUCTURE,MATR_b3c16.pkl,1635,available,公开 Life Labels 直接给出,150,0.997304094,batch-3 顺序映射（待曲线复核）
+26,112,3,0,5_3C_54PER_4C_NEWSTRUCTURE,MATR_b3c17.pkl,1313,available,公开 Life Labels 直接给出,200,0.994394257,batch-3 顺序映射（待曲线复核）
+27,113,3,0,5_6C_19PER_4_6C_NEWSTRUCTURE,MATR_b3c18.pkl,1143,available,公开 Life Labels 直接给出,200,0.993490548,batch-3 顺序映射（待曲线复核）
+28,114,3,0,5_6C_36PER_4_3C_NEWSTRUCTURE,MATR_b3c19.pkl,1152,available,公开 Life Labels 直接给出,200,0.993623157,batch-3 顺序映射（待曲线复核）
+29,115,3,0,5C_67PER_4C_NEWSTRUCTURE,MATR_b3c20.pkl,811,available,公开 Life Labels 直接给出,200,0.995191763,batch-3 顺序映射（待曲线复核）
+30,116,3,0,3_7C_31PER_5_9C_NEWSTRUCTURE,MATR_b3c21.pkl,770,available,公开 Life Labels 直接给出,200,0.971517536,batch-3 顺序映射（待曲线复核）
+31,119,3,0,5C_67PER_4C_NEWSTRUCTURE,MATR_b3c24.pkl,823,available,公开 Life Labels 直接给出,200,0.995305928,batch-3 顺序映射（待曲线复核）
+32,120,3,0,5_3C_54PER_4C_NEWSTRUCTURE,MATR_b3c25.pkl,988,available,公开 Life Labels 直接给出,200,0.995780906,batch-3 顺序映射（待曲线复核）
+33,121,3,0,5_6C_19PER_4_6C_NEWSTRUCTURE,MATR_b3c26.pkl,1025,available,公开 Life Labels 直接给出,200,0.995231117,batch-3 顺序映射（待曲线复核）
+34,122,3,0,5_6C_36PER_4_3C_NEWSTRUCTURE,MATR_b3c27.pkl,847,available,公开 Life Labels 直接给出,200,0.994186049,batch-3 顺序映射（待曲线复核）
+35,123,3,0,3_7C_31PER_5_9C_NEWSTRUCTURE,MATR_b3c28.pkl,539,available,公开 Life Labels 直接给出,200,0.96029821,batch-3 顺序映射（待曲线复核）
+36,125,3,0,5_3C_54PER_4C_NEWSTRUCTURE,MATR_b3c30.pkl,933,available,公开 Life Labels 直接给出,200,0.995450934,batch-3 顺序映射（待曲线复核）
+37,128,3,0,5C_67PER_4C_NEWSTRUCTURE,MATR_b3c33.pkl,1282,available,公开 Life Labels 直接给出,200,0.994839326,batch-3 顺序映射（待曲线复核）
+38,129,3,0,5_3C_54PER_4C_NEWSTRUCTURE,MATR_b3c34.pkl,1156,available,公开 Life Labels 直接给出,200,0.993737309,batch-3 顺序映射（待曲线复核）
+39,130,3,0,5_6C_19PER_4_6C_NEWSTRUCTURE,MATR_b3c35.pkl,1091,available,公开 Life Labels 直接给出,200,0.994542376,batch-3 顺序映射（待曲线复核）
+40,131,3,0,5_6C_36PER_4_3C_NEWSTRUCTURE,MATR_b3c36.pkl,921,available,公开 Life Labels 直接给出,200,0.993040688,batch-3 顺序映射（待曲线复核）
+41,132,3,0,4_8C_80PER_4_8C_NEWSTRUCTURE,MATR_b3c37.pkl,,unavailable_quality_exclusion,原始 LoadData 先删除 batch3(38)：数据采集/连接问题。,200,0.949706539,batch-3 顺序映射（待曲线复核）
+42,133,3,0,5C_67PER_4C_NEWSTRUCTURE,MATR_b3c38.pkl,1932,available,公开 Life Labels 直接给出,200,0.996213509,batch-3 顺序映射（待曲线复核）
+43,134,3,0,5_3C_54PER_4C_NEWSTRUCTURE,MATR_b3c39.pkl,1154,available,公开 Life Labels 直接给出,200,0.994707771,batch-3 顺序映射（待曲线复核）
+44,135,3,0,5_6C_19PER_4_6C_NEWSTRUCTURE,MATR_b3c40.pkl,794,available,公开 Life Labels 直接给出,200,0.993929398,batch-3 顺序映射（待曲线复核）
+45,136,3,0,5_6C_36PER_4_3C_NEWSTRUCTURE,MATR_b3c41.pkl,784,available,公开 Life Labels 直接给出,200,0.996571717,batch-3 顺序映射（待曲线复核）
+46,137,3,0,4_8C_80PER_4_8C_NEWSTRUCTURE,MATR_b3c42.pkl,,unavailable_right_censored,不在公开 Life Labels；原始流程将末容量仍高于0.885 Ah的记录视为未完成并剔除。,200,0.996961715,batch-3 顺序映射（待曲线复核）
+47,138,3,0,5C_67PER_4C_NEWSTRUCTURE,MATR_b3c43.pkl,,unavailable_right_censored,不在公开 Life Labels；原始流程将末容量仍高于0.885 Ah的记录视为未完成并剔除。,200,0.996565081,batch-3 顺序映射（待曲线复核）
+48,139,3,0,5_3C_54PER_4C_NEWSTRUCTURE,MATR_b3c44.pkl,938,available,公开 Life Labels 直接给出,200,0.996938113,batch-3 顺序映射（待曲线复核）
+49,140,3,0,4_8C_80PER_4_8C_NEWSTRUCTURE,MATR_b3c45.pkl,1799,available,公开 Life Labels 直接给出,200,0.996960975,batch-3 顺序映射（待曲线复核）
