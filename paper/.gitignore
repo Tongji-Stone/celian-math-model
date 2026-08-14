@@ -11,3 +11,5 @@
 *.fdb_latexmk
 *.fls
 *.xdv
+paper_preview.*
+!paper_preview.pdf
