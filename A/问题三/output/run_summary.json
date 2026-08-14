@@ -1,0 +1,12 @@
+{
+  "n_train": 40,
+  "n_test": 9,
+  "cycle_file": "C:\\Users\\qiann\\Desktop\\题目内容\\celian-math-model\\A\\问题一\\output\\A\\cycle_train_cleaned.csv",
+  "main_model": "linear_recent",
+  "best_k150": {
+    "model": "linear_recent",
+    "rmse_mean": 0.0002708786241417572,
+    "soh200_mae": 0.0004663516306585319
+  },
+  "ml_files_found": false
+}
