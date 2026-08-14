@@ -15,13 +15,14 @@
 1. Kruskal--Wallis 检验策略间 `SOH_200` 差异，配合 Holm 校正的 Mann--Whitney 两两比较。
 2. 以 `fade_200` 为响应做 `C1 + Q1 + C2` 的 HC3 稳健 OLS；报告 Spearman 相关、VIF 和诊断图。
 3. 以电池为随机截距与随机循环斜率，拟合 `SOH_smooth ~ cycle * policy` 的混合效应模型；若不收敛，只记录失败原因，不输出不可靠结论。
+4. **机制模型（log_2）**：固定高 SOC 门槛 \(Q^\ast\) 计算两窗口暴露 \(E^{L},E^{H}\) 与 \(C^{\mathrm{high}}\)，建立 `fade_200` 与暴露量的回归；详见 `模型.md`、`结论.md`。
 
 ## 文件约定
 
-- 代码：`src/A/task2_statistical_analysis.py`
-- 结果：`output/A/question2/`
-- 图表：`output/A/question2/figures/`
-- 论文：`paper/sections/02_problem2.tex`
+- 代码：`src/A/task2_statistical_analysis.py`（组间检验与对照回归）、`src/A/task2_exposure_model.py`（暴露机制模型）
+- 结果：`output/A/question2/`（检验表）、`A/问题二/output/`（机制模型）
+- 说明：`A/问题二/模型.md`、`A/问题二/结论.md`、`log_1.md`、`log_2.md`
+- 论文：先写本目录 markdown，不要直接改 `paper/`
 
 ## 限制
 
