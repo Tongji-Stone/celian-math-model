@@ -4,7 +4,7 @@ Dep. Variable:               fade_200   R-squared:                       0.911
 Model:                            OLS   Adj. R-squared:                  0.903
 Method:                 Least Squares   F-statistic:                     7.775
 Date:                Fri, 14 Aug 2026   Prob (F-statistic):           0.000551
-Time:                        12:31:56   Log-Likelihood:                 159.40
+Time:                        13:12:59   Log-Likelihood:                 159.40
 No. Observations:                  34   AIC:                            -310.8
 Df Residuals:                      30   BIC:                            -304.7
 Df Model:                           3                                         
