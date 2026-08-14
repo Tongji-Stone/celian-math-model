@@ -1,0 +1,8 @@
+{
+  "n_primary": 34,
+  "n_policy": 6,
+  "q_star_main": 50.0,
+  "start_outliers": [
+    41
+  ]
+}
