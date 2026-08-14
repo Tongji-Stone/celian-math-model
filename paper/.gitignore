@@ -13,3 +13,4 @@
 *.xdv
 paper_preview.*
 !paper_preview.pdf
+paper_build.*
