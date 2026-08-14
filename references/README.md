@@ -258,3 +258,19 @@ Added RUL references:
 ```
 
 更完整的条目见同目录 `references.bib`。
+
+## RUL 方法补充（问题3优先）
+
+### Zhang et al., *IEEE Transactions on Industrial Electronics*, 2019
+
+- **题名**：*Lithium-Ion Battery Remaining Useful Life Prediction With Box-Cox Transformation and Monte Carlo Simulation*
+- **解决的问题**：容量退化关系非线性、在线数据不足且预测结果存在不确定性。文章用 Box-Cox 变换将容量退化关系线性化，再用 Monte Carlo 模拟给出 RUL 的概率分布和置信范围。
+- **对本题的帮助**：可作为问题3中“统计退化模型 + 不确定性量化”的优先参考，并为 RUL 区间预测提供方法依据。
+- **DOI**：[10.1109/TIE.2018.2808918](https://doi.org/10.1109/TIE.2018.2808918)
+
+### Zhang et al., *IEEE Transactions on Vehicular Technology*, 2018
+
+- **题名**：*Long Short-Term Memory Recurrent Neural Network for Remaining Useful Life Prediction of Lithium-Ion Batteries*
+- **解决的问题**：传统模型难以学习电池容量退化序列中的长期依赖，且单一确定性预测难以表达剩余寿命的不确定性。文章使用 LSTM-RNN 学习长期退化依赖，并结合 Monte Carlo 生成概率化 RUL 预测。
+- **对本题的帮助**：可作为问题3中数据驱动深度学习基线，与 Box-Cox 退化模型、传统 RNN 或其他回归模型进行对比。
+- **DOI**：[10.1109/TVT.2018.2805189](https://doi.org/10.1109/TVT.2018.2805189)
