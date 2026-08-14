@@ -1,0 +1,10 @@
+{
+  "feature_set":"two_window_exposure",
+  "n_batteries":34,
+  "n_independent_policies":6,
+  "target":"1000 * Fade_200",
+  "selected_equation_milli_fade":"(E_L + (E_H * 1.3419437769134037)) + -430.7336192485949",
+  "selected_equation_fade":"((E_L + (E_H * 1.3419437769134037)) + -430.7336192485949) \/ 1000",
+  "train_rmse_fade":0.0019164166,
+  "train_mae_fade":0.0014207406
+}

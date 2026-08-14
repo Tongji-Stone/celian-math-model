@@ -16,11 +16,13 @@
 2. 以 `fade_200` 为响应做 `C1 + Q1 + C2` 的 HC3 稳健 OLS；报告 Spearman 相关、VIF 和诊断图。
 3. 以电池为随机截距与随机循环斜率，拟合 `SOH_smooth ~ cycle * policy` 的混合效应模型；若不收敛，只记录失败原因，不输出不可靠结论。
 4. **机制模型（log_2）**：固定高 SOC 门槛 \(Q^\ast\) 计算两窗口暴露 \(E^{L},E^{H}\) 与 \(C^{\mathrm{high}}\)，建立 `fade_200` 与暴露量的回归；详见 `模型.md`、`结论.md`。
+5. **符号回归（PySR）**：一组受限搜索核对两窗口经验式；另一组只输入 `C1,Q1,C2` 并允许 `+,-,*,/` 自由组合。均以留一策略重搜检验公式结构，不将训练误差视为因果证据。
 
 ## 文件约定
 
 - 代码：`src/A/task2_statistical_analysis.py`（组间检验与对照回归）、`src/A/task2_exposure_model.py`（暴露机制模型）
-- 结果：`output/A/question2/`（检验表）、`A/问题二/output/`（机制模型）
+- 代码：`src/A/task2_statistical_analysis.py`（组间检验与对照回归）、`src/A/task2_exposure_model.py`（暴露机制模型）、`src/A/task2_pysr_symbolic.py`（两窗口 PySR）、`src/A/task2_pysr_raw_free.py` / `task2_pysr_raw_free_lopo.py`（原始参数自由搜索及验证）
+- 结果：`output/A/question2/`（检验表）、`A/问题二/output/`（机制模型）、`A/问题二/output/pysr/`（两窗口 PySR）、`A/问题二/output/pysr_raw_free/`（原始参数自由搜索）
 - 说明：`A/问题二/模型.md`、`A/问题二/结论.md`、`log_1.md`、`log_2.md`
 - 论文：先写本目录 markdown，不要直接改 `paper/`
 
