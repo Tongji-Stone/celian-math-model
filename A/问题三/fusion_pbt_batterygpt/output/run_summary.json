@@ -1,0 +1,35 @@
+{
+  "scheme": "B_dual_head_pbt_batterygpt",
+  "n_train": 40,
+  "n_test": 9,
+  "cycle_file": "C:\\Users\\qiann\\Desktop\\题目内容\\celian-math-model\\A\\问题一\\output\\A\\cycle_train_cleaned.csv",
+  "overwrote_original": false,
+  "original_output_dir": "C:\\Users\\qiann\\Desktop\\题目内容\\celian-math-model\\A\\问题三\\output",
+  "fusion_output_dir": "C:\\Users\\qiann\\Desktop\\题目内容\\celian-math-model\\A\\问题三\\fusion_pbt_batterygpt",
+  "validation": [
+    {
+      "model": "fusion_pbt_batterygpt",
+      "n_cells": 40,
+      "mae_mean": 0.0001805598664425645,
+      "rmse_mean": 0.00022025291258045217,
+      "rmse_median": 0.00012708609033267363,
+      "soh200_mae": 0.0003269597974735916,
+      "bias_mean": -4.416223437542044e-05,
+      "n_eol_median": 5332.053471975455
+    },
+    {
+      "model": "linear_recent",
+      "n_cells": 40,
+      "mae_mean": 0.0002221251428127289,
+      "rmse_mean": 0.0002708786518929317,
+      "rmse_median": 0.00019661821260294991,
+      "soh200_mae": 0.0004663512110710144,
+      "bias_mean": -0.00018884941935539245,
+      "n_eol_median": 6436.350710747003
+    }
+  ],
+  "n_cells_fusion_better_rmse": 27,
+  "pretrain_epochs": 20,
+  "finetune_epochs": 40,
+  "seed": 20260815
+}
