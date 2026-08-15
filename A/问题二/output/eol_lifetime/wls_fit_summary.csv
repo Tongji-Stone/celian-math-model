@@ -1,0 +1,4 @@
+﻿model,n_policies,parameters,r_squared,adj_r_squared
+two_window_log_eol_wls,6,3,0.6438708023646449,0.4064513372744082
+raw_parameter_log_eol_wls,6,4,0.9196723185114335,0.7991807962785837
+drop_3_7C,5,3,0.6414119953307232,0.2828239906614465

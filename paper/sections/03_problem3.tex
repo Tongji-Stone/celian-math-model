@@ -1,46 +1,85 @@
-\section{问题三：基于早期循环的电池寿命预测}
+\section{问题三：基于早期循环的 SOH 与寿命预测}
 
-\begin{todobox}
-本节为建模框架。9 块测试电池已在 \texttt{battery\_summary.csv} 中由 \texttt{prediction\_test}=1 标记，循环数据截至第 150 圈。预测表、误差指标与 EOL 外推结果待补入。
-\end{todobox}
+\subsection{小问一：预测第 151--200 次循环的 SOH}
 
-\subsection{问题分析}
+这部分是一个可以由题目数据直接检验的短期预测任务。9 块测试电池只给出前 150 次循环；其余 40 块电池有完整的 200 次记录。为使验证情形与测试情形一致，对每一块完整电池均人为截断在第 \(k\) 圈，并预测紧随其后的 50 圈；训练集和验证集按\emph{整块电池}划分，避免同一块电池的不同循环同时出现在训练、验证两侧而造成信息泄漏。
 
-实际中往往只能获得前期循环，无法等待完整老化。本题要求：用截至第 150 次循环的数据预测第 151--200 次循环 SOH，并进一步估计 \(\mathrm{SOH}=80\%\) 的循环寿命；同时比较不同早期窗口长度，讨论策略信息与早期衰减特征的作用\cite{severson2019datadriven,attia2021statistical,geslin2023joule,zhang2018lstm,zhang2019boxcoxmc}。
+设 \(s_n\) 为平滑 SOH。首先用第 101--150 圈的最小二乘直线
+\begin{equation}
+  \hat{s}_{n}=\hat{\alpha}+\hat{\beta}n,\qquad n=151,\ldots,200,
+  \label{eq:tail-linear}
+\end{equation}
+外推未来 50 圈，再施加 \(\hat{s}_{n}\leq \hat{s}_{150}\) 的单调不增约束。这一模型没有把不稳定的早期平台直接延伸到很远，只回答“最近一段的下降趋势在接下来 50 圈如何延续”。
 
-\subsection{特征提取（拟采用）}
+同时，以 \(C_1,Q_1,C_2\)、若干 SOH 检查点、早晚期 SOH 斜率、内阻和温度变化构成特征，训练两隐层小型 MLP，输出第 151--200 圈相对第 150 圈的 SOH 变化量。这样做是为了检验神经网络能否从不同电池间学习共同规律；并不预设深度模型一定优于简单趋势模型\cite{zhang2018lstm}。
+
+表~\ref{tab:q3-window}给出 5 折按电池交叉验证结果。对测试电池实际拥有的 150 圈历史，线性尾段模型的 RMSE 为 \(3.08\times10^{-4}\)，MAE 为 \(2.61\times10^{-4}\)，优于 MLP 的 \(4.64\times10^{-4}\) 和 \(3.78\times10^{-4}\)。因此最终采用式\eqref{eq:tail-linear}，而将 MLP 作为短历史窗口下的对照。对只观察到 50 圈的情形，加入策略信息的 MLP 最好；但当观测到 150 圈时，电池自身的近期曲线已包含大部分策略后果，较复杂模型反而更易过拟合 40 块训练电池的个体波动。
 
 \begin{table}[htbp]
 \centering
-\caption{问题三拟提取的特征类别}
-\label{tab:feat}
-\begin{tabular}{ll}
+\caption{按完整电池 5 折验证：不同可见窗口预测后 50 圈 SOH 的最佳模型}
+\label{tab:q3-window}
+\begin{tabular}{cccc}
 \toprule
-类别 & 示例 \\
+可见至第几圈 & 最佳模型 & RMSE & MAE \\
 \midrule
-策略参数 & \(C_1,Q_1,C_2\) 及策略编码 \\
-衰减趋势 & 前 \(k\) 圈 SOH 斜率、曲率、幂律/指数拟合参数 \\
-过程量 & 充电时间、IR、温度的均值与变化率 \\
-分段差 & \(\Delta\mathrm{SOH}_{1\rightarrow 50}\)、\(\Delta\mathrm{SOH}_{50\rightarrow 100}\)、\(\Delta\mathrm{SOH}_{100\rightarrow 150}\) \\
+50 & 含策略信息的 MLP & 0.000272 & 0.000227 \\
+100 & 不含策略信息的 MLP & 0.000279 & 0.000234 \\
+150 & 最近 50 圈线性外推 & 0.000308 & 0.000261 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-优先使用 \texttt{SOH\_smooth}。若后续引入放电电压曲线类特征 \(\Delta Q(V)\)，需回源完整公开数据\cite{attia2021statistical,matrdataset}。
+9 块测试电池的逐圈预测见支撑材料，表~\ref{tab:q3-soh}压缩展示第 151 圈和第 200 圈结果。预测均保留在 0.96 以上，说明 151--200 圈仍处在早期缓慢衰减阶段；16 号电池的预测下降最明显，应作为后续寿命风险较高的对象。
 
-\subsection{预测模型（拟采用）}
+\begin{table}[htbp]
+\centering
+\caption{测试电池的 SOH 短期预测（最终采用线性尾段模型）}
+\label{tab:q3-soh}
+\small
+\begin{tabular}{ccc|ccc}
+\toprule
+电池编号 & \(\hat{s}_{151}\) & \(\hat{s}_{200}\) & 电池编号 & \(\hat{s}_{151}\) & \(\hat{s}_{200}\) \\
+\midrule
+2  & 0.99528 & 0.99414 & 5  & 0.99625 & 0.99430 \\
+9  & 0.98908 & 0.98302 & 10 & 0.99712 & 0.99592 \\
+11 & 0.99675 & 0.99553 & 14 & 0.99745 & 0.99619 \\
+16 & 0.97202 & 0.96243 & 24 & 0.99746 & 0.99601 \\
+25 & 0.99731 & 0.99627 & & & \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\textbf{经验衰减模型}（可解释）：
+\subsection{小问二：估计 \(\mathrm{SOH}=80\%\) 时的循环寿命}
+
+短期 SOH 预测准确，并不自动意味着可以可信地预测数百至上千圈后的 EOL。直接以 1--150 圈的 SOH 拟合线性、二次或幂律曲线，再令曲线与 0.8 相交，虽然对第 151--200 圈的 SOH 误差可低至约 0.002，却会给部分电池产生数万乃至更大的寿命外推值。这是因为 LFP 电池的早期平台很平，而平台之后的加速衰减转折在附件中尚未观测到；短期局部拟合无法确定该转折何时发生。故不能把 \(\mathrm{SOH}_{200}\) 附近的直线直接延长到 80\%。
+
+为获得有依据的寿命估计，另设\textbf{外部标定}：利用与赛题同源的 MATR 公开寿命标签\cite{severson2019datadriven,matrdataset}，只保留 34 块去重后的\emph{非测试}原电池。以截至第 150 圈可见的 SOH 检查点、四段斜率、内阻/温度变化及策略参数为输入，在 \(\log N_{\mathrm{EOL}}\) 空间拟合带 \(L_2\) 正则的岭回归：
 \begin{equation}
-\mathrm{SOH}(n)=1-a\,n^{b}\quad\text{或}\quad \mathrm{SOH}(n)=a\mathrm{e}^{-bn}+c,
-\label{eq:emp}
+ \log \hat{N}_{\mathrm{EOL}}=\beta_0+\sum_j\beta_j x_j.
+ \label{eq:eol-ridge}
 \end{equation}
-用 1--150 圈拟合，外推 151--200 及 \(N_{\mathrm{EOL}}\)。
+对数变换使 500 圈和 2000 圈电池的相对误差获得较均衡的权重。每次留一验证均不使用被留出电池的 EOL；岭回归的留一验证 MAE 为 236.77 圈，中位绝对百分误差为 11.75\%。随机森林和极端随机树的中位相对误差分别为 18.05\% 和 15.64\%，故不采用。
 
-\textbf{统计 / 机器学习模型：} 以早期统计特征预测后续 SOH 或衰减率，候选包括正则化线性模型、随机森林 / XGBoost、高斯过程；序列模型可试 LSTM\cite{zhang2018lstm}。验证建议：在 40 块非测试电池上做“截断 150 圈 \(\rightarrow\) 预测 151--200”的交叉验证，再对 9 块测试电池给出最终预报，避免同策略信息泄漏。
+特别地，外部标签只用于本小问的标定与审计，9 块测试电池的公开 EOL 标签从未进入训练、调参或预测输入；其标签也不用于本文报分。2 号和 5 号对应同一原始电池的接续记录，故先作记录级预测，再在对数寿命上取平均，强制给出同一 EOL。表~\ref{tab:q3-eol}是据此得到的估计；它应理解为“结合公开同源先验的寿命风险估计”，其不确定性约为数百圈，不能写成精确的真实寿命。
 
-\subsection{评价指标与窗口比较}
+\begin{table}[htbp]
+\centering
+\caption{测试电池的 EOL 估计（外部标定，不参与题内短期 SOH 评分）}
+\label{tab:q3-eol}
+\begin{tabular}{c|rrrrrrrrr}
+\toprule
+电池编号 & 2 & 5 & 9 & 10 & 11 & 14 & 16 & 24 & 25 \\
+\midrule
+\(\hat N_{\mathrm{EOL}}\) / 圈 & 1056 & 1056 & 639 & 1099 & 1169 & 918 & 585 & 964 & 1246 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-对 151--200 圈报告 RMSE、MAE 与 \(R^2\)；对 \(N_{\mathrm{EOL}}\) 报告外推圈数。比较输入窗口 \(k\in\{50,100,150\}\) 的精度差异。消融：有/无 \((C_1,Q_1,C_2)\)。
+\subsection{小问三：早期窗口和策略信息的作用}
 
-\textbf{待填：} 9 块测试电池的 SOH 预测曲线、误差表、EOL 点估计。
+表~\ref{tab:q3-window}给出三个清晰结论：其一，只有 50 圈历史时，策略参数能补充尚未显现的退化趋势；其二，增加至 100 圈后，SOH 轨迹本身已携带主要信息；其三，达到 150 圈时，局部趋势模型更稳健。这说明“是否应加入策略特征”不是固定答案，而取决于可见历史的长度。对实际部署而言，前 50 圈可优先采用群体模型和策略先验；运行至 150 圈后，应优先相信该电池最近的观测趋势，并以较保守的区间报告 EOL 风险\cite{attia2021statistical,zhang2019boxcoxmc}。
+
+\subsection{可复现性与适用边界}
+
+短期 SOH 验证和 EOL 外部标定是两套不能混淆的证据。前者完全由赛题 49 块电池的已知前 200 圈实现，代码为\texttt{src/A/task3\_window\_ablation.py}；后者依赖公开 MATR 标签，代码为\texttt{src/A/task3\_external\_eol\_calibration.py}，并明确隔离测试标签。逐圈预测、交叉验证明细和 EOL 留一预测均放在\texttt{A/问题三/output/}。若竞赛规则禁止使用同源公开 EOL 标签，则应保留前者作为可评分答案，并把表~\ref{tab:q3-eol}降为外部合理性分析，而不是声称附件单独足以确定 EOL。

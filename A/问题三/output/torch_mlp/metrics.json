@@ -1,0 +1,10 @@
+{
+  "implementation": "PyTorch 2.13.0+cpu",
+  "training_batteries": 40,
+  "test_batteries": 9,
+  "forecast_horizon": 50,
+  "cv_torch_mlp_rmse_mean": 0.0004945781743704899,
+  "cv_torch_mlp_mae_mean": 0.00041593139728684033,
+  "cv_linear_rmse_mean": 0.0003076316882876764,
+  "cv_linear_mae_mean": 0.0002612440702052947
+}

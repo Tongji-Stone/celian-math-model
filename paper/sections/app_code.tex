@@ -1,10 +1,13 @@
 \section{建模源程序}
 \label{app:code}
 
-本节给出问题一、问题二可运行源代码。运行环境：Python 3，依赖 \texttt{numpy}、\texttt{pandas}、\texttt{matplotlib}；问题二另需 \texttt{scipy}、\texttt{statsmodels}。在项目根目录执行：
+本节给出问题一至问题三可运行源代码。运行环境：Python 3，依赖 \texttt{numpy}、\texttt{pandas}、\texttt{matplotlib}；问题二另需 \texttt{scipy}、\texttt{statsmodels}；问题三的神经网络对照需要 \texttt{PyTorch}，外部 EOL 标定另需 \texttt{scikit-learn}。在项目根目录执行：
 \begin{lstlisting}[language=bash]
 python src/A/task1_pipeline.py
 python src/A/task2_statistical_analysis.py
+python src/A/task2_eol_analysis.py
+python src/A/task3_window_ablation.py
+python src/A/task3_external_eol_calibration.py
 \end{lstlisting}
 可选参数 \texttt{--iqr-factor}（默认 1.5）。单独绘制指定电池 SOH 曲线：
 \begin{lstlisting}[language=bash]
@@ -23,6 +26,10 @@ python src/A/SOH_plot.py --battery-id 1
 
 \lstinputlisting[language=Python,caption={问题二统计分析脚本},label={lst:task2}]{../src/A/task2_statistical_analysis.py}
 
-\begin{todobox}
-问题三、问题四源程序完成后，以同样方式用 \texttt{\textbackslash lstinputlisting} 追加完整代码。
-\end{todobox}
+\lstinputlisting[language=Python,caption={问题二 EOL 寿命策略分析},label={lst:task2eol}]{../src/A/task2_eol_analysis.py}
+
+\subsection{问题三源程序}
+
+\lstinputlisting[language=Python,caption={问题三 SOH 窗口验证与预测},label={lst:task3soh}]{../src/A/task3_window_ablation.py}
+
+\lstinputlisting[language=Python,caption={问题三隔离 EOL 外部标定},label={lst:task3eol}]{../src/A/task3_external_eol_calibration.py}
