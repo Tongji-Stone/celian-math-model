@@ -1,5 +1,7 @@
 # 问题四工作记录
 
+补充：`src/A/task4_multiobjective_optimization.py` 是**可替换 EOL 输入的策略级复核**。默认把结果写到 `output_eol_audit/`，不覆盖以 `Fade_200` 为主的团队优化输出；可将 `--life-input` 换成问题三寿命预测 CSV。
+
 ## 目标
 
 兼顾充电时间与寿命衰减，在已有两阶段快充策略及其合理邻域内给出推荐配方。

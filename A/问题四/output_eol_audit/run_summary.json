@@ -1,0 +1,12 @@
+{
+  "life_input": "C:\\Users\\lxc\\Desktop\\celian-math-model\\references\\matr_source\\external_eol_audit\\contest_to_matr_eol_audit.csv",
+  "life_column": "external_eol_cycles",
+  "include_test": false,
+  "dataset_id": "3",
+  "n_cells": 30,
+  "n_policies": 6,
+  "time_intercept": -109.75380835604822,
+  "time_slope": 12.021838676338787,
+  "time_r2": 0.06775622118148417,
+  "idw_lopo_median_ape_pct": 6.570358319476097
+}
