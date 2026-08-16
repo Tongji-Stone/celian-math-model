@@ -1,0 +1,44 @@
+\section{建模源程序}
+\label{app:code}
+
+本节给出问题一至问题四可运行源代码。运行环境：Python 3，依赖 \texttt{numpy}、\texttt{pandas}、\texttt{matplotlib}；问题二至四另需 \texttt{scipy}；问题三融合模型另需 \texttt{torch}。在项目根目录执行：
+\begin{lstlisting}[language=bash]
+python src/task1_pipeline.py
+python src/task2_statistical_analysis.py
+python src/task2_exposure_model.py
+python src/task3_degradation_model.py
+python src/task3_pbt_batterygpt_fusion.py
+python src/task4_optimize.py
+\end{lstlisting}
+可选参数 \texttt{--iqr-factor}（默认 1.5）。单独绘制指定电池 SOH 曲线：
+\begin{lstlisting}[language=bash]
+python src/SOH_plot.py --battery-id 1
+\end{lstlisting}
+
+\subsection{SOH\_plot.py}
+
+\lstinputlisting[language=Python,caption={SOH 曲线绘制脚本},label={lst:sohplot}]{src/SOH_plot.py}
+
+\subsection{task1\_pipeline.py}
+
+\lstinputlisting[language=Python,caption={问题一分析流水线},label={lst:pipeline}]{src/task1_pipeline.py}
+
+\subsection{task2\_statistical\_analysis.py}
+
+\lstinputlisting[language=Python,caption={问题二统计分析脚本},label={lst:task2}]{src/task2_statistical_analysis.py}
+
+\subsection{task2\_exposure\_model.py}
+
+\lstinputlisting[language=Python,caption={问题二两窗口暴露模型},label={lst:task2exposure}]{src/task2_exposure_model.py}
+
+\subsection{task3\_degradation\_model.py}
+
+\lstinputlisting[language=Python,caption={问题三逐电池退化模型},label={lst:task3}]{src/task3_degradation_model.py}
+
+\subsection{task3\_pbt\_batterygpt\_fusion.py}
+
+\lstinputlisting[language=Python,caption={问题三 PBT/BatteryGPT 结构双头融合},label={lst:task3fusion}]{src/task3_pbt_batterygpt_fusion.py}
+
+\subsection{task4\_optimize.py}
+
+\lstinputlisting[language=Python,caption={问题四策略优化脚本},label={lst:task4}]{src/task4_optimize.py}

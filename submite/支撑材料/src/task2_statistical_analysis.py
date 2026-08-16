@@ -1,6 +1,6 @@
 """问题二：两阶段快充参数与 200 圈健康保持程度的统计分析。
 
-运行：python src/A/task2_statistical_analysis.py
+运行：python src/task2_statistical_analysis.py
 
 说明：赛题 CSV 未观测 SOH=0.8 的 EOL，因此本脚本仅分析 SOH_200、
 200 圈容量保持率和早期衰减斜率；不将任何外推结果称为真实循环寿命。

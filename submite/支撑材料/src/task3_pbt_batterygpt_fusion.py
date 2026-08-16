@@ -1,7 +1,7 @@
 """问题三方案 B：PBT 寿命头 × BatteryGPT 轨迹头的双头融合（另存，不覆盖原模型）。
 
 运行（项目根目录）：
-    python src/A/task3_pbt_batterygpt_fusion.py
+    python src/task3_pbt_batterygpt_fusion.py
 
 设计（与论文权重无关，仅用赛题附件训练）：
     共享 Transformer 编码器（PBT 风格的协议门控双专家 MoE）

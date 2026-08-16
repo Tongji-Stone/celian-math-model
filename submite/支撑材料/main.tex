@@ -1,0 +1,239 @@
+% !TEX program = xelatex
+% 策联杯 A 题参赛论文（无目录；第 1 页为摘要专用页）
+% 编译：xelatex -> bibtex -> xelatex -> xelatex
+% 请勿在全文任何位置填写姓名、学校或队号。
+\documentclass[a4paper,12pt,UTF8,zihao=-4]{ctexart}
+
+\usepackage{geometry}
+\geometry{a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,tabularx,longtable,multirow,makecell}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{array}
+\usepackage{threeparttable}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{placeins}
+\usepackage{cite}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue
+}
+
+\graphicspath{{figures/}}
+
+% 页码：页脚居中，阿拉伯数字从 1 连续编号（摘要页即为第 1 页）
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\thepage}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \fancyfoot[C]{\thepage}%
+}
+
+\captionsetup{font=small,labelsep=quad}
+\setlist[itemize]{leftmargin=2em,itemsep=0.2em,topsep=0.3em}
+\setlist[enumerate]{leftmargin=2em,itemsep=0.2em,topsep=0.3em}
+\setstretch{1.25}
+
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue!70!black},
+  commentstyle=\color{green!50!black},
+  stringstyle=\color{red!60!black},
+  showstringspaces=false,
+  tabsize=4,
+  xleftmargin=1.2em,
+  framexleftmargin=1.2em
+}
+\newtcolorbox{resultbox}[1][]{
+  colback=blue!4,
+  colframe=blue!50!black,
+  fonttitle=\bfseries,
+  title={主要结论},
+  #1
+}
+
+\title{锂离子电池快充策略对寿命衰减的影响建模与优化}
+\author{} % 按赛制不得出现参赛者信息
+\date{}
+
+\begin{document}
+
+% ============================================================
+% 第一页：摘要专用页（含标题和关键词，无需英文）
+% ============================================================
+\thispagestyle{plain}
+\begin{center}
+{\heiti\zihao{3} 锂离子电池快充策略对寿命衰减的影响建模与优化}
+\end{center}
+\vspace{0.8em}
+
+\noindent{\heiti\zihao{4} 摘\quad 要}
+
+\vspace{0.4em}
+\noindent
+提高充电倍率可缩短补能时间，但过高电流会加速容量衰减。本文基于 MIT--Stanford 公开的 49 块 A123 18650 型磷酸铁锂电池循环老化数据，围绕两阶段快充策略 \(C_1\)--\(Q_1\)--\(C_2\)，研究快充参数对寿命衰减的影响，并讨论寿命预测与策略优化问题。
+
+针对问题一，本文对循环数据进行逐电池、逐字段的 IQR 异常检测与前后邻域均值填补，共替换 559 个异常单元格；将原始 9 种策略字符串按充电配方统一为 7 类，并以第 200 次循环的 SOH 作为观测窗口内的寿命代理指标（数据尚未覆盖 \(\mathrm{SOH}=80\%\) 的真实寿命终止）。在 40 块满 200 圈电池中，SOH 均值为 0.9914。若仅按策略 SOH 中位数，合并后的 \(4.8\mathrm{C}(80\%)-4.8\mathrm{C}\) 最高，但组内离散过大、充电时间还分裂为两簇，故不以该组为典型。组内更集中的典型长寿命策略为 \(5\mathrm{C}(67\%)-4\mathrm{C}\)、\(5.3\mathrm{C}(54\%)-4\mathrm{C}\)、\(5.6\mathrm{C}(36\%)-4.3\mathrm{C}\) 与 \(5.6\mathrm{C}(19\%)-4.6\mathrm{C}\)，共同特征是 \(C_1>C_2\)，充电时间约 10.04\,min；典型短寿命策略为 \(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)，特征为 \(C_1<C_2\)，在相近充电时间下 SOH 明显更低。结果表明：高 SOC 区间维持高倍率更伤寿命；提高电流时适当降低切换 SOC \(Q_1\) 有助于在几乎不增加充电时间的前提下保持健康状态。温度、内阻与初始容量不能单独解释这一长短寿差异。
+
+针对问题二，本文以 200 圈衰减量 \(\mathrm{Fade}_{200}\) 为寿命反向代理，在同一实验结构的 34 块、6 个策略上建立固定 SOC 窗的两窗口电流暴露模型。原始参数 \(C_1,Q_1,C_2\) 严重共线（VIF\(\approx 32\)），不能识别边际效应。策略加权 WLS 给出 \(\beta_H=0.001356>\beta_L=0.001017\)，调整 \(R^2=0.996\)；简化式显示高 SOC 等效倍率每高 1C，窗口内衰减约增加 0.015。受限符号回归独立恢复同一线性式。去掉短寿 2 块后调整 \(R^2\) 降至 0.15，故该式用作问题四的 \(C^{\mathrm{high}}\) 约束而非精细寿命曲面。Kruskal--Wallis 表明组间总体有差异（\(\mathrm{SOH}_{200}\)：\(H=12.3346,p=0.0305\)；\(\mathrm{Fade}_{200}\)：\(H=14.79,p=0.011\)），Holm 两两比较不显著，不能写两两显著优劣。
+
+针对问题三，本文在 40 块满 200 圈电池上做截断验证：只用 1--\(k\) 圈预报 151--200。近段线性（最近 50 圈斜率接到第 \(k\) 圈实测 SOH）在 \(k=150\) 时 RMSE 为 \(2.71\times 10^{-4}\)，优于全程线性、幂律、指数、策略均值斜率与持续性；\(k=50\) 时斜率模型反而不如把当前 SOH 沿用。结构对齐 PBT/BatteryGPT 的双头融合（未加载官方权重）把 RMSE 再降到 \(2.20\times 10^{-4}\)，40 块中 27 块更好，但不能用无标签的 \(\hat N_{\mathrm{EOL}}\) 宣称寿命更准。测试集短寿电池 16 的 \(\hat N\approx 1030\)，电池 9 约 1679；这些圈数不是实测循环寿命，也不进入问题四。
+
+针对问题四，本文以问题二受限符号回归独立恢复的两窗口线性式作为策略层衰减模型，用分段恒流公式并按问题一口径校准充电时间。两阶段实验几乎都是约 10.04\,min 快充，时间目标在样本内接近退化；真正需要约束的是高 SOC 等效倍率 \(C^{\mathrm{high}}\)。正式推荐已实验策略 \(5.3\mathrm{C}(54\%)-4.0\mathrm{C}\)（实测 200 圈衰减约 0.00256，充电时间约 10.04\,min）。
+
+\vspace{0.8em}
+\noindent{\heiti 关键词：}快充策略；IQR 清洗；两窗口暴露；符号回归；近段线性；双头融合；约束优化
+
+\clearpage
+
+% ============================================================
+% 第二页起：正文
+% ============================================================
+\section{问题重述}
+
+随着新能源汽车与储能系统对补能效率的要求提高，锂离子电池快充成为缩短充电时间的主要手段。然而较高充电电流会增强极化、加剧热效应并加速副反应，从而加快容量衰减、缩短循环寿命\cite{severson2019datadriven,liu2019fastcharging,ahmed2017enabling}。电池健康状态定义为
+\begin{equation}
+\mathrm{SOH}=\frac{Q_{\mathrm{current}}}{Q_{\mathrm{initial}}},
+\label{eq:soh}
+\end{equation}
+本题以 \(\mathrm{SOH}=80\%\) 作为寿命终止（EOL）判定阈值。
+
+本题充电过程采用两阶段快充：以倍率 \(C_1\) 从 \(0\%\) SOC 充至切换点 \(Q_1\)，再以倍率 \(C_2\) 从 \(Q_1\) 充至 \(80\%\) SOC，随后以 1C 恒流--恒压（CC-CV）补至满电，至电流降至 \(C/50\) 结束。各电池放电条件一致，主要差异在充电策略。数据来自 MIT--Stanford 公开循环老化实验\cite{severson2019datadriven,matrdataset}，包含 49 块额定容量 1.1\,Ah 的 A123 18650 磷酸铁锂电池。
+
+需要完成的研究任务为：
+\begin{enumerate}[label=\textbf{问题\arabic*.}]
+  \item 整理数据，提取策略、充电时间、SOH 变化与循环寿命信息，分析寿命分布并解释典型长/短寿命策略差异。
+  \item 分析策略参数 \(C_1,Q_1,C_2\) 对循环寿命的影响及其统计显著性与可能机制。
+  \item 基于截至第 150 次循环的数据预测第 151--200 次循环 SOH，并外推 EOL 循环寿命。
+  \item 兼顾充电时间与寿命衰减，在实验策略及其合理邻域内优化快充策略。
+\end{enumerate}
+
+\section{问题分析与总体思路}
+
+问题一属于探索性数据分析：在尚未达到真实 EOL 的观测窗口内，需要定义可比较的寿命代理指标，并完成清洗、可视化与典型策略提取。问题二强调参数非正交，不宜按完全析因实验解读 \(C_1,Q_1,C_2\) 的边际效应，因而将策略重参数化为固定 SOC 窗上的电流暴露量，并用符号回归核对线性结构。问题三把可验证的 151--200 预报与不可验证的 80\% 外推分开，比较近段线性、非线性退化式、跨电池斜率与序列融合。问题四把问题二的两窗口模型当作策略层约束，在约 10\,min 邻域内权衡衰减。
+
+四问共用清洗后的循环表，但样本分层：问题一在 40 块满 200 圈电池上提取典型策略（原始 9 种策略统一为 7 类）；问题二、四限定同一实验结构（\texttt{dataset\_id=3}）的 34 块、6 个策略，排除跨批次 \(3.6\mathrm{C}\) 合并组；问题三在上述 40 块上截断验证，9 块测试电池只预报、不回写前两问与优化。充电时间一律采用问题一清洗后的逐圈 \texttt{chargetime} 均值。四问递进关系为：数据整理 \(\rightarrow\) 影响分析 \(\rightarrow\) 寿命预测 \(\rightarrow\) 策略优化。
+
+\section{符号说明与基本假设}
+
+\subsection{主要符号}
+\begin{table}[htbp]
+\centering
+\caption{主要符号说明}
+\label{tab:notation}
+\begin{tabular}{cl}
+\toprule
+符号 & 含义 \\
+\midrule
+\(\mathrm{SOH}\) & 电池健康状态，见式\eqref{eq:soh} \\
+\(C_1,C_2\) & 第一、二阶段充电倍率（C-rate） \\
+\(Q_1\) & 阶段切换 SOC（\%） \\
+\(N\) & 循环次数 \\
+\(N_{\mathrm{EOL}}\) & \(\mathrm{SOH}=80\%\) 对应的循环寿命 \\
+\(\hat N_{\mathrm{EOL}}\) & 由退化曲线外推的寿命指标（非观测 EOL） \\
+\(k\) & 问题三拟合所用的早期循环窗口长度 \\
+\(\mathrm{SOH}_{200}\) & 第 200 次循环的 SOH（寿命代理；问题二主检验用平滑值） \\
+\(\mathrm{Fade}_{200}\) & \(\mathrm{SOH}_{\mathrm{smooth}}(1)-\mathrm{SOH}_{\mathrm{smooth}}(200)\) \\
+\(E^{L},E^{H}\) & 低/高 SOC 窗口累计电流暴露量（\(Q^\ast=50\%\)） \\
+\(C^{\mathrm{high}}\) & 高 SOC 等效倍率 \(E^{H}/30\) \\
+\(T_{\mathrm{charge}}\) & 平均充电时间（min；问题一口径：清洗后逐圈 \texttt{chargetime} 均值） \\
+\(T_{\mathrm{CC}}\) & 两阶段恒流充至 \(80\%\) SOC 的理论时间 \\
+\(\widehat T\) & 校准后的充电时间估计 \(T_{\mathrm{CC}}+\hat\beta\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{基本假设}
+\begin{enumerate}
+  \item 各电池放电协议一致，寿命差异主要由充电策略及电池个体差异引起。
+  \item 在 200 次循环窗口内未达到 \(\mathrm{SOH}=80\%\)，故问题一以 \(\mathrm{SOH}_{200}\) 作为寿命代理，问题二以 \(\mathrm{Fade}_{200}\) 作为反向代理；问题三的 \(\hat N_{\mathrm{EOL}}\) 只是模型外推，不是已验证寿命。
+  \item 问题一按充电配方将原始策略字符串统一为 7 类（去掉 \texttt{NEWSTRUCTURE} 后缀并合并同名记录）；合并组若组内离散明显，不作为典型策略。
+  \item IQR 筛出的离群点视为统计异常而非已证实的传感器故障，清洗仅用于本题指定分析。
+  \item 问题二主模型将 \((C_1,Q_1,C_2)\) 重参数化为固定 SOC 窗暴露量；原始三参数回归只作误设对照。
+  \item 问题四若扩展连续参数，取值限制在已有实验数据的凸包或合理邻域内，避免无约束外推；优化不用问题三逐电池曲线。
+\end{enumerate}
+
+\input{sections/01_problem1}
+\input{sections/02_problem2}
+\input{sections/03_problem3}
+\input{sections/04_problem4}
+
+\section{结论与展望}
+
+\begin{resultbox}
+\textbf{问题一结论：}
+\begin{itemize}
+  \item 循环数据经 IQR 清洗后可用于策略对比；原始 9 种策略统一为 7 类。
+  \item 在满 200 圈的 40 块电池中，第 200 次循环 SOH 均值为 0.9914，尚未达到 80\% EOL。
+  \item 按中位数会把 \(4.8\mathrm{C}\) 合并组标为最长，但其组内离散大、充电时间分两簇，故不以该组为典型；典型长寿命满足 \(C_1>C_2\)（如 \(5\mathrm{C}(67\%)-4\mathrm{C}\) 等），充电时间约 10.04\,min；典型短寿命为 \(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)（\(C_1<C_2\)）。
+  \item 相近充电时间下，高 SOC 区间高倍率会明显加快衰减；\(Q_1=80\%\) 的恒流合并组离散大，提高倍率时均值与下尾变差但中位数并不同步，故不作典型对照；提高电流时降低 \(Q_1\) 有助于保持 SOH。
+  \item 温度、内阻与初始容量不能单独解释长短寿差异。
+\end{itemize}
+\end{resultbox}
+
+\begin{resultbox}
+\textbf{问题二结论：}
+\begin{itemize}
+  \item 主模型为固定 SOC 窗（\(Q^\ast=50\%\)）的两窗口暴露回归：策略加权 WLS 得 \(\beta_H=0.001356>\beta_L=0.001017\)，调整 \(R^2=0.996\)；高 SOC 等效倍率每高 1C，窗口内衰减约增加 0.015。受限 PySR 独立恢复 \(\widehat{\mathrm{Fade}}_{200}=0.001000 E^{L}+0.001342 E^{H}-0.430734\)。
+  \item 去掉短寿 \(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)（\(n=2\)）后调整 \(R^2\) 降至 0.15，故该分离主要来自高 SOC 全程 \(5.9\mathrm{C}\)；其余策略 \(C^{\mathrm{high}}\approx 4.2\sim 4.6\)，不能识别细的三参数边际效应。原始 OLS/岭回归与自由符号回归不能用于搜配方。
+  \item \(\mathrm{SOH}_{200}\) 与 \(\mathrm{Fade}_{200}\) 的 Kruskal--Wallis 总体显著（\(H=12.3346/14.79\)），Holm 两两比较不显著；典型长短寿与问题一对齐。问题四应约束 \(C^{\mathrm{high}}\)，并用已实验点的实测衰减排序。
+\end{itemize}
+\end{resultbox}
+
+\begin{resultbox}
+\textbf{问题三结论：}
+\begin{itemize}
+  \item 近处可验证：\(k=150\) 时近段线性预报 151--200 的 RMSE 为 \(2.71\times 10^{-4}\)，\(\mathrm{SOH}_{200}\) MAE 为 \(4.66\times 10^{-4}\)，优于全程线性、幂律、指数、策略均值与持续性；\(k=50\) 时斜率模型差于把当前 SOH 沿用。
+  \item 双头融合（结构对齐 PBT/BatteryGPT，未加载官方权重）RMSE 为 \(2.20\times 10^{-4}\)，40 块中 27 块更好；80\% 寿命无真值，不能用 \(\hat N_{\mathrm{EOL}}\) 比较模型。
+  \item 测试集短寿电池 16 的 \(\hat N\approx 1030\)，电池 9 约 1679；外推圈数只作相对排序，不进入问题四。
+\end{itemize}
+\end{resultbox}
+
+\begin{resultbox}
+\textbf{问题四结论：}
+\begin{itemize}
+  \item 两阶段实验几乎都是约 10\,min 快充，时间目标在样本内接近退化；约束应落在 \(C^{\mathrm{high}}\)，并保持 \(C_1\ge C_2\)。
+  \item 正式推荐已实验策略 \(5.3\mathrm{C}(54\%)-4.0\mathrm{C}\)（实测 \(\mathrm{Fade}_{200}\approx 0.00256\)，充电时间约 10.04\,min）；邻域候选 \(5.3\mathrm{C}(50\%)-4.0\mathrm{C}\) 须补实验。
+  \item 原始参数 OLS/岭回归会推向高 SOC 大电流，不能用于搜配方；问题三逐电池模型与公开寿命标签不进入优化。
+\end{itemize}
+\end{resultbox}
+
+观测窗口尚未覆盖 \(\mathrm{SOH}=80\%\)，两窗口分离主要依赖短寿组的 2 块电池，近段线性只对再走 50 圈可验证。要把 \(C_1,Q_1,C_2\) 的边际效应与真实循环寿命一并确认，仍需同批次正交重复与更长循环实验。
+
+\section{AI 工具使用声明}
+
+本参赛队在竞赛过程中使用了 AI 工具，主要用于代码辅助编写、脚本调试、文献整理与论文草稿撰写，详细使用情况见支撑材料。
+
+\section*{ }
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+% ============================================================
+% 附录（页数不限）
+% ============================================================
+\appendix
+\input{sections/app_materials}
+\input{sections/app_code}
+\input{sections/app_ai}
+
+\end{document}

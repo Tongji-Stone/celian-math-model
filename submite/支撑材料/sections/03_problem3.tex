@@ -1,0 +1,183 @@
+\section{问题三：基于早期循环的电池寿命预测}
+
+\subsection{任务拆分与验证协议}
+
+实际中往往只能获得前期循环。本题要求：用截至第 \(k\) 次循环的数据预报第 151--200 次循环 SOH，并外推 \(\mathrm{SOH}=80\%\) 的循环寿命\cite{severson2019datadriven,attia2021statistical,zhang2018lstm}。赛题窗口内没有任何电池掉到 80\%，因此必须把两个视界分开：
+
+\begin{enumerate}
+  \item \textbf{近处（可验证）。} 在 40 块非测试、满 200 圈电池上截断：只用 1--\(k\) 圈拟合，预报 151--200，与真值比较 RMSE、MAE 及 \(\mathrm{SOH}_{200}\) 的 MAE。
+  \item \textbf{远处（无标签）。} 把同一条曲线延长到 \(\mathrm{SOH}=0.80\)，得到 \(\hat N_{\mathrm{EOL}}\)。9 块测试电池只给到 150 圈，151--200 与寿命均无赛题真值。
+\end{enumerate}
+
+响应一律用 \(\mathrm{SOH}_{\mathrm{smooth}}\)。主窗口取题目给到的 \(k=150\)，并比较 \(k=50,100,150\)。公开 \(N_{0.88}\) 与完整老化曲线不进入训练、验证或测试预报。问题四不使用本节的逐电池 \(\hat N_{\mathrm{EOL}}\)。
+
+\subsection{逐电池退化函数族}
+
+近处 50 圈仍处 LFP 容量平台，适合显式曲线 \(f(n;\theta_i)\)。对第 \(i\) 块电池用它自己的 1--\(k\) 圈估 \(\theta_i\)，预报时把曲线接到第 \(k\) 圈实测水平，避免截距与终点错位。比较以下模型。
+
+\paragraph{持续性（persist）。}
+\(\widehat{\mathrm{SOH}}(n)=\mathrm{SOH}(k)\)。朴素下界：认为健康状态不再变化。
+
+\paragraph{全程线性。}
+对 \(n=1,\ldots,k\) 拟合 \(\mathrm{SOH}(n)=a+bn\)，再外推。早期形成期噪声会污染斜率。
+
+\paragraph{近段线性（可解释主模型）。}
+只用窗口内最后 50 圈估斜率 \(b\)，接到 \(\mathrm{SOH}(k)\)：
+\begin{equation}
+\widehat{\mathrm{SOH}}(n)=\mathrm{SOH}(k)+b(n-k),\qquad n>k.
+\label{eq:q3-linear-recent}
+\end{equation}
+\(k=50\) 时近段与全程重合。寿命由 \(b<0\) 解
+\begin{equation}
+\hat N_{\mathrm{EOL}}=k+\frac{\mathrm{SOH}(k)-0.80}{-b},
+\label{eq:q3-eol}
+\end{equation}
+若 \(b\ge 0\) 或 \(\hat N>20000\) 则记为删失。该圈数是模型含义下的寿命指标，不是观测 EOL。
+
+\paragraph{幂律与指数（\(k=150\)）。}
+\begin{equation}
+\mathrm{SOH}(n)=a-c\,n^{p},\qquad
+\mathrm{SOH}(n)=c+A\mathrm{e}^{-rn}.
+\label{eq:q3-nl}
+\end{equation}
+不收敛时退回线性。平台期容易把弯曲估过头。
+
+\paragraph{策略均值斜率（policy\_mean）。}
+留一电池，用同策略其余电池 1--\(k\) 的平均斜率，接到本电池 \(\mathrm{SOH}(k)\)。信息来源与「借用别的电池的策略/特征」同类，参数更少，作为跨电池对照。
+
+\paragraph{向策略收缩（shrink\_linear）。}
+\(b=0.7\,b_{\mathrm{cell}}+0.3\,b_{\mathrm{policy}}\)，检验组信息能否稳定个体斜率。
+
+\subsection{截断验证与误差对比}
+
+表~\ref{tab:q3-k150} 给出 \(k=150\)、40 块电池上预报 151--200 的误差。图~\ref{fig:q3-rmse} 按 RMSE 排序。近段线性 RMSE 均值为 \(2.71\times 10^{-4}\)，\(\mathrm{SOH}_{200}\) 的 MAE 为 \(4.66\times 10^{-4}\)（约 0.047 个百分点），验证集中位 \(\hat N_{\mathrm{EOL}}\approx 6436\)，无人触顶 20000。
+
+\begin{table}[htbp]
+\centering
+\caption{\(k=150\) 时 40 块电池上预报 151--200 的误差（按 RMSE 升序）}
+\label{tab:q3-k150}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+模型 & RMSE 均值 & MAE 均值 & \(\mathrm{SOH}_{200}\) MAE & 相对近段线性 \\
+\midrule
+双头融合 & 0.000220 & 0.000181 & 0.000327 & 0.81 \\
+近段线性（主） & 0.000271 & 0.000222 & 0.000466 & 1 \\
+幂律 & 0.000591 & 0.000482 & 0.001068 & 2.2 \\
+全程线性 & 0.000709 & 0.000606 & 0.001251 & 2.6 \\
+指数 & 0.000714 & 0.000610 & 0.001260 & 2.6 \\
+向策略收缩 & 0.000734 & 0.000625 & 0.001293 & 2.7 \\
+策略均值斜率 & 0.000867 & 0.000740 & 0.001501 & 3.2 \\
+持续性 & 0.001530 & 0.001320 & 0.002659 & 5.6 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\linewidth]{question3/val_rmse_models.png}
+\caption{\(k=150\) 时各逐电池退化式在 151--200 圈的 RMSE 均值。双头融合见下文单独对照。}
+\label{fig:q3-rmse}
+\end{figure}
+
+优劣可概括为三条。第一，\textbf{最近 50 圈的斜率已经足够预报再走 50 圈}：全程线性把形成期噪声平均进去，RMSE 约为近段线性的 2.6 倍。第二，\textbf{跨电池斜率帮不上忙}：策略均值是近段线性的 3.2 倍，向策略收缩介于二者之间且未能超过纯个体斜率；在「曲线仍接近直线」的近处任务上，别的电池会稀释本电池已经看见的衰减。第三，\textbf{非线性式近处更差、远处更短}：幂律 RMSE 约 2.2 倍，验证集中位 \(\hat N\) 被压到约 779 圈，是靠过度弯曲「看起来更像寿命」，不是更好的 151--200 模型；指数与全程线性接近，且分别有 12 和 11 块被 20000 圈删失。持续性把第 150 圈 SOH 原样沿用，误差约为近段线性的 5.6 倍，说明后续 50 圈并非静止。
+
+按策略，近段线性在短寿 \(3.7\mathrm{C}\) 上 RMSE 最低（约 \(1.45\times 10^{-4}\)），因为斜率已经清楚；\(3.6\mathrm{C}\) 合并组最高（约 \(5.47\times 10^{-4}\)），组内轨迹更杂。图~\ref{fig:q3-scatter} 显示第 200 圈预报贴近对角线；图~\ref{fig:q3-traj} 给出长短寿各两块的 151--200 对照。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.62\linewidth]{question3/val_soh200_scatter.png}
+\caption{近段线性在验证集上的第 200 圈预报与实测}
+\label{fig:q3-scatter}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.96\linewidth]{question3/val_example_trajectories.png}
+\caption{验证集示例：近段线性、策略均值与持续性对 151--200 的预报}
+\label{fig:q3-traj}
+\end{figure}
+
+\subsection{窗口不能太短}
+
+表~\ref{tab:q3-window} 与图~\ref{fig:q3-window} 比较 \(k=50,100,150\)。\(k=50\) 时所有带斜率的模型都差于持续性（RMSE \(7.39\times 10^{-3}\) 对 \(5.36\times 10^{-3}\)）：前 50 圈噪声大，预报 SOH 系统性偏高约 0.007（偏差定义为真值减预报）。\(k=100\) 起近段线性才稳定领先（RMSE \(8.99\times 10^{-4}\)）。题目给到 150 圈，应当用满，并侧重最近 50 圈，而不是 1--150 一视同仁。
+
+\begin{table}[htbp]
+\centering
+\caption{不同早期窗口下预报 151--200 的 RMSE 均值}
+\label{tab:q3-window}
+\small
+\begin{tabular}{lrrr}
+\toprule
+模型 & \(k=50\) & \(k=100\) & \(k=150\) \\
+\midrule
+近段线性 & 0.007387 & 0.000899 & 0.000271 \\
+策略均值斜率 & 0.007393 & 0.002557 & 0.000867 \\
+持续性 & 0.005357 & 0.003586 & 0.001530 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.88\linewidth]{question3/val_rmse_by_window.png}
+\caption{拟合窗口长度对 151--200 圈 RMSE 的影响}
+\label{fig:q3-window}
+\end{figure}
+
+\subsection{序列融合对照}
+
+文献中的预训练电池变换器（PBT）用协议门控混合专家预测循环寿命\cite{tan2025pbt}，BatteryGPT 用生成式预训练外推退化轨迹\cite{hu2025batterygpt}。二者官方权重需要圈内电压--电流曲线，与本题按圈汇总表不兼容，故\textbf{未加载}公开权重。作为结构对照，用赛题 40 块电池从头训练共享 Transformer 编码器：静态协议特征经双专家 MoE 门控（PBT 路径），轨迹头在近段线性基线上生成 151--200 的 SOH 残差（BatteryGPT 路径），寿命头输出 \(\log\hat N_{\mathrm{EOL}}\)，并以轨迹外推寿命与寿命头的一致性损失耦合。寿命伪标签来自训练折内真实 150\(\rightarrow\)200 斜率外推到 0.80，不是实测循环寿命。验证为留一电池：被留出块只给 1--150。
+
+该融合模型 151--200 的 RMSE 为 \(2.20\times 10^{-4}\)，约为近段线性的 81\%，\(\mathrm{SOH}_{200}\) MAE 为 \(3.27\times 10^{-4}\)，40 块中 27 块更好（图~\ref{fig:q3-fusion}）。长寿两阶段策略上融合更稳；早期 \(3.6\mathrm{C}\) 合并组与 \(5.3\mathrm{C}\) 上近段线性仍略优，说明跨电池残差不是处处有益。融合验证集中位 \(\hat N\) 约 5332，略短于近段线性的 6436；\textbf{不能}用寿命圈数宣称融合获胜，因为 80\% 没有真值。问题四仍只用问题二的策略层约束，不用融合或近段线性的个体 \(\hat N\)。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.88\linewidth]{question3/rmse_fusion_vs_linear.png}
+\caption{留一电池验证：双头融合与近段线性的 151--200 RMSE}
+\label{fig:q3-fusion}
+\end{figure}
+
+本文未另训练 LSTM 或 XGBoost。策略均值已给出「只用跨电池信息」的下限；若树模型或 LSTM 主要靠策略编码，预期不会显著优于 \(8.67\times 10^{-4}\) 这一档。
+
+\subsection{测试集预报与寿命外推}
+
+表~\ref{tab:q3-test} 给出 9 块测试电池在 \(k=150\) 时近段线性的预报。图~\ref{fig:q3-test} 为 151--200 曲线。电池 16（\(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)）\(\hat N\approx 1030\)，与验证集短寿组中位约 1143 一致。电池 9（全程 \(4.8\mathrm{C}\)）近段斜率明显快于同策略组均值（组均值会给出约 1 万圈），逐电池模型给出 \(\hat N\approx 1679\)，不会把它抹成「普通 4.8C」。融合对电池 16 几乎相同（约 1041），对电池 9 更陡（约 1427）。其余 6 块长寿策略的近段线性 \(\hat N\) 约 5000--9400。
+
+\begin{table}[htbp]
+\centering
+\caption{测试集近段线性预报（无 151--200 真值）}
+\label{tab:q3-test}
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{rlrrrr}
+\toprule
+电池 & 策略 & \(\mathrm{SOH}_{150}\) & 预报 \(\mathrm{SOH}_{200}\) & \(\hat N_{\mathrm{EOL}}\) & 策略均值 \(\hat N\) \\
+\midrule
+16 & \(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\) & 0.972 & 0.962 & 1030 & 1126 \\
+9 & \(4.8\mathrm{C}(80\%)-4.8\mathrm{C}\) & 0.989 & 0.983 & 1679 & 10100 \\
+5 & \(3.6\mathrm{C}(80\%)-3.6\mathrm{C}\) & 0.996 & 0.994 & 5088 & 4585 \\
+24 & \(5.6\mathrm{C}(36\%)-4.3\mathrm{C}\) & 0.998 & 0.996 & 6809 & 10487 \\
+14 & \(5.6\mathrm{C}(19\%)-4.6\mathrm{C}\) & 0.998 & 0.996 & 7850 & 8729 \\
+11 & \(5.3\mathrm{C}(54\%)-4.0\mathrm{C}\) & 0.997 & 0.996 & 8058 & 14536 \\
+10 & \(5.0\mathrm{C}(67\%)-4.0\mathrm{C}\) & 0.997 & 0.996 & 8231 & 14635 \\
+2 & \(3.6\mathrm{C}(80\%)-3.6\mathrm{C}\) & 0.995 & 0.994 & 8555 & 4561 \\
+25 & \(4.8\mathrm{C}(80\%)-4.8\mathrm{C}\) & 0.997 & 0.996 & 9439 & 10537 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\linewidth]{question3/test_forecast_151_200.png}
+\caption{9 块测试电池的近段线性 151--200 预报（无真值）}
+\label{fig:q3-test}
+\end{figure}
+
+\(\hat N_{\mathrm{EOL}}\) 只用于：短寿测试电池约千圈、多数长寿约数千至近万、排序与问题一/二的早期衰减一致。长寿组 150 圈仍在 0.99 附近，分母接近 0，圈数对斜率噪声敏感，\textbf{不得写成实测循环寿命}。
+
+\subsection{小结}
+
+问题三可验证的结论是：用满 150 圈、取最近 50 圈斜率的近段线性，能把再走 50 圈的 SOH RMSE 压到 \(2.7\times 10^{-4}\) 量级，显著优于全程线性、幂律、指数、策略均值与持续性。结构对齐 PBT/BatteryGPT 的双头融合在同一口径上再降约 19\% 的 RMSE，但未加载官方权重，且 80\% 寿命仍无真值。问题四继续用问题二的 \(C^{\mathrm{high}}\) 约束搜配方，不用这 9 块的个体 \(\hat N\)。
+
+\FloatBarrier

@@ -2,7 +2,7 @@
 
 运行：
     conda activate pysr
-    python src/A/task2_pysr_raw_free.py
+    python src/task2_pysr_raw_free.py
 
 本脚本刻意不输入两窗口暴露量，目的是检验原始策略参数本身能否稳定地产生候选规律。
 """

@@ -1,0 +1,40 @@
+\section{支撑材料文件列表}
+
+按赛制，支撑材料单独打包为压缩文件（RAR/ZIP，不超过 20\,MB），本附录列出其内容。本次提交的压缩包为 \texttt{A20260700.rar}，其根目录包含：LaTeX 工程（\texttt{main.tex}、\texttt{refs.bib}、\texttt{sections/}）、论文图件（\texttt{figures/}）、可运行源代码（\texttt{src/}）与赛制要求的 AI 使用说明（\texttt{关于AI的使用说明.pdf}）。赛题原始数据 \texttt{data/battery\_summary.csv}、\texttt{data/cycle\_train.csv} 不作为“自主查阅数据”重复提交，但建模程序依赖它们运行。
+
+\begin{table}[htbp]
+\centering
+\caption{支撑材料包含的文件}
+\label{tab:support}
+\small
+\begin{tabular}{p{0.42\textwidth}p{0.48\textwidth}}
+\toprule
+路径 & 说明 \\
+\midrule
+\texttt{main.tex} & 支撑材料 LaTeX 主文档（四题正文与全部附录） \\
+\texttt{refs.bib} & 参考文献库（与论文引用一一对应） \\
+\texttt{关于AI的使用说明.pdf} & 赛制要求的 AI 工具使用说明（工具、环节、提示方式、采纳与核验） \\
+\texttt{figures/question1/} & 问题一图件（5 张 PNG） \\
+\texttt{figures/question2/} & 问题二图件（6 张 PNG） \\
+\texttt{figures/question3/} & 问题三图件（9 张 PNG） \\
+\texttt{figures/question4/} & 问题四图件（4 张 PNG） \\
+\texttt{sections/} & 四题正文（\texttt{01\_problem1.tex}--\texttt{04\_problem4.tex}）与附录章节源文件 \\
+\texttt{src/SOH\_plot.py} & SOH 曲线绘制模块 \\
+\texttt{src/task1\_pipeline.py} & 问题一完整可运行流水线 \\
+\texttt{src/task2\_statistical\_analysis.py} & 问题二统计检验与回归诊断 \\
+\texttt{src/task2\_exposure\_model.py} & 问题二两窗口暴露模型 \\
+\texttt{src/task2\_pysr\_symbolic.py} & 问题二受限符号回归（主对照） \\
+\texttt{src/task2\_pysr\_physical\_priors.py} & 问题二物理先验符号回归 \\
+\texttt{src/task2\_pysr\_raw\_free.py} & 问题二自由符号回归（全样本） \\
+\texttt{src/task2\_pysr\_raw\_free\_lopo.py} & 问题二自由符号回归（留一策略重搜） \\
+\texttt{src/task3\_degradation\_model.py} & 问题三逐电池退化模型 \\
+\texttt{src/task3\_external\_matr\_audit.py} & 问题三外部 MATR 全寿命审计脚本 \\
+\texttt{src/task3\_pbt\_batterygpt\_fusion.py} & 问题三双头融合对照 \\
+\texttt{src/task4\_optimize.py} & 问题四时间--衰减策略优化 \\
+\texttt{src/task4\_multiobjective\_optimization.py} & 问题四多目标网格优化 \\
+\texttt{src/build\_external\_eol\_audit.py} & 外部 EOL 审计数据构建脚本 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+问题三外部 MATR 全寿命审计所需的原始数据（\texttt{external\_matr\_audit/raw/}）与融合模型权重目录仅作内部核对，未纳入压缩包；压缩包内仅保留对应的构建与运行脚本，正文精度不受影响。源程序运行方式见附录~\ref{app:code}。

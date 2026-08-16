@@ -840,7 +840,7 @@ def main() -> None:
     (OUT_DIR / "AGENTS.md").write_text(
         "# 外部 MATR 审计\n\n"
         "本目录的曲线、标签、误差表 **禁止** 输入问题一/二/三训练、验证、特征或调参。\n"
-        "脚本：`src/A/task3_external_matr_audit.py`\n",
+        "脚本：`src/task3_external_matr_audit.py`\n",
         encoding="utf-8",
     )
     print("listing parquet cells...", flush=True)

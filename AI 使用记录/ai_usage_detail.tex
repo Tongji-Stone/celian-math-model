@@ -1,0 +1,157 @@
+% !TEX program = xelatex
+% 策联杯支撑材料：AI 工具使用详情（全文不出现姓名、学校、队号）
+\documentclass[a4paper,12pt,UTF8,zihao=-4]{ctexart}
+
+\usepackage{geometry}
+\geometry{a4paper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\usepackage{amsmath,amssymb,booktabs,array,longtable}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{listings}
+
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\thepage}
+\setstretch{1.25}
+\setlist[itemize]{leftmargin=2em,itemsep=0.2em,topsep=0.3em}
+\setlist[enumerate]{leftmargin=2em,itemsep=0.2em,topsep=0.3em}
+
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  showstringspaces=false,
+  tabsize=4,
+  xleftmargin=1.2em
+}
+
+\title{AI 工具使用详情}
+\author{}
+\date{}
+
+\begin{document}
+\begin{center}
+{\heiti\zihao{3} AI 工具使用详情}
+\end{center}
+
+\vspace{0.6em}
+\noindent
+本文件为 2026「策联杯」数学建模竞赛支撑材料，对应论文正文参考文献之前的 AI 工具使用声明。全文不出现参赛者姓名、学校或队号。参赛队对 AI 参与完成的内容均作了人工审查与核实；核心建模选择、口径与最终结论由参赛队负责。
+
+\section{所用 AI 工具}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{竞赛期间使用的 AI 工具}
+\begin{tabular}{p{0.26\textwidth}p{0.36\textwidth}p{0.28\textwidth}}
+\toprule
+工具 & 版本或型号 & 主要用途 \\
+\midrule
+OpenAI ChatGPT & 记录版本 1.2026.190，模型 gpt5.6-sol-high & 题意讨论、提示词起草 \\
+OpenAI Codex CLI & v0.147.0，模型 gpt5.6-sol-high & 按 \texttt{AGENTS.md} 生成分析代码 \\
+OpenAI Codex CLI & DeepSeek-V4-Flash-0731 & 代码辅助与局部改写 \\
+Cursor 智能体 & Cursor Grok 4.6 & 问题二至四脚本、论文撰写、口径核对 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+未使用未列出的闭源专用电池模型权重作为正式精度来源。问题三双头融合仅结构对齐公开文献中的 PBT 与 BatteryGPT，\textbf{未加载}其官方预训练权重。
+
+\section{具体使用目的和环节}
+
+AI 用于辅助，不替代参赛队的题意分析与模型取舍。按环节如下。
+
+\begin{enumerate}
+  \item \textbf{协作与仓库。} 询问 Git 分支、合并与推送的操作说明，便于多人协作；提交信息与冲突处理由人工确认。
+  \item \textbf{问题一。} 依据人工撰写的 \texttt{A/问题一/AGENTS.md} 生成模块化流水线：IQR 清洗、策略统一（9 种合并为 7 种）、200 圈汇总、单体与总图。人工检查可运行性后调整参数，复现 \texttt{log\_3}。
+  \item \textbf{问题二。} 协助编写组间检验、原始参数回归、两窗口电流暴露模型与符号回归脚本；人工指定主队列（\texttt{dataset\_id=3} 的 34 块、6 个策略）、两个 Kruskal 不得混用，以及典型策略与问题一对齐。
+  \item \textbf{问题三。} 协助编写逐电池退化函数族（近段线性为主）与结构对齐的双头融合对照；人工规定截断验证协议、不把 \(\hat N_{\mathrm{EOL}}\) 写成实测寿命，且不把个体预报送入问题四。
+  \item \textbf{问题四。} 协助编写 10 分钟邻域约束优化脚本；人工规定只用问题二策略层模型、充电时间用问题一口径，正式推荐已实验点 \(5.3\mathrm{C}(54\%)-4.0\mathrm{C}\)。
+  \item \textbf{文献。} 整理快充、SOH 预测与策略优化的公开文献条目，写入 \texttt{references/} 与 \texttt{paper/refs.bib}；引用是否进入正文由人工决定。
+  \item \textbf{论文。} 将已核验的数值、图表与口径写入 \texttt{paper/}；摘要与关键词经人工修订。
+\end{enumerate}
+
+\section{主要提示方式与使用过程}
+
+\subsection{提示方式}
+
+主要方式为：先由人工完成题意分析与方法构想，再写成 \texttt{AGENTS.md} 或结构化任务说明，交由 AI 生成代码或文档草稿；随后人工运行脚本，对照数据、验收清单与 \texttt{A/口径.md} 核验。不以一次对话的输出直接作为终稿。
+
+\subsection{使用过程}
+
+\begin{enumerate}
+  \item 人工确定该问要回答什么、不能写什么（例如赛题窗口内没有 \(\mathrm{SOH}=80\%\) 的真实 EOL）。
+  \item 把数据路径、输出文件名、验收条款写入 \texttt{AGENTS.md}。
+  \item AI 生成或改写 \texttt{src/A/} 下的 Python 脚本与说明文档。
+  \item 人工运行、读日志与 CSV，修正与数据不符或表述过强的句子。
+  \item 将通过核验的数字写入论文，并在全文统一充电时间与 Kruskal 口径。
+\end{enumerate}
+
+\subsection{典型交互示例（问题一）}
+
+使用工具：OpenAI Codex CLI v0.147.0（gpt5.6-sol-high）。完整提示词见 \texttt{A/问题一/AGENTS.md} 及 \texttt{log\_2.md}、\texttt{log\_3.md}。下面摘录任务目标，说明提示如何约束输出文件与方法。
+
+\begin{lstlisting}[caption={问题一 AGENTS.md 任务目标摘录}]
+1. 进行数据清理，使用iqr方法寻找有无异常数据，
+   然后使用前后均值填补异常数据
+2. 提取不同电池的快充策略，输出为charge_policy.csv
+3. 创建SOH_plot.py，以1号电池为例绘制SOH曲线
+4. 用cycle截止为200的数据统计第200圈SOH与充电时间均值
+5. 绘制SOH与充电时间散点图
+6. 按充电策略绘制箱线图
+代码放到 .\src\A 中；日志输出到 .\A\问题一\log_N
+\end{lstlisting}
+
+第三次迭代由人工追加：策略 9\(\rightarrow\)7 的合并规则、49 张单体曲线与 \texttt{SOH\_ALL}、用上/下四分位线代替“寿命终止线”，以及验收条款（策略数减少 2、命名无旧后缀残留）。
+
+\subsection{典型交互示例（问题二至四）}
+
+问题二至四同样先写 \texttt{AGENTS.md}。人工在提示中锁定的关键约束包括：
+
+\begin{itemize}
+  \item 不得把 \(\mathrm{SOH}_{200}\) 写成真实循环寿命；
+  \item 问题二主队列限定同一实验结构；\(\mathrm{SOH}_{200}\) 与 \(\mathrm{Fade}_{200}\) 的 Kruskal 统计量不得混写成同一个检验；
+  \item 问题三必须把可验证的 151--200 预报与不可验证的 80\% 外推分开；
+  \item 问题四不得使用问题三逐电池 \(\hat N\) 或公开寿命标签优化配方。
+\end{itemize}
+
+AI 据此写出问题二至四分析脚本草稿后，由人工对照 CSV 与图件定稿。
+
+\section{对 AI 输出的采纳、修改和核验}
+
+语言润色类改动不在此逐条列出。下列为建模与分析相关的采纳与核验。
+
+\subsection{问题一}
+
+采纳 AI 生成的 IQR 流水线与绘图模块，但作了人工修改：典型长/短寿命不按策略 SOH 中位数自动贴标签（流水线曾把 \(4.8\mathrm{C}\) 合并组标为最长），改按组内集中程度与 \(C_1,C_2\) 形态，与 \texttt{A/问题一/总结.md} 一致。核验：\texttt{log\_3} 与验收确认 IQR 替换 559 格、策略 \(9\rightarrow 7\)、满 200 圈 40 块、分位线 \(0.993433/0.996103\)、49 张单体曲线与 \texttt{SOH\_ALL} 齐全。
+
+\subsection{问题二}
+
+采纳两窗口暴露量定义与 WLS/PySR 脚本结构。人工修改并核验：主检验使用 \(\mathrm{SOH}_{200}\) 的 \(H=12.3346,p=0.0305\)；\(\mathrm{Fade}_{200}\) 的 \(H=14.79,p=0.011\) 仅作补充；Holm 两两不显著不得写成“策略 A 显著长于 B”；去掉短寿 2 块后调整 \(R^2\) 降至约 0.15，故该式只作问题四的 \(C^{\mathrm{high}}\) 约束。原始参数岭回归/PLS 仅作共线性对照，不作为搜公式。
+
+\subsection{问题三}
+
+采纳近段线性作为可解释主模型（\(k=150\) 时 151--200 的 RMSE 为 \(2.71\times 10^{-4}\)）。双头融合 RMSE \(2.20\times 10^{-4}\)、40 块中 27 块更好，但人工禁止用无标签的 \(\hat N_{\mathrm{EOL}}\) 宣称融合寿命更准，并在正文写明未加载官方权重。测试集 \(\hat N\) 只作相对排序，不进入问题四。
+
+\subsection{问题四}
+
+采纳分段恒流时间公式与两窗口线性式约束。人工将充电时间统一为问题一清洗后逐圈 \texttt{chargetime} 均值（\(\hat\beta=0.045\)\,min），否定 OLS/自由 PySR 给出的高 SOC 大电流角点。正式推荐已实验策略 \(5.3\mathrm{C}(54\%)-4.0\mathrm{C}\)（实测 \(\mathrm{Fade}_{200}\approx 0.00256\)，约 10.04\,min）；邻域候选须补实验，不得把模型预测写成寿命改善。
+
+\subsection{论文与编译}
+
+AI 曾生成 LaTeX 草稿。人工修订了摘要、关键词，并删除重复的“参考文献”标题；论文 PDF 以人工核验后的 \texttt{paper/main.tex} 编译结果为准。
+
+\section{小结}
+
+AI 工具用于代码辅助、调试、文献整理与文稿起草。模型结构、样本口径、显著性表述与最终推荐均经人工对照数据后确定。详细提示词与运行日志见支撑材料中的 \texttt{A/问题*/AGENTS.md} 与相应 \texttt{log\_*.md}。
+
+\end{document}

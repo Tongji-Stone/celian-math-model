@@ -1,11 +1,11 @@
 """问题四：兼顾充电时间与寿命的两阶段快充策略优化。
 
 运行（项目根目录）：
-    python src/A/task4_multiobjective_optimization.py
+    python src/task4_multiobjective_optimization.py
 
 默认读取本机原始 MATR EOL 审计表，只是为了复现当前的策略比较；寿命数值不写在
 代码中。以后问题三给出预测寿命后，直接将 --life-input 指向预测 CSV 即可，例如：
-    python src/A/task4_multiobjective_optimization.py \
+    python src/task4_multiobjective_optimization.py \
         --life-input A/问题三/output/final/eol_predictions.csv \
         --life-column EOL_cycle_pred
 

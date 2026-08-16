@@ -5,7 +5,7 @@
 问题三逐电池曲线与公开 N_0.88 不进入优化。
 
 运行（项目根目录）：
-    python src/A/task4_optimize.py
+    python src/task4_optimize.py
 """
 
 from __future__ import annotations

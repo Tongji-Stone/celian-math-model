@@ -1,7 +1,7 @@
 """问题二：两窗口电流暴露模型。
 
 运行（项目根目录）：
-    python src/A/task2_exposure_model.py
+    python src/task2_exposure_model.py
 
 响应为 fade_200 = SOH_1 - SOH_200，是寿命的反向代理，不是 N_EOL。
 本脚本只用 numpy / pandas / scipy / matplotlib，避免 statsmodels 环境冲突。
@@ -348,7 +348,7 @@ def write_generated_report(payload: dict) -> None:
     lines = [
         "# 问题二暴露模型数值报告（脚本生成）",
         "",
-        "本文件由 `src/A/task2_exposure_model.py` 写入，供 `模型.md` / `结论.md` 引用。",
+        "本文件由 `src/task2_exposure_model.py` 写入，供 `模型.md` / `结论.md` 引用。",
         "响应 Y = Fade_200 为寿命反向代理：越大表示 200 圈内掉得越多。",
         "",
         f"- 主分析样本：{len(primary)} 块，策略 {primary['policy'].nunique()} 种。",

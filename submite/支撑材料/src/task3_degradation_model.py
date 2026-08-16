@@ -1,7 +1,7 @@
 """问题三：逐电池 SOH 退化模型（与问题二共用函数族 f(n; θ)）。
 
 运行（项目根目录）：
-    python src/A/task3_degradation_model.py
+    python src/task3_degradation_model.py
 
 主思路：对每块电池用其自己的早期 SOH_smooth 拟合
     SOH(n) = a + b n

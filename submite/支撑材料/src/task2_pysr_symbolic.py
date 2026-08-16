@@ -1,7 +1,7 @@
 """问题二：用 PySR 搜索低复杂度的早期衰减候选经验式。
 
 运行：
-    conda run -n pysr python src/A/task2_pysr_symbolic.py
+    conda run -n pysr python src/task2_pysr_symbolic.py
 
 这不是寿命外推：目标为 Fade_200 = SOH_1 - SOH_200。由于只有 6 个独立策略点，
 输出的公式只能作为机制假设；脚本会以留一策略重搜检验其不稳定性。

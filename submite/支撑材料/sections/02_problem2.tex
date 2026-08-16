@@ -1,0 +1,287 @@
+\section{问题二：充电策略及其参数对寿命衰减的影响}
+
+\subsection{分析口径与样本选择}
+
+赛题循环记录最多至第 200 圈，观测到的最低 SOH 仍约为 0.95，未出现
+\(\mathrm{SOH}=80\%\) 的真实 EOL。因此本节不估计循环寿命 \(N_{\mathrm{EOL}}\)，
+而以平滑健康状态上的 200 圈衰减量
+\begin{equation}
+\mathrm{Fade}_{200}=\mathrm{SOH}_{\mathrm{smooth}}(1)-\mathrm{SOH}_{\mathrm{smooth}}(200)
+\label{eq:q2-fade}
+\end{equation}
+作为早期健康保持程度的\emph{反向}代理：\(\mathrm{Fade}_{200}\) 越大，窗口内掉得越多。
+不把系数或衰减差换算成圈数；早期 LFP 接近平台、后期才会加速，线性外推会严重高估寿命。
+
+为降低批次与实验结构混杂，主分析仅保留 \texttt{dataset\_id=3}、非问题三测试集且完整
+记录至第 200 圈的电池，共 34 块、6 个策略组。全部 40 块满 200 圈样本只作敏感性参考。
+策略名去掉 \texttt{\_NEWSTRUCTURE}；跨批次的 \(3.6\mathrm{C}\) 合并组不进入本节模型。
+34 块电池只对应 6 个不同的 \((C_1,Q_1,C_2)\) 点，参数并非析因设计，结果解释为样本内关联
+而非严格因果效应。
+
+\subsection{策略间差异检验}
+
+针对组间样本量不均衡，对 \(\mathrm{SOH}_{200}\)（平滑）作 Kruskal--Wallis 检验，得到
+\(H=12.3346\)、\(p=0.0305\)。对同一队列的 \(\mathrm{Fade}_{200}\) 作补充检验，得到
+\(H=14.79\)、\(p=0.011\)。两个统计量对应不同响应，不得混写成同一个检验。15 组
+Mann--Whitney 两两比较经 Holm 校正后，没有单一策略对达到 \(0.05\) 显著性水平。
+这只说明不能把某一策略对写成已被假设检验充分验证的优劣，并不禁止按问题一组内集中程度
+识别典型长短寿，也不禁止问题四在已实验点上按实测衰减与 \(C^{\mathrm{high}}\) 约束作推荐。
+
+\begin{table}[htbp]
+\centering
+\caption{主分析队列的第 200 圈 SOH 与衰减汇总}
+\label{tab:q2-policy-summary}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+策略 & 样本数 & \(\overline{\mathrm{SOH}_{200}}\) & \(\mathrm{median}(\mathrm{SOH}_{200})\) & \(\overline{\mathrm{Fade}_{200}}\) \\
+\midrule
+\texttt{4\_8C\_80PER\_4\_8C} & 5 & 0.987369 & 0.996961 & 0.001888 \\
+\texttt{5C\_67PER\_4C} & 6 & 0.995523 & 0.995249 & 0.002686 \\
+\texttt{5\_3C\_54PER\_4C} & 7 & 0.995469 & 0.995451 & 0.002563 \\
+\texttt{5\_6C\_19PER\_4\_6C} & 7 & 0.993987 & 0.993929 & 0.004392 \\
+\texttt{5\_6C\_36PER\_4\_3C} & 7 & 0.994696 & 0.994186 & 0.003716 \\
+\texttt{3\_7C\_31PER\_5\_9C} & 2 & 0.965908 & 0.965908 & 0.033751 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+图~\ref{fig:q2-box} 显示，短寿组 \(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\) 衰减高一个数量级，但仅 2 块电池；
+全程 \(4.8\mathrm{C}\) 组合并组含起始健康偏低的个体，不能仅凭组均值或中位数排序。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.96\linewidth]{question2/policy_soh200_boxplot.png}
+  \caption{同一实验结构下，各策略第 200 圈 SOH 的箱线图与单体观测值}
+  \label{fig:q2-box}
+\end{figure}
+
+\subsection{原始参数回归的误设}
+
+\(Q_1\) 与 \(\mathrm{Fade}_{200}\) 的 Spearman 相关为 \(\rho=-0.5889\)（\(p=0.00025\)），
+\(C_1\)、\(C_2\) 未达 \(0.05\) 显著性。探索性拟合
+\begin{equation}
+\mathrm{Fade}_{200,i}=\beta_0+\beta_1C_{1,i}+\beta_2Q_{1,i}+\beta_3C_{2,i}+\varepsilon_i
+\label{eq:q2-reg}
+\end{equation}
+并采用 HC3 稳健标准误，调整 \(R^2=0.9025\)，但 \(C_1\) 与 \(C_2\) 的 VIF 分别为 31.88 和 33.09。
+式~\eqref{eq:q2-reg} 中 \(C_1\) 系数为负，不能解释为“提高 \(C_1\) 能保护寿命”，只反映当前
+少量策略组合的共同变化。
+
+嵌套留一交叉验证（每次留出一块电池，折内完成标准化与岭惩罚选择）中，岭回归 RMSE 为 0.003277，
+与 OLS 的 0.003280 几乎相同，PLS 更差（表~\ref{tab:q2-loocv}）。这说明原始三参数可以\emph{预测}
+当前组合内的早期衰减，但不能识别单项边际效应，因而不能作为问题四的搜公式。
+
+\begin{table}[htbp]
+\centering
+\caption{原始参数模型的嵌套留一交叉验证}
+\label{tab:q2-loocv}
+\small
+\begin{tabular}{lrrr}
+\toprule
+模型 & MAE & RMSE & \(R^2_{\mathrm{LOOCV}}\) \\
+\midrule
+岭回归 & 0.002153 & 0.003277 & 0.8081 \\
+OLS & 0.002158 & 0.003280 & 0.8078 \\
+PLS（2 个潜变量） & 0.003153 & 0.004276 & 0.6733 \\
+PLS（1 个潜变量） & 0.002934 & 0.004602 & 0.6216 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+另有一个定义问题：若把“高 SOC 段”取成策略自己的 \([Q_1,80\%]\)，则 \(Q_1=80\%\) 的全程
+\(4.8\mathrm{C}\) 第二段长度为 0，与物理不符。因此下面改用与策略无关的固定 SOC 窗，计算该窗里
+实际采用的电流。
+
+\subsection{两窗口电流暴露模型}
+
+取高 SOC 门槛 \(Q^\ast\)（主结果 \(50\%\)，并对 \(40\%\)、\(60\%\) 做敏感性）。两阶段协议在
+\([0,Q_1]\) 用 \(C_1\)、在 \([Q_1,80\%]\) 用 \(C_2\)，SOC 以百分数计。若 \(Q_1\ge Q^\ast\)，
+\begin{equation}
+E^{L}=C_1 Q^\ast,\qquad
+E^{H}=C_1(Q_1-Q^\ast)+C_2(80-Q_1);
+\label{eq:q2-exposure-hi}
+\end{equation}
+若 \(Q_1<Q^\ast\)，
+\begin{equation}
+E^{L}=C_1 Q_1+C_2(Q^\ast-Q_1),\qquad
+E^{H}=C_2(80-Q^\ast).
+\label{eq:q2-exposure-lo}
+\end{equation}
+高 SOC 等效倍率定义为
+\begin{equation}
+C^{\mathrm{high}}=\frac{E^{H}}{80-Q^\ast}.
+\label{eq:q2-chigh}
+\end{equation}
+\(Q^\ast=50\%\) 时 \(C^{\mathrm{high}}=E^{H}/30\)。短寿策略 \(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)
+的高 SOC 窗全程为 \(5.9\mathrm{C}\)，故 \(E^{H}=177\)、\(C^{\mathrm{high}}=5.9\)，为全样本最高。
+
+主模型在策略设计点上作样本量加权 WLS（6 个点、权重为组内电池数）：
+\begin{equation}
+Y=\beta_0+\beta_L E^{L}+\beta_H E^{H}+\varepsilon.
+\label{eq:q2-wls}
+\end{equation}
+事先约定：\(\beta_H>0\) 表示高 SOC 暴露越大则早期衰减越大；\(\beta_H>\beta_L\) 表示同样的
+“电流\(\times\)SOC 宽度”下高 SOC 更伤。得到
+\[
+\hat\beta_L=0.001017,\qquad
+\hat\beta_H=0.001356\ (p\approx 2.3\times 10^{-5}),
+\]
+调整 \(R^2=0.996\)。\(E^{L}\) 与 \(E^{H}\) 的 VIF 约为 7.58，低于原始 \(C_1,C_2\) 的约 32，
+但仍有共线。6 点 3 参数接近插值，高 \(R^2\) 不能当成普遍定律。电池级 OLS 的调整 \(R^2=0.930\)，
+用于反映组内离散；策略聚类标准误因簇数只有 6 而偏小，不以它单报“极显著”。
+
+简化模型
+\begin{equation}
+Y=\gamma_0+\gamma_1 C^{\mathrm{high}}+\varepsilon
+\label{eq:q2-simple}
+\end{equation}
+给出 \(\hat\gamma_1=0.01516\)（\(p\approx 0.004\)），调整 \(R^2=0.775\)：高 SOC 等效倍率每高 1C，
+窗口内衰减约增加 0.015。该式给问题四的约束更直接。表~\ref{tab:q2-exposure} 按 \(C^{\mathrm{high}}\)
+降序列出 6 个策略；图~\ref{fig:q2-chigh} 显示短寿组单独抬高，长寿四组挤在 \(4.2\sim 4.6\) 一带。
+
+\begin{table}[htbp]
+\centering
+\caption{\(Q^\ast=50\%\) 时各策略的两窗口暴露量与实测衰减}
+\label{tab:q2-exposure}
+\small
+\setlength{\tabcolsep}{3.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+策略 & n & \(C_1\) & \(Q_1\) & \(C_2\) & \(E^{L}\) & \(E^{H}\) & \(C^{\mathrm{high}}\) & Fade \\
+\midrule
+\texttt{3\_7C\_31PER\_5\_9C} & 2 & 3.7 & 31 & 5.9 & 226.8 & 177.0 & 5.90 & 0.03375 \\
+\texttt{4\_8C\_80PER\_4\_8C} & 5 & 4.8 & 80 & 4.8 & 240.0 & 144.0 & 4.80 & 0.00189 \\
+\texttt{5\_6C\_19PER\_4\_6C} & 7 & 5.6 & 19 & 4.6 & 249.0 & 138.0 & 4.60 & 0.00439 \\
+\texttt{5C\_67PER\_4C} & 6 & 5.0 & 67 & 4.0 & 250.0 & 137.0 & 4.57 & 0.00269 \\
+\texttt{5\_6C\_36PER\_4\_3C} & 7 & 5.6 & 36 & 4.3 & 261.8 & 129.0 & 4.30 & 0.00372 \\
+\texttt{5\_3C\_54PER\_4C} & 7 & 5.3 & 54 & 4.0 & 265.0 & 125.2 & 4.17 & 0.00256 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}[t]{0.49\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{question2/fade_vs_C_high.png}
+  \caption{高 SOC 等效倍率}
+  \label{fig:q2-chigh-a}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.49\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{question2/fade_vs_E_high.png}
+  \caption{高 SOC 窗口暴露}
+  \label{fig:q2-chigh-b}
+\end{subfigure}
+\caption{两窗口暴露量与 \(\mathrm{Fade}_{200}\)。短寿组 \(C^{\mathrm{high}}=5.9\) 单独一档；
+\(4.8\mathrm{C}\) 组 \(E^{H}\) 也偏高但窗口内衰减很小，故电池级 Spearman（\(\rho=0.17\)，\(p=0.35\)）
+并不显著。}
+\label{fig:q2-chigh}
+\end{figure}
+
+与问题一对齐：典型短寿为 \(C_1<C_2\) 且 \(C^{\mathrm{high}}=5.9\) 的
+\(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)（\(\mathrm{Fade}_{200}\approx 0.034\)）；典型长寿为
+\(C_1>C_2\) 且 \(C^{\mathrm{high}}\approx 4.2\sim 4.6\) 的四组（衰减约 \(0.0026\sim 0.0044\)）；
+全程 \(4.8\mathrm{C}\) 不作典型，因其高 SOC 电流并不低，且含起始 \(\mathrm{SOH}_1\approx 0.953\)
+的电池 41（该个体是起始健康偏低，不是 200 圈内大衰减）。
+
+\subsection{符号回归核对}
+
+为检验两窗口线性式是否只是人为指定，在受限算子 \(\{+,-,\times\}\) 下对 \(E^{L},E^{H}\) 作
+符号回归（PySR）。Pareto 拐点（复杂度 7）为
+\begin{equation}
+\widehat{\mathrm{Fade}}_{200}=0.001000\,E^{L}+0.001342\,E^{H}-0.430734.
+\label{eq:q2-pysr}
+\end{equation}
+复杂度提到 9 时，系数变为 \(0.001017\) 与 \(0.001356\)，与式~\eqref{eq:q2-wls} 的 WLS 几乎相同，
+损失改善可忽略。留一策略重搜六次都得到同一线性结构，平均 RMSE 为 0.002116，最大为 0.005671
+（留出短寿组）；被留出短寿组的预测均值 0.0332，实测 0.0338。因此式~\eqref{eq:q2-pysr} 是当前
+低复杂度候选空间中被独立恢复的最简式，用作问题四的策略层衰减模型。
+
+对照实验不支持把原始三参数“自动发现”成规律。仅输入 \(C_1,Q_1,C_2\) 并允许除法时，全样本拐点为
+\(\widehat Y=\bigl((354.970-Q_1)/C_1-54.575\bigr)/1000\)，训练 RMSE 仅 0.002；但六次留一策略重搜
+分别落到 \(Q_1\)、\(C_2/C_1\)、\(C_1/Q_1\) 等不同结构上，平均 RMSE 升至 0.0091，留出短寿组时达 0.030，
+预测均值只有 0.0039。另用第 1 圈内阻构造高 SOC 极化、停留时间与焦耳热代理的物理先验搜索，
+留一策略平均 RMSE 为 0.011，同样未形成稳定结构：短寿组的 \(C^{\mathrm{high}}R_1\) 只略高于全程
+\(4.8\mathrm{C}\)，简单 \(C\times\mathrm{IR}_1\) 不能代替真实过电位。后两式均不进入问题四。
+
+\subsection{稳健性}
+
+表~\ref{tab:q2-robust} 给出策略加权 WLS 的核对。\(Q^\ast\in\{40\%,50\%,60\%\}\) 时 \(\beta_H\)
+符号稳定，且 \(p=q=1\) 的幂次网格 AIC 最好。去掉起始异常电池 41 后系数几乎不变。
+\textbf{去掉短寿 2 块后，调整 \(R^2\) 从 0.996 降到 0.153，\(\beta_H\) 的 \(p\) 升至 0.059。}
+留一策略时，模型仍能把短寿组外推到预测均值 0.031（实测 0.034），因为它的 \((E^{L},E^{H})\)
+落在其余五点外侧；外推好看不等于因果已经识别。
+
+\begin{table}[htbp]
+\centering
+\caption{两窗口 WLS 的稳健性（主推断）}
+\label{tab:q2-robust}
+\small
+\begin{tabular}{lrrr}
+\toprule
+核对 & \(\beta_H\) & \(p\) & 调整 \(R^2\) \\
+\midrule
+\(Q^\ast=40\%\) & 0.00123 & \(2.6\times 10^{-4}\) & 0.986 \\
+\(Q^\ast=50\%\)（主） & 0.00136 & \(2.3\times 10^{-5}\) & 0.996 \\
+\(Q^\ast=60\%\) & 0.00150 & \(7.7\times 10^{-5}\) & 0.990 \\
+去掉 \texttt{3\_7C}（\(n=32\)） & 0.00124 & 0.059 & 0.153 \\
+去掉电池 41 & 0.00137 & \(3.4\times 10^{-5}\) & 0.996 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+因此机制结论应写成：在本样本中，高 SOC 大电流与明显更快的早期衰减同时出现，该分离主要来自
+\(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)（\(n=2\)）。其余策略的 \(C^{\mathrm{high}}\) 接近，衰减差异很小，
+不能识别细的 \(C_1,Q_1,C_2\) 边际效应。问题四因而把两窗口模型当作\emph{约束}（限制
+\(C^{\mathrm{high}}\)），而不是精细曲面寻优。
+
+\subsection{纵向轨迹的描述性核对}
+
+为避免把同一电池 200 个循环点当作独立样本，使用 1--200 圈 \(\mathrm{SOH}_{\mathrm{smooth}}\)
+拟合固定效应 \(\mathrm{cycle}\times\mathrm{policy}\)、电池随机截距与随机循环斜率的混合模型。
+以短寿组为参考、循环次数缩放为每 100 圈后，参考组固定效应斜率为 \(-0.018\)，其余策略交互项为
+\(+0.015\sim +0.016\)（表~\ref{tab:q2-mixed-slope}）。模型数值收敛，但随机效应方差落在边界附近，
+电池间随机变异未被稳定识别。该表只用于量化图~\ref{fig:q2-traj} 的轨迹现象，不据此报告策略显著性，
+也不替代式~\eqref{eq:q2-wls}。
+
+\begin{table}[htbp]
+\centering
+\caption{混合效应模型给出的平滑 SOH 平均斜率（每 100 圈）}
+\label{tab:q2-mixed-slope}
+\small
+\begin{tabular}{lrr}
+\toprule
+策略 & 固定效应斜率 & 样本数 \\
+\midrule
+\texttt{3\_7C\_31PER\_5\_9C}（参考） & -0.018 & 2 \\
+\texttt{4\_8C\_80PER\_4\_8C} & -0.002 & 5 \\
+\texttt{5C\_67PER\_4C} & -0.002 & 6 \\
+\texttt{5\_3C\_54PER\_4C} & -0.002 & 7 \\
+\texttt{5\_6C\_19PER\_4\_6C} & -0.003 & 7 \\
+\texttt{5\_6C\_36PER\_4\_3C} & -0.002 & 7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{question2/policy_soh_trajectories.png}
+  \caption{各策略的平滑 SOH 平均轨迹；阴影为均值的 95\% 近似区间}
+  \label{fig:q2-traj}
+\end{figure}
+
+\subsection{小结与问题四接口}
+
+本节主模型是固定 SOC 窗上的两窗口暴露回归，并由受限符号回归独立恢复为式~\eqref{eq:q2-pysr}。
+原始三元 OLS/岭回归与自由符号回归只能作为反例。高 SOC 区间维持高倍率与更快早期衰减同时出现，
+这与极化、产热和锂沉积风险的机理相一致\cite{liu2019fastcharging,dubarry2009lfp,ma2024mcc}，
+但仍需同批次正交重复实验才能谈因果。问题四应约束 \(C^{\mathrm{high}}\)（或 \(E^{H}\)）并保持
+\(C_1\ge C_2\)，正式排序使用已实验点的实测 \(\mathrm{Fade}_{200}\)，不把第 200 圈差异外推为
+\(\mathrm{SOH}=80\%\) 的循环寿命。
+
+\FloatBarrier

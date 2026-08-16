@@ -1,0 +1,190 @@
+\section{问题一：数据整理与快充策略对寿命影响的初步分析}
+
+\subsection{数据来源与结构}
+
+本题使用赛题提供的锂离子电池循环老化数据\cite{severson2019datadriven,matrdataset}（MIT\slash Stanford 公开数据集）。
+\texttt{battery\_summary.csv} 记录 49 块电池的策略参数 \(C_1,Q_1,C_2\)、初始容量、平均充电时间、平均内阻、平均温度及问题三测试标记 \texttt{prediction\_test}；\texttt{cycle\_train.csv} 记录逐循环的容量、SOH、平滑 SOH、充电时间、内阻与平均温度，共 9350 行。非测试电池记录至第 200 次循环，9 块测试电池仅至第 150 次循环。输入质量检查表明：\texttt{battery\_id}+\texttt{cycle} 无重复；循环表无缺失；汇总表有 3 个缺失单元格，其中部分电池 \(C_1\) 为结构性缺失，予以保留且不参与循环数据清洗。最大循环数分布为 \(\{150:9,\,200:40\}\)。
+
+\subsection{寿命指标定义}
+
+题设循环寿命为 \(\mathrm{SOH}\) 降至 \(80\%\) 时的循环次数 \(N_{\mathrm{EOL}}\)。本数据集在 200 次循环内 \(\mathrm{SOH}_{200}\) 范围为 \(0.9497\sim 1.0002\)，均值 \(0.9914\)，\textbf{尚未覆盖真实寿命终止}。因此问题一采用
+\begin{equation}
+\mathrm{LifeProxy}_i=\mathrm{SOH}_{i}(N=200)
+\label{eq:lifeproxy}
+\end{equation}
+作为观测窗口内的使用寿命代理：该值越高，表示前 200 圈健康保持越好。直方图、散点图与箱线图采用 IQR 清洗后的 \(\mathrm{SOH}\)；曲线图采用 \(\mathrm{SOH}_{\mathrm{smooth}}\)。二者在第 200 圈几乎重合，典型策略排序一致。直方图与箱线图中的参考线取样本上、下四分位数，用于刻画分布位置，而不再直接等同于“寿命终止阈值”。问题二、四改用累计衰减 \(\mathrm{Fade}_{200}\)（式~\eqref{eq:q2-fade}），不再把衰减差换算成每圈速率。
+
+\subsection{IQR 清洗}
+
+对每块电池、每个测量字段（capacity、SOH、SOH\_smooth、chargetime、IR、Tavg）分别计算下、上四分位数 \(Q_1,Q_3\) 及四分位距 \(\mathrm{IQR}=Q_3-Q_1\)。将
+\[
+x\notin\bigl[Q_1-1.5\,\mathrm{IQR},\; Q_3+1.5\,\mathrm{IQR}\bigr]
+\]
+的观测标为异常，并用同一电池、同一字段中距离最近的前后正常值均值替换；若仅有单侧邻域则用该侧值。共替换 559 个单元格，分字段数量为：capacity 36、SOH 36、SOH\_smooth 17、IR 142、Tavg 142、chargetime 186。原始 \texttt{data/} 文件未改写，清洗结果保存为 \texttt{cycle\_train\_cleaned.csv}。
+
+\subsection{快充策略统一命名}
+
+原始记录中共出现 9 种策略字符串。第三次迭代按充电配方将同名或仅差后缀的策略合并，并去掉 \texttt{\_NEWSTRUCTURE} 后缀，得到 7 种统一策略，映射关系见表~\ref{tab:policy_map}。验收确认：原始 9 种减为 7 种，旧名称无残留，49 块电池的 \texttt{charge\_policy.csv} 均采用统一名称。
+
+\begin{table}[htbp]
+\centering
+\caption{原始策略名称到统一策略名称的映射}
+\label{tab:policy_map}
+\small
+\begin{tabular}{ll}
+\toprule
+原始名称 & 统一名称 \\
+\midrule
+\texttt{3\_6C-80PER\_3\_6C}、\texttt{80PER\_3\_6C} & \texttt{3\_6C-80PER\_3\_6C} \\
+\texttt{4\_8C\_80PER\_4\_8C}、\texttt{4\_8C\_80PER\_4\_8C\_NEWSTRUCTURE} & \texttt{4\_8C\_80PER\_4\_8C} \\
+\texttt{5C\_67PER\_4C\_NEWSTRUCTURE} & \texttt{5C\_67PER\_4C} \\
+\texttt{5\_3C\_54PER\_4C\_NEWSTRUCTURE} & \texttt{5\_3C\_54PER\_4C} \\
+\texttt{5\_6C\_19PER\_4\_6C\_NEWSTRUCTURE} & \texttt{5\_6C\_19PER\_4\_6C} \\
+\texttt{5\_6C\_36PER\_4\_3C\_NEWSTRUCTURE} & \texttt{5\_6C\_36PER\_4\_3C} \\
+\texttt{3\_7C\_31PER\_5\_9C\_NEWSTRUCTURE} & \texttt{3\_7C\_31PER\_5\_9C} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+统一后的 7 种策略对应两阶段参数见表~\ref{tab:policy_params}。其中 \texttt{3\_6C-80PER\_3\_6C} 组部分电池原始 \(C_1\) 缺失，表中记为“3.6/缺失”。寿命统计分析仅纳入最大循环数恰为 200 的 40 块电池，排除 9 块问题三测试电池。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{统一策略的充电参数及过程量（200 圈样本）}
+\label{tab:policy_params}
+\begin{threeparttable}
+\begin{tabular}{lccccccc}
+\toprule
+统一策略 & \(C_1\) & \(Q_1\) & \(C_2\) & \(n\) & \(\overline{\mathrm{IR}}\) & \(\overline{T}/^\circ\mathrm{C}\) & \(\overline{T}_{\mathrm{ch}}\)/min \\
+\midrule
+\texttt{3\_6C-80PER\_3\_6C} & 3.6/缺失 & 80 & 3.6 & 4 & 0.0170 & 31.84 & 13.382 \\
+\texttt{4\_8C\_80PER\_4\_8C} & 4.8 & 80 & 4.8 & 7 & 0.0159 & 32.43 & 10.760 \\
+\texttt{5C\_67PER\_4C} & 5.0 & 67 & 4.0 & 6 & 0.0155 & 34.04 & 10.043 \\
+\texttt{5\_3C\_54PER\_4C} & 5.3 & 54 & 4.0 & 7 & 0.0156 & 34.36 & 10.043 \\
+\texttt{5\_6C\_19PER\_4\_6C} & 5.6 & 19 & 4.6 & 7 & 0.0152 & 35.41 & 10.043 \\
+\texttt{5\_6C\_36PER\_4\_3C} & 5.6 & 36 & 4.3 & 7 & 0.0157 & 35.21 & 10.043 \\
+\texttt{3\_7C\_31PER\_5\_9C} & 3.7 & 31 & 5.9 & 2 & 0.0139 & 35.68 & 10.134 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item 注：\(n\) 为满 200 圈电池数；充电时间、内阻与温度为各电池 1--200 圈均值后再按策略平均。
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{SOH 变化曲线}
+
+全部曲线均采用清洗后的 \texttt{SOH\_smooth}。图~\ref{fig:soh1} 给出 1 号电池示例；图~\ref{fig:sohall} 将全部电池叠绘于同一坐标系，颜色由蓝到红随 \texttt{battery\_id} 递增。可见多数电池在 200 圈内衰减缓慢，少数曲线明显下探，后文箱线图表明这些快速衰减样本主要集中于 \texttt{3\_7C\_31PER\_5\_9C} 以及合并后离散较大的两组。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{question1/SOH_1_example.png}
+\caption{1 号电池平滑 SOH 曲线}
+\label{fig:soh1}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{question1/SOH_ALL.png}
+\caption{全部 49 块电池的平滑 SOH 曲线（颜色由蓝到红对应电池编号增大）}
+\label{fig:sohall}
+\end{figure}
+
+\subsection{寿命分布统计分析}
+
+对 40 块满 200 圈电池的 \(\mathrm{SOH}_{200}\) 绘制直方图，见图~\ref{fig:sohhist}。样本上、下四分位
+\[
+Q_3=0.996103,\qquad Q_1=0.993433
+\]
+分别以红色、蓝色虚线标出，用作\textbf{分布位置参考}。据此可将单体分为高于 \(Q_3\) 的 10 块、介于 \(Q_1\) 与 \(Q_3\) 的 20 块、低于 \(Q_1\) 的 10 块。需要强调：该划分针对的是\textbf{电池个体}，且全样本 \(\mathrm{SOH}_{200}\) 高度集中在 \(0.99\) 附近，多数 \(C_1>C_2\) 策略的电池落在中间箱体。因此不能把“策略中位数是否越过 \(Q_3\)”直接等同于“典型长寿命策略”；后文改按组内集中程度与 \(C_1,C_2\) 形态提取典型策略。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.88\textwidth]{question1/SOH_summary.png}
+\caption{第 200 次循环 SOH 分布及上、下四分位参考线}
+\label{fig:sohhist}
+\end{figure}
+
+\(\mathrm{SOH}_{200}\) 与平均充电时间的散点图见图~\ref{fig:scatter}。四类 \(C_1>C_2\) 的分段快充策略充电时间均集中在约 \(10.04\)\,min，SOH 也较高；\texttt{3\_7C\_31PER\_5\_9C} 充电时间相近（约 \(10.13\)\,min）但 SOH 明显更低，说明在相近补能时间下，策略形态仍可造成寿命差异。\texttt{3\_6C-80PER\_3\_6C} 充电时间最长（约 \(13.38\)\,min），但 SOH 并不一律最高。\texttt{4\_8C\_80PER\_4\_8C} 的充电时间分裂为约 \(10.06\)\,min（电池 7、8）与约 \(11.04\)\,min（电池 17、20、41、46、49）两簇，后者中位数虽高，却包含 \(\mathrm{SOH}_{200}\approx 0.950\) 的显著偏低个体（电池 41）。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{question1/SOH_chargetime.png}
+\caption{第 200 次循环 SOH 与平均充电时间散点图（按统一策略着色）}
+\label{fig:scatter}
+\end{figure}
+
+不同统一策略下 \(\mathrm{SOH}_{200}\) 的箱线图见图~\ref{fig:box}，策略汇总见表~\ref{tab:policy_summary}。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{question1/charge_policy.png}
+\caption{不同统一充电策略下第 200 次循环 SOH 箱线图}
+\label{fig:box}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{统一策略第 200 次循环 SOH（均值/中位数）与充电时间汇总}
+\label{tab:policy_summary}
+\begin{threeparttable}
+\setlength{\tabcolsep}{2.8pt}
+\begin{tabular}{lcccccc}
+\toprule
+统一策略 & 电池记号 & \(n\) & SOH平均 & 中位数 & SOH 范围 & 充电时间/min \\
+\midrule
+\texttt{5C\_67PER\_4C} & 18,29,31,37,42,47 & 6 & 0.9955 & 0.9952 & 0.9948--0.9966 & 10.042--10.044 \\
+\texttt{5\_3C\_54PER\_4C} & 19,26,32,36,38,43,48 & 7 & 0.9955 & 0.9954 & 0.9938--0.9974 & 10.042--10.044 \\
+\texttt{5\_6C\_36PER\_4\_3C} & 13,15,22,28,34,40,45 & 7 & 0.9947 & 0.9941 & 0.9930--0.9968 & 10.041--10.045 \\
+\texttt{5\_6C\_19PER\_4\_6C} & 12,21,23,27,33,39,44 & 7 & 0.9940 & 0.9939 & 0.9933--0.9953 & 10.042--10.044 \\
+\texttt{3\_6C-80PER\_3\_6C} & 1,3,4,6 & 4 & 0.9891 & 0.9941 & 0.9679--1.0002 & 13.376--13.388 \\
+\texttt{4\_8C\_80PER\_4\_8C} & 7,8,17,20,41,46,49 & 7 & 0.9867 & 0.9960 & 0.9497--0.9970 & 10.058--11.038 \\
+\texttt{3\_7C\_31PER\_5\_9C} & 30,35 & 2 & 0.9658 & 0.9658 & 0.9601--0.9715 & 10.111--10.156 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item 注：按 SOH \textbf{平均值}降序。若改按\textbf{中位数}，则 \texttt{4\_8C\_80PER\_4\_8C} 最高（流水线据此标记“寿命最长”），但其均值被低尾个体拉低。测试电池未纳入。完整参数见 \texttt{policy.csv}。
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{典型长寿命与短寿命策略}
+
+箱线图显示，\texttt{3\_6C-80PER\_3\_6C} 与 \texttt{4\_8C\_80PER\_4\_8C} 的 \(\mathrm{SOH}_{200}\) 在组内大幅波动，不宜作为“典型”代表。前者由 \texttt{80PER\_3\_6C} 与 \texttt{3\_6C-80PER\_3\_6C} 合并，部分电池 \(C_1\) 缺失，既含全样本最高个体（电池 1，\(\mathrm{SOH}_{200}\approx 1.000\)），也含明显偏低个体（电池 4，\(\approx 0.968\)）；后者合并带/不带 \texttt{NEWSTRUCTURE} 的记录，充电时间分为约 \(10.06\)\,min 与 \(11.04\)\,min 两簇。流水线若只按策略 SOH \textbf{中位数}会把 \texttt{4\_8C\_80PER\_4\_8C} 标为寿命最长，但这恰好说明：高中位数可以被少数高健康样本抬起，而不能代表该配方的稳健水平。因此典型策略改从组内更集中的分段快充中提取。
+
+\textbf{典型长寿命策略}（组内 SOH 高且离散小，充电时间约 \(10.04\)\,min）：
+\begin{itemize}
+  \item \texttt{5C\_67PER\_4C}：\(C_1=5.0>C_2=4.0\)，\(Q_1=67\%\)，SOH 平均 \(0.9955\)；
+  \item \texttt{5\_3C\_54PER\_4C}：\(C_1=5.3>C_2=4.0\)，\(Q_1=54\%\)，SOH 平均 \(0.9955\)；
+  \item \texttt{5\_6C\_36PER\_4\_3C}：\(C_1=5.6>C_2=4.3\)，\(Q_1=36\%\)，SOH 平均 \(0.9947\)；
+  \item \texttt{5\_6C\_19PER\_4\_6C}：\(C_1=5.6>C_2=4.6\)，\(Q_1=19\%\)，SOH 平均 \(0.9940\)。
+\end{itemize}
+
+\textbf{典型短寿命策略：}\texttt{3\_7C\_31PER\_5\_9C}，\(C_1=3.7<C_2=5.9\)，\(Q_1=31\%\)，SOH 平均仅 \(0.9658\)，两块电池均明显低于下四分位线。其平均充电时间约 \(10.13\)\,min，与长寿命组几乎同量级，因此衰减差异主要来自策略形态而非“充得更快”。
+
+\subsection{长、短寿命策略差异的解释}
+
+结合两阶段快充的物理图像\cite{liu2019fastcharging,dubarry2009lfp,ma2024mcc,ahmed2017enabling}，可将问题一的关键差异概括如下。
+
+\begin{enumerate}
+  \item \textbf{电流分配：\(C_1>C_2\) 优于 \(C_1<C_2\)。}
+  典型长寿命策略均满足前段倍率高于后段，即在低 SOC 区间采用较大电流、在中高 SOC 区间回落到较低电流。短寿命策略则相反：后段 \(C_2=5.9\mathrm{C}\) 为全样本最高。高 SOC 时电解液中锂离子浓度梯度更大、石墨负极嵌锂位点更拥挤，过电位升高后更易诱发锂沉积与不可逆容量损失；同时极化与产热叠加，加速 SEI 生长\cite{liu2019fastcharging,ahmed2017enabling}。LFP 体系虽相对耐过充，但仍可通过活性锂损失（LLI）表现为早期 SOH 下降\cite{dubarry2009lfp}。多段恒流对照亦表明，把大电流尽量安排在低 SOC 段更有利于寿命\cite{ma2024mcc}。
+  \item \textbf{恒流高 SOC：提高 \(C_1=C_2\) 时均值与下尾变差，中位数不同步。}
+  \(3.6\mathrm{C}(80\%)-3.6\mathrm{C}\) 与 \(4.8\mathrm{C}(80\%)-4.8\mathrm{C}\) 两组均为 \(Q_1=80\%\)、两阶段倍率相同，相当于把高倍率维持到较高 SOC。4.8C 组均值（0.9867）略低于 3.6C 组（0.9891），且下尾更长（最低约 0.950）；但其\textbf{中位数}反而更高（0.9960 对 0.9941）。因此“提高恒流倍率则 SOH 下降”只在均值与最差个体意义上可见，不能由中位数单独下结论，这两组也不宜当作典型对照。
+  \item \textbf{相近充电时间下仍可拉开寿命。}
+  长寿命四策略与短寿命策略的平均充电时间均约 \(10.0\sim 10.2\)\,min，说明“时间短”既不是短寿的充分条件，也不是长寿的必要条件。问题四的优化应同时约束时间与衰减，而不能只最小化充电时间。
+  \item \textbf{提高总体电流时，降低 \(Q_1\) 有助于保护寿命。}
+  在 \(C_1>C_2\) 的四组中，四策略通过调整 \(Q_1\) 与 \(C_1,C_2\) 使平均充电时间几乎同为 \(10.04\)\,min，但 SOH 仍可在窄区间内变化：\(Q_1\) 从 \(67\%\) 降至 \(19\%\) 时，高倍率持续时间缩短、后段较低电流覆盖更宽的中高 SOC 区间。四组 SOH 均值均明显高于短寿命策略。更精细的 \(Q_1\) 效应与显著性检验留待问题二。
+  \item \textbf{温度、内阻与初始容量不能单独解释长短寿差异。}
+  短寿命组平均温度最高（约 \(35.7^\circ\mathrm{C}\)），但长寿命的 \(5.6\mathrm{C}\) 两组温度同样约 \(35.2\sim 35.4^\circ\mathrm{C}\)，SOH 却明显更高；短寿命组平均内阻反而是最低（约 \(0.0139\,\Omega\)），初始容量各组均在 \(1.05\sim 1.07\)\,Ah。因此在本观测窗口内，策略形态（何时施加大电流）比这三项过程量更能区分典型长、短寿命。
+  \item \textbf{合并组的高离散度提示标签/批次影响。}
+  统一命名便于后续建模，但不宜把合并组的中位数直接当作该配方的稳健寿命水平。问题二主分析据此将样本限定为同一实验结构（\texttt{dataset\_id=3}）的 34 块电池、6 个策略组，从而自然排除跨批次的 \(3.6\mathrm{C}\) 组合并组。
+\end{enumerate}
+
+上述结论仅基于第 200 次循环的健康保持程度，样本中若干策略仅 2--4 块满 200 圈电池，相关关系不能直接等同于因果效应。问题二已在更严格的可比队列上检验策略间差异与 \(C_1,Q_1,C_2\) 的统计关联，并确认两两比较在多重校正后并不显著。
+
+\FloatBarrier
