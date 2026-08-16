@@ -1,0 +1,21 @@
+{
+  "time_alpha": 1.0,
+  "time_beta": 0.04466790715500079,
+  "time_rmse_min": 0.009146353579439359,
+  "n_grid": 11718,
+  "n_feasible": 1249,
+  "n_pareto": 2,
+  "recommend_C1": 5.3,
+  "recommend_Q1": 50.0,
+  "recommend_C2": 4.0,
+  "recommend_T": 10.205045265645568,
+  "recommend_fade_pysr": -0.004700366018986379,
+  "recommend_C_high": 4.0,
+  "nearest_policy": "5_3C_54PER_4C",
+  "discrete_best_policy": "5_3C_54PER_4C",
+  "discrete_best_fade_obs": 0.0025631969152162893,
+  "discrete_best_C_high": 4.173333333333334,
+  "official_policy": "5_3C_54PER_4C",
+  "objective": "discrete_observed_fade_plus_Chigh_constraint",
+  "charge_time_source": "problem1_cleaned_cycle_chargetime_mean"
+}

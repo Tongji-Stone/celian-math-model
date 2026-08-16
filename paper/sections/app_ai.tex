@@ -7,16 +7,16 @@
 \begin{itemize}
   \item OpenAI ChatGPT（记录版本：1.2026.190，模型 gpt5.6-sol-high）
   \item OpenAI Codex CLI（记录版本：v0.147.0，模型 gpt5.6-sol-high；DeepSeek-V4-Flash-0731）
-  \item 对话式编程助手（用于文献整理、问题一结果写入 LaTeX 论文框架）
+  \item 对话式编程助手（用于文献整理、四问结果写入 LaTeX 与口径核对）
 \end{itemize}
 
 \subsection{使用目的与环节}
 
 \begin{enumerate}
-  \item \textbf{讨论与协作：} 询问 Git 多人协作与仓库管理相关操作说明。
   \item \textbf{问题一：} 依据人工撰写的 \texttt{AGENTS.md} 生成模块化分析代码，完成 IQR 清洗、策略统一（9 种合并为 7 种）、200 圈汇总、49 张单体曲线与总图；人工检查可运行性后调整参数并复现 \texttt{log\_3}。
+  \item \textbf{问题二至四：} 协助编写两窗口暴露回归、逐电池退化对照、双头融合结构与 10 分钟邻域优化脚本，并将数值写入正文。
   \item \textbf{文献：} 整理快充、SOH 预测与策略优化相关公开文献条目，写入 \texttt{references/}。
-  \item \textbf{论文：} 将第三次迭代后的问题一成果写入 LaTeX 正文；问题二统计分析结果由队友写入相应章节后，再与问题一典型策略口径对齐。
+  \item \textbf{论文：} 将四问已核验结果写入 LaTeX；典型策略、充电时间与 Kruskal 统计量按统一口径对齐。
 \end{enumerate}
 
 \subsection{提示方式}
@@ -28,7 +28,7 @@
 \begin{itemize}
   \item 问题一流水线经 \texttt{log\_3} 与验收确认：IQR 替换 559 格、策略 9\(\rightarrow\)7、200 圈样本 40 块、分位阈值 \(0.993433/0.996103\)、49 张单体曲线与 \texttt{SOH\_ALL} 齐全，与正文一致。
   \item 典型长/短寿命以 \texttt{A/问题一/总结.md} 为准：不以 \texttt{policy.csv} 中按中位数标记的 \(4.8\mathrm{C}\) 组合并为“寿命最长”代表；因果表述保持为初步观察。
-  \item 问题二已写入 Kruskal--Wallis、回归诊断与混合效应结果；问题三、四仍为框架。
+  \item 问题二主模型、Kruskal--Wallis 两个检验、问题三近段线性与融合误差、问题四正式推荐 \(5.3\mathrm{C}(54\%)-4.0\mathrm{C}\) 均与脚本输出及 \texttt{A/口径.md} 核对后写入正文。
 \end{itemize}
 
 AI 仅作为辅助工具，论文观点、模型选择与最终结论由参赛队负责。

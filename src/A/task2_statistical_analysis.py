@@ -15,6 +15,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from sklearn.cross_decomposition import PLSRegression
+from sklearn.linear_model import RidgeCV
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import LeaveOneOut
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 import statsmodels.formula.api as smf
 from scipy import stats
 from statsmodels.stats.multitest import multipletests
@@ -25,6 +31,7 @@ from SOH_plot import configure_chinese_font
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_ROOT / "data"
+P1_CHARGE = PROJECT_ROOT / "A" / "问题一" / "output" / "A" / "battery_SOH_charge.csv"
 OUTPUT_DIR = PROJECT_ROOT / "output" / "A" / "question2"
 FIG_DIR = OUTPUT_DIR / "figures"
 
@@ -109,7 +116,12 @@ def extract_cell_metrics(summary: pd.DataFrame, cycles: pd.DataFrame) -> tuple[p
     )
     cell["fade_200"] = cell["SOH_1"] - cell["SOH_200"]
     cell["fade_slope"] = cell["fade_200"] / 199.0
-    cell["charge_time_mean"] = cell["mean_chargetime"]
+    p1_charge = pd.read_csv(P1_CHARGE)[["battery_id", "charge_time_mean"]]
+    cell = cell.drop(columns=["charge_time_mean"], errors="ignore").merge(
+        p1_charge, on="battery_id", how="left", validate="one_to_one"
+    )
+    if cell["charge_time_mean"].isna().any():
+        raise ValueError("问题一口径充电时间未能覆盖全部满 200 圈电池")
 
     # 主分析：同一实验结构（dataset 3）；全体完整样本仅作敏感性对照。
     primary = cell.query("dataset_id == 3").copy()
@@ -162,6 +174,37 @@ def save_figures(primary: pd.DataFrame, longitudinal: pd.DataFrame, model) -> No
     plt.close(fig)
 
 
+def nested_loo_models(primary: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Compare collinearity-resistant models with battery-level nested LOOCV."""
+    features = ["C1", "Q1", "C2"]
+    X = primary[features].to_numpy(dtype=float)
+    y = primary["fade_200"].to_numpy(dtype=float)
+    outer = LeaveOneOut()
+    predictions = {name: np.zeros(len(primary)) for name in ("OLS", "Ridge", "PLS_1component", "PLS_2components")}
+    alphas = np.logspace(-6, 3, 80)
+    for train_idx, test_idx in outer.split(X):
+        X_train, X_test = X[train_idx], X[test_idx]
+        y_train = y[train_idx]
+        # Scaling and penalty selection occur inside every training fold.
+        models = {
+            "OLS": make_pipeline(StandardScaler(), RidgeCV(alphas=[1e-12], cv=LeaveOneOut(), scoring="neg_mean_squared_error")),
+            "Ridge": make_pipeline(StandardScaler(), RidgeCV(alphas=alphas, cv=LeaveOneOut(), scoring="neg_mean_squared_error")),
+            "PLS_1component": make_pipeline(StandardScaler(), PLSRegression(n_components=1)),
+            "PLS_2components": make_pipeline(StandardScaler(), PLSRegression(n_components=2)),
+        }
+        for name, fitted_model in models.items():
+            fitted_model.fit(X_train, y_train)
+            predictions[name][test_idx[0]] = float(fitted_model.predict(X_test).ravel()[0])
+    comparison = pd.DataFrame([
+        {"model": name, "LOOCV_MAE": mean_absolute_error(y, pred), "LOOCV_RMSE": mean_squared_error(y, pred) ** 0.5, "LOOCV_R2": r2_score(y, pred)}
+        for name, pred in predictions.items()
+    ]).sort_values("LOOCV_RMSE").reset_index(drop=True)
+    prediction_df = primary[["battery_id", "policy", "fade_200"]].copy()
+    for name, pred in predictions.items():
+        prediction_df[f"pred_{name}"] = pred
+    return comparison, prediction_df
+
+
 def write_report(
     cell: pd.DataFrame,
     primary: pd.DataFrame,
@@ -171,6 +214,7 @@ def write_report(
     correlations: pd.DataFrame,
     regression,
     vif: pd.DataFrame,
+    model_comparison: pd.DataFrame,
     mixed_note: str,
 ) -> None:
     significant = pairwise.loc[pairwise["p_holm"] < 0.05] if not pairwise.empty else pairwise
@@ -263,6 +307,9 @@ def main() -> None:
     X = primary[["C1", "Q1", "C2"]].astype(float)
     vif = pd.DataFrame({"variable": X.columns, "VIF": [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]})
     vif.to_csv(OUTPUT_DIR / "vif.csv", index=False, encoding="utf-8-sig")
+    model_comparison, loo_predictions = nested_loo_models(primary)
+    model_comparison.to_csv(OUTPUT_DIR / "alternative_model_loocv.csv", index=False, encoding="utf-8-sig")
+    loo_predictions.to_csv(OUTPUT_DIR / "alternative_model_loo_predictions.csv", index=False, encoding="utf-8-sig")
 
     try:
         mixed = smf.mixedlm("SOH_smooth ~ cycle_scaled * C(policy)", longitudinal, groups=longitudinal["battery_id"], re_formula="~cycle_scaled").fit(method="lbfgs", reml=False)
@@ -273,7 +320,7 @@ def main() -> None:
         (OUTPUT_DIR / "mixed_effects_summary.txt").write_text(mixed_note + "\n", encoding="utf-8")
 
     save_figures(primary, longitudinal, regression)
-    write_report(cell, primary, summary, kruskal, pairwise, correlations, regression, vif, mixed_note)
+    write_report(cell, primary, summary, kruskal, pairwise, correlations, regression, vif, model_comparison, mixed_note)
     print(f"主分析样本数: {len(primary)}")
     print(f"Kruskal-Wallis H={kruskal.statistic:.4f}, p={kruskal.pvalue:.6g}")
     print(f"输出目录: {OUTPUT_DIR}")

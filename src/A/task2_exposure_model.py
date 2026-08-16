@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import sys
 from dataclasses import dataclass
 from itertools import product
@@ -34,6 +35,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_ROOT / "data"
 OUT_DIR = PROJECT_ROOT / "A" / "问题二" / "output"
 FIG_DIR = OUT_DIR / "figures"
+PAPER_FIG_DIR = PROJECT_ROOT / "output" / "A" / "question2" / "figures"
 
 POLICY_ORDER = [
     "4_8C_80PER_4_8C",
@@ -517,6 +519,9 @@ def main() -> None:
     )
 
     save_figures(primary, main_cluster)
+    PAPER_FIG_DIR.mkdir(parents=True, exist_ok=True)
+    for png in FIG_DIR.glob("*.png"):
+        shutil.copy2(png, PAPER_FIG_DIR / png.name)
     write_generated_report(
         {
             "primary": primary,

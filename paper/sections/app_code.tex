@@ -1,10 +1,14 @@
 \section{建模源程序}
 \label{app:code}
 
-本节给出问题一、问题二可运行源代码。运行环境：Python 3，依赖 \texttt{numpy}、\texttt{pandas}、\texttt{matplotlib}；问题二另需 \texttt{scipy}、\texttt{statsmodels}。在项目根目录执行：
+本节给出问题一至问题四可运行源代码。运行环境：Python 3，依赖 \texttt{numpy}、\texttt{pandas}、\texttt{matplotlib}；问题二至四另需 \texttt{scipy}；问题三融合模型另需 \texttt{torch}。在项目根目录执行：
 \begin{lstlisting}[language=bash]
 python src/A/task1_pipeline.py
 python src/A/task2_statistical_analysis.py
+python src/A/task2_exposure_model.py
+python src/A/task3_degradation_model.py
+python src/A/task3_pbt_batterygpt_fusion.py
+python src/A/task4_optimize.py
 \end{lstlisting}
 可选参数 \texttt{--iqr-factor}（默认 1.5）。单独绘制指定电池 SOH 曲线：
 \begin{lstlisting}[language=bash]
@@ -23,6 +27,18 @@ python src/A/SOH_plot.py --battery-id 1
 
 \lstinputlisting[language=Python,caption={问题二统计分析脚本},label={lst:task2}]{../src/A/task2_statistical_analysis.py}
 
-\begin{todobox}
-问题三、问题四源程序完成后，以同样方式用 \texttt{\textbackslash lstinputlisting} 追加完整代码。
-\end{todobox}
+\subsection{task2\_exposure\_model.py}
+
+\lstinputlisting[language=Python,caption={问题二两窗口暴露模型},label={lst:task2exposure}]{../src/A/task2_exposure_model.py}
+
+\subsection{task3\_degradation\_model.py}
+
+\lstinputlisting[language=Python,caption={问题三逐电池退化模型},label={lst:task3}]{../src/A/task3_degradation_model.py}
+
+\subsection{task3\_pbt\_batterygpt\_fusion.py}
+
+\lstinputlisting[language=Python,caption={问题三 PBT/BatteryGPT 结构双头融合},label={lst:task3fusion}]{../src/A/task3_pbt_batterygpt_fusion.py}
+
+\subsection{task4\_optimize.py}
+
+\lstinputlisting[language=Python,caption={问题四策略优化脚本},label={lst:task4}]{../src/A/task4_optimize.py}

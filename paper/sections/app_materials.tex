@@ -4,7 +4,7 @@
 
 \begin{table}[htbp]
 \centering
-\caption{支撑材料拟包含的文件}
+\caption{支撑材料包含的文件}
 \label{tab:support}
 \small
 \begin{tabular}{p{0.42\textwidth}p{0.48\textwidth}}
@@ -26,7 +26,16 @@
 \texttt{A/问题一/SOH/} & 49 张单体曲线与总图 SOH\_ALL \\
 \texttt{src/A/task2\_statistical\_analysis.py} & 问题二统计分析脚本 \\
 \texttt{output/A/question2/} & 问题二检验表、回归诊断与图件 \\
-\texttt{A/问题二/AGENTS.md}、\texttt{log\_1.md} & 问题二任务说明与日志 \\
+\texttt{src/A/task2\_exposure\_model.py} & 问题二两窗口暴露模型 \\
+\texttt{A/问题二/} & 问题二机制模型、PySR 与结论 \\
+\texttt{src/A/task4\_optimize.py} & 问题四时间--衰减权衡 \\
+\texttt{A/问题四/} & 问题四结论、对照与图件 \\
+\texttt{output/A/question4/figures/} & 问题四论文图件副本 \\
+\texttt{src/A/task3\_degradation\_model.py} & 问题三逐电池退化曲线 \\
+\texttt{src/A/task3\_pbt\_batterygpt\_fusion.py} & 问题三双头融合对照 \\
+\texttt{A/问题三/output/} & 近段线性验证表与图件 \\
+\texttt{A/问题三/fusion\_pbt\_batterygpt/} & 融合验证表与图件（不含官方权重） \\
+\texttt{output/A/question3/figures/} & 问题三论文图件副本 \\
 \texttt{references/} & 参考文献导读与 BibTeX \\
 \texttt{AI 使用记录/} & AI 使用详情底稿 \\
 \texttt{paper/} & 本 LaTeX 工程 \\
@@ -34,4 +43,4 @@
 \end{tabular}
 \end{table}
 
-问题三、问题四的脚本、中间表与预测结果待生成后追加本表。若最终提交时上述文件均已纳入压缩包，则与论文结论对应；源程序运行方式见附录~\ref{app:code}。
+问题三的 MATR 全寿命审计（含 \texttt{external\_matr\_audit/raw/}）以及融合模型权重目录仅作内部核对，不进入支撑材料压缩包，也不作为正文正式精度。若最终提交时上述文件均已纳入压缩包，则与论文结论对应；源程序运行方式见附录~\ref{app:code}。

@@ -1,36 +1,102 @@
 \section{问题四：兼顾充电时间与寿命衰减的策略优化}
 
-\begin{todobox}
-本节为建模框架。优化应优先在问题一统一后的 7 种实验策略内比较；若连续优化，参数须限制在实验数据合理邻域并说明依据\cite{attia2020closedloop,plett2022bms3,frazier2018bo,deb2001moea}。
-\end{todobox}
+问题四的决策变量为两阶段快充配方 \(x=(C_1,Q_1,C_2)\)。需要在较短充电时间下降低早期衰减。由于未实验配方没有 1--150 圈个体轨迹，问题三的逐电池模型不能评价 \(x\)；公开寿命标签亦不进入目标函数。因此本节沿用问题二的策略层模型：衰减侧采用受限符号回归独立恢复的两窗口线性式~\eqref{eq:q2-pysr}，时间侧采用分段恒流公式，并用问题一口径（清洗后逐圈 \texttt{chargetime} 均值）校准恒定偏移。
 
-\subsection{决策变量与目标}
+\subsection{充电时间模型}
 
-决策变量 \(x=(C_1,Q_1,C_2)\)。目标为在较短充电时间下降低衰减速率或延长寿命：
+两阶段恒流充至 \(80\%\) SOC 的时间为
 \begin{equation}
-\min_{x}\; F(x)=\begin{bmatrix} T_{\mathrm{charge}}(x)\\ \mathrm{DecayRate}(x)\end{bmatrix}
-\quad\text{或}\quad
-\min_{x}\; w_1 T_{\mathrm{charge}}(x)+w_2\,\mathrm{DecayRate}(x).
-\label{eq:moo}
+T_{\mathrm{CC}}(x)=60\left(\frac{Q_1/100}{C_1}+\frac{0.80-Q_1/100}{C_2}\right)\ \mathrm{min}.
+\label{eq:q4-time}
 \end{equation}
-
-\subsection{充电时间模型（拟采用）}
-
-分段恒流近似
+长寿四策略上 \(T_{\mathrm{CC}}\) 几乎都等于 10\,min，无法再估计斜率。在这些策略上用问题一口径的电池级充电时间估计恒定偏移，得到
 \begin{equation}
-T_{\mathrm{charge}}\approx \frac{Q_1}{C_1}+\frac{0.8-Q_1}{C_2}+T_{\mathrm{CV}},
-\label{eq:time}
+\widehat T(x)=T_{\mathrm{CC}}(x)+\hat\beta,\qquad \hat\beta=0.045\ \mathrm{min},
 \end{equation}
-并用 \texttt{mean\_chargetime} 回归校准。问题一散点图已显示充电时间与策略分组相关，可用于检验该近似。
+RMSE 为 \(0.009\)\,min。因而样本内的多目标问题在时间维度上接近退化：两阶段实验都是约 10.04 分钟快充，真正拉开寿命代理的是高 SOC 电流分配，而不是再缩短 \(0.1\)\,min。
 
-\subsection{寿命衰减模型}
+\subsection{衰减模型与约束}
 
-沿用问题二回归或问题三预测模型，得到 \(\mathrm{DecayRate}(x)\) 或 \(\mathrm{SOH}_{200}(x)\)。在已有策略上先做离散 Pareto 比较，再考虑邻域连续搜索。
+将问题二的两窗口暴露量 \(E^{L}(x),E^{H}(x)\)（\(Q^\ast=50\%\)）代入式~\eqref{eq:q2-pysr}，即
+\begin{equation}
+\widehat{\mathrm{Fade}}_{200}(x)=0.001000\,E^{L}(x)+0.001342\,E^{H}(x)-0.430734.
+\label{eq:q4-pysr}
+\end{equation}
+该式与策略加权 WLS 同结构，能够把短寿策略 \(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)（\(C^{\mathrm{high}}=5.9\)，实测衰减约 \(0.034\)）与其余策略（约 \(0.002\sim 0.004\)）分开。在 \(C^{\mathrm{high}}\le 4.8\) 的长寿区内，预测差只有千分位，不足以在 \(4.0\mathrm{C}\) 与 \(4.2\mathrm{C}\) 之间宣称寿命排序。因此式~\eqref{eq:q2-pysr} 用于生成约束并核对实验点，正式排序使用已实验策略的实测 \(\mathrm{Fade}_{200}\)。
 
-\subsection{约束与邻域}
+连续搜索的可行域为
+\begin{equation}
+C_1\ge C_2,\qquad
+C^{\mathrm{high}}(x)=\frac{E^{H}(x)}{30}\le 4.8,\qquad
+\widehat T(x)\in[9.90,10.25],
+\end{equation}
+其中 \(C_1\in[3.6,5.6]\)、\(Q_1\in[19,80]\)、\(C_2\in[4.0,4.8]\)。\(4.8\) 对应恒流 \(4.8\mathrm{C}\) 组的高 SOC 倍率，低于短寿组的 \(5.9\mathrm{C}\)。
 
-建议参数盒约束取自样本极值（以最终校核为准）：\(C_1\in[3.6,5.6]\)，\(Q_1\in[19,80]\)，\(C_2\in[3.6,5.9]\)。超出实验凸包的组合须标明外推风险。
+原始参数 OLS（岭回归与之几乎相同）的 \(C_1\) 系数为负，盒约束下的“最优”为 \(5.6\mathrm{C}(80\%)-5.9\mathrm{C}\)；该点上 OLS 给出负衰减，而式~\eqref{eq:q4-pysr} 给出 \(0.075\)，比短寿组更差。自由符号回归同样推向最大 \(C_1\) 与 \(Q_1=80\%\)。二者均不用于推荐。
 
-\subsection{推荐策略与对比（待填）}
+\subsection{离散比较与推荐}
 
-给出推荐 \((C_1^\ast,Q_1^\ast,C_2^\ast)\)，并与问题一的典型长寿命策略（如 \texttt{5C\_67PER\_4C}、\texttt{5\_3C\_54PER\_4C}）及短寿命策略 \texttt{3\_7C\_31PER\_5\_9C} 对比充电时间与寿命代理。说明适用范围（LFP、两阶段快充、早期循环窗口）与不可外推情形。
+表~\ref{tab:q4-obs} 给出 dataset~3 中 6 个实验策略的实测时间、衰减与 \(C^{\mathrm{high}}\)。图~\ref{fig:q4-discrete} 显示时间轴上各点几乎重叠，短寿组单独抬高。图~\ref{fig:q4-chigh} 表明约束应落在高 SOC 等效倍率上。
+
+\begin{table}[htbp]
+\centering
+\caption{已有策略的充电时间与 200 圈衰减（时间为问题一口径；\texttt{4.8C} 仅含 dataset~3 的 5 块）}
+\label{tab:q4-obs}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+策略 & n & \(C^{\mathrm{high}}\) & 实测时间/min & 实测 Fade & PySR Fade \\
+\midrule
+\texttt{5\_3C\_54PER\_4C} & 7 & 4.17 & 10.04 & 0.00256 & 0.00228 \\
+\texttt{5C\_67PER\_4C} & 6 & 4.57 & 10.04 & 0.00269 & 0.00311 \\
+\texttt{5\_6C\_36PER\_4\_3C} & 7 & 4.30 & 10.04 & 0.00372 & 0.00418 \\
+\texttt{5\_6C\_19PER\_4\_6C} & 7 & 4.60 & 10.04 & 0.00439 & 0.00345 \\
+\texttt{4\_8C\_80PER\_4\_8C} & 5 & 4.80 & 11.04 & 0.00189 & 0.00251 \\
+\texttt{3\_7C\_31PER\_5\_9C} & 2 & 5.90 & 10.13 & 0.03375 & 0.03359 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\texttt{4.8C} 组合并组均值衰减较小，但问题一已指出其组内离散大、充电时间分为约 10\,min 与 11\,min 两簇，故不作典型推荐。在典型长寿四策略中，实测衰减最低且 \(C^{\mathrm{high}}\) 最低的是 \(5.3\mathrm{C}(54\%)-4.0\mathrm{C}\)。
+
+在长寿两策略邻域（\(C_1\in[5.0,5.6]\)，\(Q_1\in[50,67]\)，\(C_2\in[4.0,4.3]\)）内，把高 SOC 窗全部放到 \(4.0\mathrm{C}\) 可得到未实验点 \(5.3\mathrm{C}(50\%)-4.0\mathrm{C}\)，\(C^{\mathrm{high}}=4.0\)、\(\widehat T\approx 10.21\)\,min。该点需要补实验；长寿区内两窗口预测差不可分辨，线性式在该点还会给出无物理意义的负衰减，因此不能写成更长寿的新配方。图~\ref{fig:q4-pareto} 给出可行网格上时间与 \(C^{\mathrm{high}}\) 的 Pareto 前沿；图~\ref{fig:q4-wrong} 对照原始参数模型会把搜索推向高 SOC 大电流。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.88\linewidth]{question4/figures/discrete_time_fade.png}
+\caption{已有策略的实测充电时间与 \(\mathrm{Fade}_{200}\)。两阶段点在时间上接近，短寿组衰减高一个数量级。}
+\label{fig:q4-discrete}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.88\linewidth]{question4/figures/chigh_constraint.png}
+\caption{高 SOC 等效倍率与实测衰减。问题四约束取 \(C^{\mathrm{high}}\le 4.8\)，避开 \(5.9\mathrm{C}\) 短寿区。}
+\label{fig:q4-chigh}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.88\linewidth]{question4/figures/pareto_grid.png}
+\caption{10 分钟邻域、\(C_1\ge C_2\) 且 \(C^{\mathrm{high}}\le 4.8\) 的网格 Pareto。星号为邻域候选 \(5.3\mathrm{C}(50\%)-4.0\mathrm{C}\)。}
+\label{fig:q4-pareto}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.88\linewidth]{question4/figures/wrong_model_optima.png}
+\caption{对照：原始参数 OLS 与自由 PySR 在盒约束下推向 \(C^{\mathrm{high}}=5.6\) 的高 SOC 大电流角点。}
+\label{fig:q4-wrong}
+\end{figure}
+
+\subsection{推荐策略}
+
+\begin{enumerate}
+  \item \textbf{正式推荐（已实验）：} \(C_1=5.3\)，\(Q_1=54\%\)，\(C_2=4.0\)。实测 \(\mathrm{Fade}_{200}\approx 0.00256\)，\(C^{\mathrm{high}}\approx 4.17\)，充电时间约 \(10.04\)\,min。同结构备选为 \(5\mathrm{C}(67\%)-4\mathrm{C}\)。
+  \item \textbf{邻域候选（未实验）：} \(C_1=5.3\)，\(Q_1=50\%\)，\(C_2=4.0\)。仅说明可把高 SOC 段保持在 \(4.0\mathrm{C}\) 且仍约 10\,min；须补实验，不得把模型预测写成寿命改善。
+  \item \textbf{不推荐：} \(C_1<C_2\) 且 \(C^{\mathrm{high}}=5.9\) 的 \(3.7\mathrm{C}(31\%)-5.9\mathrm{C}\)，以及原始参数模型给出的 \(5.6\mathrm{C}(80\%)-5.9\mathrm{C}\)。
+\end{enumerate}
+
+本节结论的适用范围是 A123 LFP 18650、两阶段快充至 \(80\%\) SOC、早期 200 圈窗口。不能外推为 \(\mathrm{SOH}=80\%\) 的循环寿命，也不能在实验凸包之外无约束地加大高 SOC 电流。
+
+\FloatBarrier
