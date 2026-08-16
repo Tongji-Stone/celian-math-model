@@ -1,0 +1,2 @@
+﻿n_batteries,n_policies,operators,selected_complexity,selected_equation_milli_fade,selected_equation_fade,train_rmse_fade,train_mae_fade
+34,6,"+,-,*,/ (denominator complexity <= 1)",7,((354.96955557538615 - Q1) / C1) + -54.574553623224716,(((354.96955557538615 - Q1) / C1) + -54.574553623224716) / 1000,0.0020256829539567994,0.001507217974452355

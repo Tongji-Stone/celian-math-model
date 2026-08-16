@@ -1,0 +1,2 @@
+﻿selected_complexity,selected_equation_milli_fade,selected_equation_fade,train_rmse_fade,train_mae_fade,lopo_mean_rmse,lopo_max_rmse
+9,(((tau_high * 10.273239620401379) - 140.06529926964663) * tau_high) + 479.35316348877393,((((tau_high * 10.273239620401379) - 140.06529926964663) * tau_high) + 479.35316348877393) / 1000,0.0025365372417591385,0.0020577955708638708,0.010832583683609726,0.02597876998480385

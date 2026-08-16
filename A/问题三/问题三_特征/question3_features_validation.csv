@@ -1,0 +1,10 @@
+﻿check,result,passed
+每循环特征行数,9350,True
+电池级特征行数,49,True
+完整 200 圈电池数（有目标）,40,True
+C1 缺失按同义策略补全数,3,True
+窗口斜率特征,"w10,w25,w50",True
+soh_loss 非缺失比例,1.0000,True
+策略规范化后数量,7,True
+中文绘图字体,Microsoft YaHei,True
+IR 零值（保留原值）,2,需在解释中注意

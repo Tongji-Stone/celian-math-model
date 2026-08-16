@@ -1,0 +1,42 @@
+{
+  "seed": 20260815,
+  "short_horizon": {
+    "cutoff": 150,
+    "horizon": 50,
+    "power_weight": 0.66839585251145,
+    "linear_weight": 0.33160414748855005,
+    "power_window": "last min(101, N) cycles; cycle 50-150 at N=150",
+    "linear_window": 50,
+    "interval_half_width_by_horizon_bin": {
+      "1-10": 0.001025357785885861,
+      "11-20": 0.0012867152290459982,
+      "21-30": 0.0010819419350923676,
+      "31-40": 0.001287928048889997,
+      "41-50": 0.0014857516834847484
+    },
+    "interval_note": "90% battery-grouped empirical max-residual interval; not a strict IID guarantee"
+  },
+  "eol": {
+    "threshold": 0.8,
+    "families": [
+      "linear",
+      "power",
+      "exponential"
+    ],
+    "fit_starts": [
+      1,
+      20,
+      50,
+      80
+    ],
+    "bootstrap_repetitions_per_fit": 60,
+    "note": "no SOH<=0.8 supervision; reported bounds are a model-window sensitivity envelope"
+  },
+  "versions": {
+    "python": "3.13.9",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "scipy": "1.16.3"
+  },
+  "test_batteries_used_for_training_or_tuning": false
+}
